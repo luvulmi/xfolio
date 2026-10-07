@@ -1,0 +1,27 @@
+# XFolio에서 반복해서 사용하는 검사 명령을 승인 질문 없이 실행하도록 허용합니다.
+
+# 허용: Python 코드의 Ruff 정적 검사 (`uv run ruff check .`).
+prefix_rule(
+    pattern = ["uv", "run", "ruff", "check", "."],
+    decision = "allow",
+    match = ["uv run ruff check ."],
+    not_match = ["uv run ruff format --check .", "uv run pytest"],
+)
+
+# 허용: Python 코드의 Ruff 형식 검사 (`uv run ruff format --check .`).
+# `--check`가 없는 `uv run ruff format .`은 이 규칙에 일치하지 않습니다.
+prefix_rule(
+    pattern = ["uv", "run", "ruff", "format", "--check", "."],
+    decision = "allow",
+    match = ["uv run ruff format --check ."],
+    not_match = ["uv run ruff format .", "uv run ruff check ."],
+)
+
+# 허용: pytest 테스트 실행 (`uv run pytest`).
+# match와 not_match는 규칙 검증용 예시이며, 금지 규칙이 아닙니다.
+prefix_rule(
+    pattern = ["uv", "run", "pytest"],
+    decision = "allow",
+    match = ["uv run pytest"],
+    not_match = ["uv run ruff check .", "uv run xfolio status"],
+)

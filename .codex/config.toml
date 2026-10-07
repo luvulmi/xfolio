@@ -1,0 +1,6 @@
+# 저장소 내부의 파일 수정과 일반 검증은 샌드박스 안에서 진행합니다.
+sandbox_mode = "workspace-write"
+approval_policy = "on-request"
+
+# 샌드박스 경계를 넘는 요청은 가능한 경우 자동 심사로 처리합니다.
+approvals_reviewer = "auto_review"
