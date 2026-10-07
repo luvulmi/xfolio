@@ -1,5 +1,14 @@
 # XFolio에서 반복해서 사용하는 검사 명령을 승인 질문 없이 실행하도록 허용합니다.
 
+# 허용: 이 프로젝트의 rules 파일을 검사하는 읽기 전용 명령입니다.
+# --pretty는 출력 형식, --rules는 검사할 파일 경로를 지정합니다.
+prefix_rule(
+    pattern = ["codex", "execpolicy", "check", "--pretty", "--rules", ".codex/rules/xfolio.rules"],
+    decision = "allow",
+    match = ["codex execpolicy check --pretty --rules .codex/rules/xfolio.rules -- git commit -m test"],
+    not_match = ["codex execpolicy check --pretty --rules other.rules -- git commit -m test"],
+)
+
 # 허용: Python 코드의 Ruff 정적 검사 (`uv run ruff check .`).
 prefix_rule(
     pattern = ["uv", "run", "ruff", "check", "."],
@@ -24,4 +33,23 @@ prefix_rule(
     decision = "allow",
     match = ["uv run pytest"],
     not_match = ["uv run ruff check .", "uv run xfolio status"],
+)
+
+# 자동 허용하지 않음: Git 커밋은 실행 전에 승인 절차를 거칩니다.
+# 실제 커밋은 AGENTS.md에 따라 사용자가 명시적으로 요청한 경우에만 수행합니다.
+prefix_rule(
+    pattern = ["git", "commit"],
+    decision = "prompt",
+    justification = "커밋은 사용자가 명시적으로 요청한 경우에만 실행합니다.",
+    match = ["git commit -m 'docs: 문서 수정'"],
+    not_match = ["git status --short"],
+)
+
+# 자동 허용하지 않음: 원격 저장소로의 푸시는 실행 전에 승인 절차를 거칩니다.
+prefix_rule(
+    pattern = ["git", "push"],
+    decision = "prompt",
+    justification = "푸시는 사용자가 명시적으로 요청한 경우에만 실행합니다.",
+    match = ["git push origin main"],
+    not_match = ["git status --short"],
 )

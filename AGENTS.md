@@ -33,5 +33,6 @@
 ## 커밋 메시지
 
 - Git 커밋은 사용자가 명시적으로 요청한 경우에만 수행하세요.
+- `git commit`과 `git push`를 승인 없이 실행하는 `allow` 규칙은 추가하지 마세요.
 - 커밋 메시지의 제목과 본문은 한국어로 작성하세요. Conventional Commits 타입 접두사(`feat:`, `fix:`, `docs:` 등)는 영어를 허용합니다.
 - 예: `docs: XFolio 주차별 개발 일정 정리`.
