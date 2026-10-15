@@ -12,7 +12,17 @@
 
 브레인스토밍 기록은 [brain_storm/](brain_storm/README.md)에 세션별로 남깁니다.
 
+현재 프로젝트 재설계는 [미국 시장 브리핑 세션](brain_storm/session_2026-10-15_market_briefing_redesign.md)에서 진행합니다.
+
+국내 상장 S&P500·NASDAQ100 ETF 정보 자동 게시의 확정 범위와 미정 운영값은 [isa_etf_publishing_design.md](../docs/isa_etf_publishing_design.md)에 정리합니다.
+
+설계 참고 사례와 확인 범위는 [similar_service_research.md](../docs/research/similar_service_research.md)에 정리합니다.
+
+TIGER·KODEX ETF의 장중·일별 시세 조회 기능과 X 공개 게시 조건 조사는 [etf_market_data_research.md](../docs/research/etf_market_data_research.md)에 정리합니다.
+
+미국 두 지수 마감 브리핑의 무료 제공처와 공개 게시 조건 조사는 [us_index_data_research.md](../docs/research/us_index_data_research.md)에 정리합니다.
+
 ## 진행 기록
 
 - [1주차 발표 메모](progress/2026-10-11.md)
-- [2주차 요구사항 발표 초안 (10/18)](progress/2026-10-18.md)
+- [2주차 요구사항 발표 메모 (10/18)](progress/2026-10-18.md)
