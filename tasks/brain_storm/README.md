@@ -4,6 +4,6 @@
 
 ## 세션 목록
 
-- [미국 시장 브리핑 프로젝트 재설계](session_2026-10-15_market_briefing_redesign.md) — 요구사항·운영 정책 합의 완료, 조사 결과에 따른 후속 논의 대기
+- [미국 시장 브리핑 프로젝트 재설계](session_2026-10-15_market_briefing_redesign.md) — 종료, Q36에서 개발 범위와 주차별 작업 배분 확정
 
 - [2주차 요구사항과 XFolio 에이전트 구상](session_2026-10-12_week2_requirements.md) — 제품 범위 확정, 세부 운영값 후속 조사

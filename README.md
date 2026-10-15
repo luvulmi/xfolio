@@ -46,5 +46,4 @@ uv run ruff format --check .
 - `docs/overview.md`: 프로젝트 목표와 개발 범위
 - `docs/weekly_schedule.md`: 스터디 일정
 - `docs/project_structure_and_tech_stack.md`: 이번 구조·스택 선택과 남은 결정
-- `docs/codex_project_setup_prompt.md`: 다른 프로젝트에 적용할 Codex 설정 프롬프트
 - `tasks/README.md`: 주제별 작업 문서와 날짜별 진행 기록 안내
