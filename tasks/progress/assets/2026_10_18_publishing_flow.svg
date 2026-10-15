@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="590" viewBox="0 0 720 590" role="img" aria-labelledby="title description">
+  <title id="title">XFolio 자동 게시 과정</title>
+  <desc id="description">시장 자료와 뉴스·공식 공지를 수집해 AI가 게시 후보를 만든다. 원본·출처·시각·중복 검사에 통과하면 X에 자동 게시하고, 통과하지 못하면 보류한다. 두 결과 모두 상태와 이력에 기록해 대시보드에 표시한다.</desc>
+  <defs>
+    <style>
+      .box { fill: #f5f8ff; stroke: #4566a8; stroke-width: 2; }
+      .decision { fill: #fff7e7; stroke: #b77918; stroke-width: 2; }
+      .label { fill: #163d82; font: 700 19px sans-serif; text-anchor: middle; }
+      .detail { fill: #26354d; font: 16px sans-serif; text-anchor: middle; }
+      .arrow { fill: none; stroke: #4566a8; stroke-width: 2.5; }
+      .branch { fill: #26354d; font: 700 16px sans-serif; text-anchor: middle; }
+    </style>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#4566a8" />
+    </marker>
+  </defs>
+  <rect class="box" x="200" y="20" width="320" height="70" rx="14" />
+  <text class="label" x="360" y="48">자료 수집</text>
+  <text class="detail" x="360" y="75">시장·뉴스·공식 공지</text>
+  <path class="arrow" d="M 360 90 V 119" marker-end="url(#arrowhead)" />
+  <rect class="box" x="200" y="126" width="320" height="70" rx="14" />
+  <text class="label" x="360" y="154">게시 후보 생성</text>
+  <text class="detail" x="360" y="181">AI 선별·짧은 설명</text>
+  <path class="arrow" d="M 360 196 V 223" marker-end="url(#arrowhead)" />
+  <path class="decision" d="M 360 230 L 470 295 L 360 360 L 250 295 Z" />
+  <text class="label" x="360" y="287">게시 전 검증</text>
+  <text class="detail" x="360" y="313">원본·출처·시각·중복</text>
+  <path class="arrow" d="M 250 295 H 165 V 379" marker-end="url(#arrowhead)" />
+  <path class="arrow" d="M 470 295 H 555 V 379" marker-end="url(#arrowhead)" />
+  <text class="branch" x="205" y="282">보류</text>
+  <text class="branch" x="515" y="282">통과</text>
+  <rect class="box" x="40" y="386" width="250" height="68" rx="14" />
+  <text class="label" x="165" y="413">게시 보류</text>
+  <text class="detail" x="165" y="439">이유 기록</text>
+  <rect class="box" x="430" y="386" width="250" height="68" rx="14" />
+  <text class="label" x="555" y="413">X 자동 게시</text>
+  <text class="detail" x="555" y="439">게시 결과 확인</text>
+  <path class="arrow" d="M 165 454 V 480 H 320 V 503" marker-end="url(#arrowhead)" />
+  <path class="arrow" d="M 555 454 V 480 H 400 V 503" marker-end="url(#arrowhead)" />
+  <rect class="box" x="200" y="510" width="320" height="70" rx="14" />
+  <text class="label" x="360" y="538">상태·이력 기록</text>
+  <text class="detail" x="360" y="565">운영 대시보드</text>
+</svg>

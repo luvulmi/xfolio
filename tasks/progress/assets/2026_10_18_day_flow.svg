@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="520" viewBox="0 0 440 520" role="img" aria-labelledby="title description">
+  <title id="title">하루의 정기 게시 흐름</title>
+  <desc id="description">08:30 오전 뉴스, 09:10 개장 후 지수, 18:30 확정 지수 종가, 19:00 ETF 마감 현황 순서. 시각은 미확정 편성안.</desc>
+  <defs>
+    <style>
+      .box { fill: #f5f8ff; stroke: #4566a8; stroke-width: 2; }
+      .time { fill: #163d82; font: 700 20px sans-serif; text-anchor: middle; }
+      .detail { fill: #26354d; font: 16px sans-serif; text-anchor: middle; }
+      .arrow { fill: none; stroke: #4566a8; stroke-width: 2.5; }
+    </style>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#4566a8" />
+    </marker>
+  </defs>
+  <rect class="box" x="60" y="16" width="320" height="92" rx="14" />
+  <text class="time" x="220" y="52">08:30 · 오전 뉴스</text>
+  <text class="detail" x="220" y="82">기사 제목·링크 최대 2건</text>
+  <path class="arrow" d="M 220 108 V 141" marker-end="url(#arrowhead)" />
+  <rect class="box" x="60" y="148" width="320" height="92" rx="14" />
+  <text class="time" x="220" y="184">09:10 · 개장 후</text>
+  <text class="detail" x="220" y="214">KOSPI·KOSDAQ</text>
+  <path class="arrow" d="M 220 240 V 273" marker-end="url(#arrowhead)" />
+  <rect class="box" x="60" y="280" width="320" height="92" rx="14" />
+  <text class="time" x="220" y="316">18:30 · 확정 종가</text>
+  <text class="detail" x="220" y="346">KOSPI·KOSDAQ</text>
+  <path class="arrow" d="M 220 372 V 405" marker-end="url(#arrowhead)" />
+  <rect class="box" x="60" y="412" width="320" height="92" rx="14" />
+  <text class="time" x="220" y="448">19:00 · ETF 마감</text>
+  <text class="detail" x="220" y="478">관찰 ETF 2~4개</text>
+</svg>
