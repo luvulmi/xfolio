@@ -14,7 +14,7 @@
 
 현재 프로젝트 재설계는 [미국 시장 브리핑 세션](brain_storm/session_2026-10-15_market_briefing_redesign.md)에서 진행합니다.
 
-국내 상장 S&P500·NASDAQ100 ETF 정보 자동 게시의 확정 범위와 미정 운영값은 [isa_etf_publishing_design.md](../docs/isa_etf_publishing_design.md)에 정리합니다.
+XFolio 시장 브리핑 AI 에이전트의 확정 범위·미결정 사항과 이전 ETF 설계 이력은 [market_briefing_agent_design.md](../docs/market_briefing_agent_design.md)에 정리합니다.
 
 설계 참고 사례와 확인 범위는 [similar_service_research.md](../docs/research/similar_service_research.md)에 정리합니다.
 

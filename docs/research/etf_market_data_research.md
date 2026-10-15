@@ -98,4 +98,4 @@ KIS 고객 약관은 공식 안내가 연결한 원문을 이번 도구로 열�
 
 개인 API 제공사에도 해당 API의 외부 공개 게시 허용 여부를 별도로 확인한다. 코스콤의 원천 정보 허가만으로 증권사 API 약관까지 충족한다고 가정하지 않는다.
 
-관련 문서: [시장 데이터 수집 작업](../../tasks/market_data_collection.md) · [자동 게시 설계](../isa_etf_publishing_design.md)
+관련 문서: [시장 데이터 수집 작업](../../tasks/market_data_collection.md) · [자동 게시 설계](../market_briefing_agent_design.md)

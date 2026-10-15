@@ -3,7 +3,7 @@
 - 조사일: 2026-10-14, Asia/Seoul
 - 목적: ETF 정보 사이트와 X 게시 사례에서 XFolio의 콘텐츠·표현·운영 설계에 참고할 요소를 찾는다.
 - 상태: 공개 자료 조사. 외부 서비스 가입, 봇 실행, 데이터 연동과 X 게시는 수행하지 않았다.
-- 연결: [현재 자동 게시 설계](../isa_etf_publishing_design.md) · [브레인스토밍 세션](../../tasks/brain_storm/session_2026-10-12_week2_requirements.md)
+- 연결: [현재 자동 게시 설계](../market_briefing_agent_design.md) · [브레인스토밍 세션](../../tasks/brain_storm/session_2026-10-12_week2_requirements.md)
 
 **2026-10-14 범위 결정:** 현재 구현은 국내 상장 S&P500·NASDAQ100 일반 지수형 ETF 각 1~2개, 총 2~4개의 정보 자동 게시다. 아래 사이트의 ETF 소개·비교·교육 항목은 이전 조사 이력이며 초기 콘텐츠나 관찰 상품으로 채택하지 않는다. 현재 참고할 요소는 원본 출처·시점 표기, 짧은 반복 게시 형식, 수집과 게시 흐름의 분리다.
 
