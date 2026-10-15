@@ -14,6 +14,8 @@
 - 정적 검사: `uv run ruff check .`와 `uv run ruff format --check .`.
 - 기능 테스트를 추가한 뒤 `uv run pytest`를 실행하세요. 현재는 테스트 파일이 없습니다.
 - 변경 후 관련 검증을 실제로 실행하고 결과를 보고하세요.
+- PowerShell에서 Python으로 한국어 스크립트를 파이프할 때는 인코딩에 의존하지 않도록 파일 기반 스크립트나 ASCII 검사식을 사용하세요. 검증 명령을 연속 실행하면 각 명령의 종료 코드를 확인하세요.
+- Markdown은 BOM 없는 UTF-8로 저장하세요. 기존 파일에 BOM이 있으면 첫 줄 패치 전에 확인하고 UTF-8로 읽어 수정하세요.
 
 ## 코드 규칙
 
@@ -25,6 +27,7 @@
 ## 디렉토리별 주의사항
 
 - `docs/`: 프로젝트 요구사항과 설계 결정을 기록합니다. 파일명은 영어 `snake_case`로 작성합니다(`README.md` 제외). 주차별 일정은 현재 요청보다 우선하지 않습니다.
+- `docs/research/`: 데이터 제공처, 이용 조건, 참고 서비스 등 조사 관련 문서를 모읍니다. 앞으로 새 research 문서는 `docs/` 루트가 아닌 이 폴더에 생성하고, 이동 시 참조 링크도 함께 갱신하세요.
 - `tasks/`: 주제별 작업 계획은 루트에, 날짜별 진행 기록은 `progress/YYYY-MM-DD.md`에 둡니다. 폴더명과 파일명은 영어 `snake_case`로 작성합니다(`README.md`와 ISO 형식의 날짜 파일명 제외). `tasks/README.md`에 작업 문서 링크를 유지합니다. GitHub Issues를 쓰면 업무 목록을 중복 관리하지 마세요.
 - `src/xfolio/`: `Market Pipeline`, `News Pipeline`, 분석·생성, `Upload Pipeline`의 입출력 경계를 분명히 하세요. 데이터 제공처와 배포 방식은 아직 미정입니다.
 - `dashboard/`: 선택 의존성 `streamlit`을 사용합니다. 실행 명령은 `uv run --extra dashboard streamlit run dashboard/app.py`입니다.
