@@ -4,6 +4,8 @@
 
 ## 세션 목록
 
+- [개장·마감 지수 조회와 게시 방식 검토](session_2026-10-16_open_close_market_updates.md) — 진행 중, 개장 후 조회·야간 게시 필요성 질문 대기
+
 - [미국 시장 브리핑 프로젝트 재설계](session_2026-10-15_market_briefing_redesign.md) — 종료, Q36에서 개발 범위와 주차별 작업 배분 확정
 
 - [2주차 요구사항과 XFolio 에이전트 구상](session_2026-10-12_week2_requirements.md) — 제품 범위 확정, 세부 운영값 후속 조사
