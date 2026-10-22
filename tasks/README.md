@@ -12,7 +12,9 @@
 
 브레인스토밍 기록은 [brain_storm/](brain_storm/README.md)에 세션별로 남깁니다.
 
-현재 프로젝트 재설계는 [미국 시장 브리핑 세션](brain_storm/session_2026-10-15_market_briefing_redesign.md)에서 진행합니다.
+현재 프로젝트의 개발 범위는 [미국 시장 브리핑 세션](brain_storm/session_2026-10-15_market_briefing_redesign.md)의 Q36에서 확정했습니다.
+
+3주차 사전 조사 전의 상세 기획 점검은 [상세 기획 세션](brain_storm/session_2026-10-21_pre_research_planning.md)에 기록합니다. Q14까지 개별 결정 후 사용자의 일괄 정의 요청에 따라 [세부 운영 추천안](../docs/market_briefing_operating_plan.md)을 작성했습니다. 확정 정책과 새 추천값·조사 의존 항목을 구분합니다.
 
 XFolio 시장 브리핑 AI 에이전트의 확정 범위·미결정 사항과 이전 ETF 설계 이력은 [market_briefing_agent_design.md](../docs/market_briefing_agent_design.md)에 정리합니다.
 
@@ -27,3 +29,4 @@ TIGER·KODEX ETF의 장중·일별 시세 조회 기능과 X 공개 게시 조�
 - [1주차 발표 메모](progress/2026-10-11.md)
 - [2주차 요구사항 발표 메모 (10/18)](progress/2026-10-18.md)
 - [2주차 발표 대본 (10/18)](progress/scripts/2026-10-18.md)
+- [3주차 발표 초안 (10/21)](progress/2026-10-21.md)

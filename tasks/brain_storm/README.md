@@ -4,6 +4,8 @@
 
 ## 세션 목록
 
+- [사전 조사 전 시장 브리핑 상세 기획 점검](session_2026-10-21_pre_research_planning.md) — 종료, Q14 확정·사용자 요청으로 나머지 세부 기획 추천안 일괄 작성, 외부 조사 대기
+
 - [개장·마감 지수 조회와 게시 방식 검토](session_2026-10-16_open_close_market_updates.md) — 진행 중, 개장 후 조회·야간 게시 필요성 질문 대기
 
 - [미국 시장 브리핑 프로젝트 재설계](session_2026-10-15_market_briefing_redesign.md) — 종료, Q36에서 개발 범위와 주차별 작업 배분 확정
