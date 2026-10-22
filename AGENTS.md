@@ -2,6 +2,10 @@
 
 - 모든 응답과 진행 상황 설명은 한국어로 작성하세요. 코드, 명령어, 파일명, 고유 명사는 원문을 유지하세요.
 
+## 작업 완료 응답
+
+- 사용자가 요청한 작업이나 명령 수행을 마치면 결과와 검증 내용을 보고하고, 최종 응답의 마지막에 현재 상태에서 이어갈 다음 작업 1~3개를 우선순위대로 간결하게 추천하세요.
+
 ## 프로젝트 구조
 
 - XFolio는 시장·뉴스 수집 → AI 분석·콘텐츠 생성 → X 게시를 목표로 하는 Python 3.12·`uv` 프로젝트입니다.
@@ -29,7 +33,7 @@
 - `docs/`: 프로젝트 요구사항과 설계 결정을 기록합니다. 파일명은 영어 `snake_case`로 작성합니다(`README.md` 제외). 주차별 일정은 현재 요청보다 우선하지 않습니다.
 - `docs/research/`: 데이터 제공처, 이용 조건, 참고 서비스 등 조사 관련 문서를 모읍니다. 앞으로 새 research 문서는 `docs/` 루트가 아닌 이 폴더에 생성하고, 이동 시 참조 링크도 함께 갱신하세요.
 - `tasks/`: 주제별 작업 계획은 루트에, 날짜별 진행 기록은 `progress/YYYY-MM-DD.md`에 둡니다. 폴더명과 파일명은 영어 `snake_case`로 작성합니다(`README.md`와 ISO 형식의 날짜 파일명 제외). `tasks/README.md`에 작업 문서 링크를 유지합니다. GitHub Issues를 쓰면 업무 목록을 중복 관리하지 마세요.
-- `src/xfolio/`: `Market Pipeline`, `News Pipeline`, 분석·생성, `Upload Pipeline`의 입출력 경계를 분명히 하세요. 데이터 제공처와 배포 방식은 아직 미정입니다.
+- `src/xfolio/`: `Market Pipeline`, `News Pipeline`, 분석·생성, `Upload Pipeline`의 입출력 경계를 분명히 하세요. 지수 수집은 `yfinance`의 `^GSPC`·`^NDX`를 사용하기로 확정했습니다. 뉴스 제공처는 미정이며 실행·배포는 현재 기술 스택 문서의 Windows 로컬 구성을 따릅니다. 기술 선택을 실제 연동 완료로 취급하지 마세요.
 - `dashboard/`: 선택 의존성 `streamlit`을 사용합니다. 실행 명령은 `uv run --extra dashboard streamlit run dashboard/app.py`입니다.
 - `tests/`: 기능을 구현할 때 외부 API에 의존하지 않는 검증을 추가하세요.
 
