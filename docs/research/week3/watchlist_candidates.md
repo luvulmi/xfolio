@@ -1,0 +1,94 @@
+# 관찰 기업 자료와 후보 조사
+
+- 확인일: 2026-10-22, Asia/Seoul
+- 계획 항목: R3
+- 범위: S&P500 또는 Nasdaq-100 구성기업 중 회사 단위 최대 10개 후보
+- 검증 수준: 공식 공개 목록·설명 확인. 뉴스 제공처의 기업별 응답 샘플은 아직 없으므로 최종 관찰 명단은 미확정이다.
+
+## 구성 확인 자료 비교
+
+| 자료 | 확인한 내용 | 기준 시점·제약 | 판단 |
+| --- | --- | --- | --- |
+| S&P DJI S&P500 공식 페이지 | 비중 상위 10개 증권 명단에 NVDA·AAPL·MSFT·AMZN·GOOGL·AVGO·GOOG·META·MU·TSLA 표시 | 검색 색인에 2026-08-31 기준. 원문 열기에서는 동적 표의 행이 빠짐 | 9개 회사의 당시 편입·중요성 근거. 현재 전체명단으로 사용하지 않음 |
+| Nasdaq 공식 Understanding Nasdaq-100 | 본문에 아래 10개 회사가 구성기업으로 기재 | 글 발행 2026-08-17. 목록의 별도 효력일은 명시되지 않아 당일 현 구성 보장 아님 | 후보 확보에 사용하되 발행 전 최신 확인 필요 |
+| Nasdaq GIW NDX Weighting | NDX 전용 공식 구성·비중 조회 경로, 조회 화면은 2026-10-21 표시 | 비로그인 원문에 실제 구성 행·비중이 노출되지 않음. 전체 접근 로그인 안내 | 현 구성·비중 재확인의 우선 경로 |
+
+근거: [S&P500 공식 페이지](https://www.spglobal.com/spdji/en/indices/equity/sp-500/), [Nasdaq 공식 구성 설명](https://www.nasdaq.com/articles/global-indexes/nasdaq-100-index), [NDX Weighting](https://indexes.nasdaqomx.com/Index/Weighting/NDX).
+
+ETF QQQ·SPY의 보유 비중이나 제3자 추정치를 지수 공식 구성·비중으로 대체하지 않았다. 특히 증권 10개에 Alphabet 두 클래스가 포함되므로 회사로는 9개다. 정확한 현재 구성원 여부·비중이 확인되지 않은 상태에서 순위 숫자나 비중 합계를 새로 만들지 않는다.
+
+## 최대 10개 추천 후보
+
+아래의 관심 주제는 **기사 검색·평가를 위한 조사 제안**이다. 해당 회사가 현재 어떤 결정을 했거나 특정 지수 등락을 일으켰다는 주장이 아니다. 편입 여부는 위 자료의 시점에 한정한다. 모든 행의 뉴스 제공처 커버리지는 미검증이다.
+
+| 회사 | 검색 티커 | 확인 근거 | 관심 주제·선정 이유 제안 |
+| --- | --- | --- | --- |
+| NVIDIA | NVDA | S&P 상위 표·Nasdaq 목록 | 데이터센터·반도체 실적과 회사 전망 |
+| Apple | AAPL | 동일 | 기기·서비스 실적과 핵심 사업 변화 |
+| Microsoft | MSFT | 동일 | 클라우드·소프트웨어 실적과 투자 변화 |
+| Amazon | AMZN | 동일 | 클라우드·유통 실적과 사업 구조 변화 |
+| Alphabet | GOOGL, GOOG | 동일, 두 클래스는 한 회사 | 광고·클라우드 실적과 핵심 사업 변화 |
+| Broadcom | AVGO | 동일 | 반도체·소프트웨어 실적과 전망 |
+| Meta Platforms | META | 동일 | 광고 실적·설비 투자·회사 전망 |
+| Micron Technology | MU | 동일 | 메모리 실적·공급 계획·회사 전망 |
+| Tesla | TSLA | 동일 | 자동차·에너지 실적과 중요 사업 변화 |
+| AMD | AMD | Nasdaq 공식 목록 | 반도체 실적·전망 비교 후보. S&P 편입은 이번 상위 표에서 별도 확인하지 않음 |
+
+위 표는 9개 S&P 상위 회사와 추가 Nasdaq 후보 1개로 구성했다. AMD가 전체 중요도 10위라는 뜻은 아니다. 상위 기업 중심의 출발점이라 반도체·기술 관련 편중이 있으며, 이후 샘플에서 뉴스 부족 또는 중복이 크면 10개를 억지로 채우지 않고 줄이거나 다른 구성기업과 교체한다.
+
+## 뉴스 확보 가능성
+
+NVIDIA 공식 IR에는 분기 실적과 발표문 링크가 있으며 Amazon 공식 IR에는 Quarterly results 경로가 있다. 기업 사실을 원문과 대조할 수 있는 공개 자료가 있다는 확인이다. 이것이 뉴스 제공처 1곳에서 모든 기업의 충분한 요약·발행 시각·게시 권리를 확보했다는 증거는 아니다. [NVIDIA Financial Reports](https://investor.nvidia.com/financial-info/financial-reports/default.aspx), [Amazon Quarterly results](https://ir.aboutamazon.com/quarterly-results/default.aspx)
+
+IR 직접 수집을 추가 파이프라인으로 확정하지 않는다. 선택할 뉴스 제공처의 티커·회사명 검색에서 다음을 확인해 최종 명단을 정한다.
+
+1. 회사명과 티커를 함께 검색하고 Alphabet 두 티커는 같은 회사로 묶는다.
+2. 최신 실적·전망·사업 변경 기사에 원문 링크, 발행 시각, 핵심 근거가 있는지 확인한다.
+3. 기사에 지수 이름이 없더라도 별도 편입 근거와 사건의 중요성을 연결한다. 편입만으로 해당 사건이 지수를 움직였다고 단정하지 않는다.
+4. 종목 가격·목표가·단순 제품 홍보만 확보되는 회사는 중요 기업 뉴스 기준을 충족했다고 보지 않는다.
+
+## 운영에 필요한 최소 기록
+
+`회사 ID / 이름·별칭 / 티커 목록 / 확인한 지수 / 구성 근거 URL / 자료 기준일 / 확인일 / 관찰 여부 / 선정 이유`를 남기는 작은 설정표를 추천한다. 실시간 전 지수 비중 API는 첫 버전 필수 요소로 추가하지 않는다. 매월 재확인 시 실제 구성원 여부를 검토하고, 편출·합병을 알게 되면 해당 회사의 새 발행을 보류한다.
+
+## 발표 결론과 남은 확인
+
+공식 자료로 회사 단위 10개 후보를 만들 수 있다. 다만 **2026-10-22 당일 구성·비중 전체를 인증 없이 확정하지 못했고**, 뉴스 커버리지도 아직 샘플 확인이 필요하다. 발표에는 이 목록을 후보로 제시하고, 실제 운영 전 공식 최신 구성 확인과 뉴스 응답 검증을 완료해야 한다. 별도 구성 데이터 유료 구독 비용은 아직 견적을 받지 않았으므로 0원으로 확정하지 않는다.
+
+## 후속 조사: 최소 한 지수 편입 근거
+
+최초 구성 조건은 두 지수 중 하나 이상이므로 Nasdaq 비중 전체를 얻지 않아도 후보 자격을 검토할 수 있다. 아래는 각 회사의 **시점이 있는 공식 근거**다. 2026-10-22 현재까지 편입 상태가 계속 유지됐다고 단정하지 않는다. S&P 동적 표는 검색 색인의 2026-08-31 스냅샷에 의존하므로 최종 운영 명단에는 직접 확인 가능한 최신 명단을 남겨야 한다.
+
+| 회사 | 최소 한 지수 근거 | 확인한 자료 시점 |
+| --- | --- | --- |
+| NVIDIA | S&P500 상위 증권 표 | 2026-08-31 |
+| Apple | S&P500 상위 증권 표 | 2026-08-31 |
+| Microsoft | S&P500 상위 증권 표 | 2026-08-31 |
+| Amazon | S&P500 상위 증권 표 | 2026-08-31 |
+| Alphabet | S&P500 상위 증권 표, 두 클래스 한 회사 | 2026-08-31 |
+| Broadcom | S&P500 상위 증권 표 | 2026-08-31 |
+| Meta Platforms | S&P500 상위 증권 표 | 2026-08-31 |
+| Micron | S&P500 상위 증권 표 | 2026-08-31 |
+| Tesla | S&P500 상위 증권 표 | 2026-08-31 |
+| AMD | Nasdaq 공식 구성 설명의 AMD 행 | 문서 발행 2026-08-17, 목록 효력일 별도 명시 없음 |
+
+근거: [S&P500 공식 페이지](https://www.spglobal.com/spdji/en/indices/equity/sp-500/), [Nasdaq 공식 구성 설명](https://www.nasdaq.com/articles/global-indexes/nasdaq-100-index). AMD는 추가로 S&P500 IT 섹터 공식 검색 스냅샷의 2026-08-31 상위 표에도 보인다. 해당 섹터 지수는 S&P500 구성기업의 IT 부분집합이라는 설명은 원문에서 확인했다. 직접 원문 표 행이 동적으로 빠지는 제약은 동일하다. [S&P500 IT 설명](https://www.spglobal.com/spdji/en/indices/equity/sp-500-information-technology-sector/)
+
+## 후속 조사: 회사별 공개 원문 사례
+
+다음은 **공식 원문의 접근·필드 확보 조사**다. 과거 자료를 지금 게시하겠다는 후보가 아니다. 모든 링크를 공개 웹에서 열어 본문 또는 공식 게시 목록을 확인했다. 한 뉴스 API의 10개 회사 커버리지·일괄 재사용 권리·07:30 이전 버전 확보는 이 표로 증명되지 않는다.
+
+| 회사 | 공식 사례·공개일 | 확인한 근거와 제약 |
+| --- | --- | --- |
+| NVIDIA | [FY2027 Q2 실적](https://nvidianews.nvidia.com/news/nvidia-announces-financial-results-for-second-quarter-fiscal-2027), 2026-08-26 | 대상 분기·매출·사업부·전망을 구분할 원문 접근 |
+| Apple | [FY2026 Q3 실적](https://www.apple.com/newsroom/2026/07/apple-reports-third-quarter-results/), 2026-07-30 | 분기 종료일·매출·EPS·조건 설명 접근 |
+| Microsoft | [FY2026 Q4 실적](https://www.microsoft.com/en-us/investor/earnings/fy-2026-q4/press-release-webcast), 2026-07-29 | GAAP·non-GAAP과 사업부 수치의 비교 기준 접근 |
+| Amazon | [2026 Q2 실적](https://ir.aboutamazon.com/news-release/news-release-details/2026/Amazon-com-Announces-Second-Quarter-Results/default.aspx), 2026-07-30 | 분기 기간·사업부 수치·Financial Guidance 접근 |
+| Alphabet | [Q2 2026 CEO 발언](https://blog.google/company-news/inside-google/message-ceo/alphabet-earnings-q2-2026/), 2026-07-22 | 공식 편집 발언문. 실적 수치와 경영진 평가를 구분 가능. IR 표는 동적 미노출 |
+| Broadcom | [FY2026 Q3 실적](https://investors.broadcom.com/news-releases/news-release-details/broadcom-inc-announces-third-quarter-fiscal-year-2026-financial), 2026-09-02 | 실적 분기와 다음 분기 전망 원문 접근 |
+| Meta | [2026 Q2 실적](https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Reports-Second-Quarter-2026-Results/), 2026-07-29 | 대상 기간·실적·CFO Outlook 원문 접근 |
+| Micron | [Quarterly results](https://investors.micron.com/financials/quarterly-results/default.aspx), 2026-09-30 발표 자료 | 공식 목록 검색 스냅샷에서 Q4 FY2026 본문 확인. 원문 열기의 상세 수치 노출은 제한 |
+| Tesla | [Q2 2026 실적 공개 안내](https://ir.tesla.com/press-release/tesla-releases-second-quarter-2026-financial-results), 2026-07-22 | 발표일·대상 분기·IR 업데이트 위치 확인. 안내문 자체에는 핵심 실적 수치 없음 |
+| AMD | [2026 Q2 실적](https://ir.amd.com/news-events/press-releases/detail/1295/amd-reports-second-quarter-2026-financial-results), 2026-08-04 | 대상 기간·사업부 실적·다음 분기 회사 전망 원문 접근 |
+
+회사별 공식 자료가 존재하는 것은 확인했지만 모두 같은 수준으로 본문·시각을 얻은 것은 아니다. 특히 Tesla 안내문만으로 실적 요약을 생성하면 부족하며 연결된 자료가 필요하다. Micron의 동적 노출 제약도 자동 수집 검증으로 넘긴다. 공식 기업 자료의 공개 접근은 번역·재게시·장기 저장의 일괄 허가가 아니며, 운영 수집 대상으로 추가하려면 이용 조건과 기존 뉴스 제공처 1곳 원칙을 별도로 검토한다.
