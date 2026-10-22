@@ -7,6 +7,13 @@
 | 시장 데이터 수집 | [market_data_collection.md](market_data_collection.md) |
 | 뉴스 수집 | [news_collection.md](news_collection.md) |
 | X 게시 흐름 | [publishing_workflow.md](publishing_workflow.md) |
+| 3주차 기술·비용 조사 | [week3_research_plan.md](week3_research_plan.md) |
+
+3주차 항목별 조사 결과와 기술 구성·비용 결론은 [조사 문서 목록](../docs/research/week3/README.md)에 정리합니다.
+
+조사 후 사용자가 선택한 실행·저장·발행량과 비용 기준은 [초기 비용 절감 구성](../docs/minimum_cost_configuration.md)입니다.
+
+2026-10-23 지수 수집 수단을 [yfinance](../docs/research/week3/yfinance_index_collection.md)로 확정했습니다. [지수 수집·게시 모드](../docs/market_search_and_publishing_modes.md)에 따라 종가 조회·등락률 계산과 개발·테스트 승인 → 안정화 후 자동 게시를 구현합니다. 설치·실제 연동은 아직 수행하지 않았습니다.
 
 날짜별 진행 내용은 [progress/](progress/README.md)에 `YYYY-MM-DD.md` 형식으로 기록합니다. GitHub Issues로 업무 목록을 관리하게 되면 이곳에 같은 목록을 중복해서 작성하지 않습니다.
 

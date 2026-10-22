@@ -4,6 +4,12 @@ XFolio는 현재의 시장 정보와 뉴스를 수집·분석해 X 게시용 브
 
 ## 개발 환경
 
+2026-10-23 지수 수집 수단을 [yfinance](docs/research/week3/yfinance_index_collection.md)로 확정했습니다. S&P 500은 `^GSPC`, Nasdaq-100은 `^NDX`로 조회하고 종가로 등락률을 계산합니다. 일반 조회용 API 키는 필요하지 않습니다. 라이브러리 설치·수집 구현·실제 응답 시험은 아직 수행하지 않았습니다.
+
+운영은 [지수 수집과 게시 모드](docs/market_search_and_publishing_modes.md)를 따릅니다. 관리자 승인은 개발·테스트 기간에 적용하고 안정화 후 자동 검증·게시로 전환합니다. 공개 게시 조건과 오전 자료 도착은 검증 과제로 남기며, 현재 코드는 골격입니다.
+
+초기 운영은 [비용 절감 구성](docs/minimum_cost_configuration.md)에 따라 기존 Windows PC·SQLite·로컬 Streamlit·Windows 작업 스케줄러를 사용하도록 정했습니다. 아침 출처 링크는 한 글로 모으고 기업 뉴스는 하루 최대 1회·1개 글입니다. 아래 명령은 현재 골격 실행용이며 수집·승인·예약 게시 기능과 Windows 작업 등록은 구현 전입니다.
+
 - Python 3.12
 - `uv`로 의존성 설치 및 명령 실행
 
