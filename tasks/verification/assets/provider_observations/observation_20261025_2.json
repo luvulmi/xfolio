@@ -1,0 +1,478 @@
+{
+  "mode": "run",
+  "observed_at": "2026-10-24T16:20:43+00:00",
+  "scope": "market_sector_sample_v1",
+  "max_marketaux_requests": 6,
+  "full_operating_day": false,
+  "can_publish": false,
+  "before_morning_cutoff": true,
+  "bls": {
+    "run_id": "fb8d6a2e-3804-4316-ad34-664560b29950",
+    "observed_at": "2026-10-24T16:20:44.181941+00:00",
+    "requests": 2,
+    "state": "snapshot_parsed",
+    "published_at": "2026-10-14T12:30:00+00:00",
+    "period": "2026-09",
+    "content_version": "8d4a82258a3a5e9d099b857cefc598ed3aff8c4b4e4ee83d12d30fc918c2f9fd",
+    "claims": [
+      {
+        "source_id": "BLS:CPI:USDL-26-1574",
+        "content_version": "8d4a82258a3a5e9d099b857cefc598ed3aff8c4b4e4ee83d12d30fc918c2f9fd",
+        "subject": "US:CPI-U:all_items",
+        "event_type": "cpi_release",
+        "action": "increased",
+        "certainty": "confirmed",
+        "period": "2026-09",
+        "event_time": null,
+        "value": "0.6",
+        "unit": "percent",
+        "comparison_basis": "previous_month_seasonally_adjusted",
+        "conditions": null
+      },
+      {
+        "source_id": "BLS:CPI:USDL-26-1574",
+        "content_version": "8d4a82258a3a5e9d099b857cefc598ed3aff8c4b4e4ee83d12d30fc918c2f9fd",
+        "subject": "US:CPI-U:all_items",
+        "event_type": "cpi_release",
+        "action": "increased",
+        "certainty": "confirmed",
+        "period": "2026-09",
+        "event_time": null,
+        "value": "3.7",
+        "unit": "percent",
+        "comparison_basis": "12_months_unadjusted",
+        "conditions": null
+      }
+    ],
+    "schedule": [
+      {
+        "period": "2026-10",
+        "scheduled_at": "2026-11-10T13:30:00Z"
+      },
+      {
+        "period": "2026-11",
+        "scheduled_at": "2026-12-10T13:30:00Z"
+      },
+      {
+        "period": "2026-12",
+        "scheduled_at": "2027-01-13T13:30:00Z"
+      },
+      {
+        "period": "2027-01",
+        "scheduled_at": "2027-02-11T13:30:00Z"
+      },
+      {
+        "period": "2027-02",
+        "scheduled_at": "2027-03-10T13:30:00Z"
+      },
+      {
+        "period": "2027-03",
+        "scheduled_at": "2027-04-13T12:30:00Z"
+      },
+      {
+        "period": "2027-04",
+        "scheduled_at": "2027-05-12T12:30:00Z"
+      },
+      {
+        "period": "2027-05",
+        "scheduled_at": "2027-06-10T12:30:00Z"
+      },
+      {
+        "period": "2027-06",
+        "scheduled_at": "2027-07-14T12:30:00Z"
+      },
+      {
+        "period": "2027-07",
+        "scheduled_at": "2027-08-11T12:30:00Z"
+      },
+      {
+        "period": "2027-08",
+        "scheduled_at": "2027-09-14T12:30:00Z"
+      },
+      {
+        "period": "2027-09",
+        "scheduled_at": "2027-10-14T12:30:00Z"
+      },
+      {
+        "period": "2027-10",
+        "scheduled_at": "2027-11-10T13:30:00Z"
+      },
+      {
+        "period": "2027-11",
+        "scheduled_at": "2027-12-10T13:30:00Z"
+      }
+    ],
+    "cursor_advanced": false,
+    "can_publish": false,
+    "storage_result": "same_source_version"
+  },
+  "marketaux": {
+    "provider": "Marketaux",
+    "status": "partial",
+    "window_start": "2026-10-23T16:20:43+00:00",
+    "window_end": "2026-10-24T16:20:43+00:00",
+    "collected_at": "2026-10-24T16:21:00.022886+00:00",
+    "requests": 6,
+    "checkpoint_eligible": false,
+    "error": "page_budget",
+    "min_request_interval_seconds": 3.0,
+    "max_retries": 0,
+    "query_reports": [
+      {
+        "query_id": "market",
+        "search": "(\"S&P 500\"|Nasdaq)+(stocks|market)",
+        "domains": [],
+        "symbols": [],
+        "group_similar": false,
+        "status": "partial",
+        "requests": 3,
+        "error": "page_budget",
+        "pages": [
+          {
+            "found": 49,
+            "returned": 3,
+            "page": 1,
+            "limit": 3
+          },
+          {
+            "found": 49,
+            "returned": 3,
+            "page": 2,
+            "limit": 3
+          },
+          {
+            "found": 49,
+            "returned": 3,
+            "page": 3,
+            "limit": 3
+          }
+        ],
+        "responses": [
+          {
+            "status_code": 200,
+            "limit_headers": {
+              "x-usagelimit-limit": "100",
+              "x-usagelimit-remaining": "18",
+              "x-ratelimit-limit": "30",
+              "x-ratelimit-remaining": "28"
+            }
+          },
+          {
+            "status_code": 200,
+            "limit_headers": {
+              "x-usagelimit-limit": "100",
+              "x-usagelimit-remaining": "17",
+              "x-ratelimit-limit": "30",
+              "x-ratelimit-remaining": "27"
+            }
+          },
+          {
+            "status_code": 200,
+            "limit_headers": {
+              "x-usagelimit-limit": "100",
+              "x-usagelimit-remaining": "16",
+              "x-ratelimit-limit": "30",
+              "x-ratelimit-remaining": "26"
+            }
+          }
+        ]
+      },
+      {
+        "query_id": "sector",
+        "search": "(semiconductor|energy|banking)+(industry|sector)+(rose|fell|demand|supply)",
+        "domains": [],
+        "symbols": [],
+        "group_similar": false,
+        "status": "partial",
+        "requests": 3,
+        "error": "page_budget",
+        "pages": [
+          {
+            "found": 53,
+            "returned": 3,
+            "page": 1,
+            "limit": 3
+          },
+          {
+            "found": 53,
+            "returned": 3,
+            "page": 2,
+            "limit": 3
+          },
+          {
+            "found": 53,
+            "returned": 3,
+            "page": 3,
+            "limit": 3
+          }
+        ],
+        "responses": [
+          {
+            "status_code": 200,
+            "limit_headers": {
+              "x-usagelimit-limit": "100",
+              "x-usagelimit-remaining": "15",
+              "x-ratelimit-limit": "30",
+              "x-ratelimit-remaining": "25"
+            }
+          },
+          {
+            "status_code": 200,
+            "limit_headers": {
+              "x-usagelimit-limit": "100",
+              "x-usagelimit-remaining": "14",
+              "x-ratelimit-limit": "30",
+              "x-ratelimit-remaining": "24"
+            }
+          },
+          {
+            "status_code": 200,
+            "limit_headers": {
+              "x-usagelimit-limit": "100",
+              "x-usagelimit-remaining": "13",
+              "x-ratelimit-limit": "30",
+              "x-ratelimit-remaining": "23"
+            }
+          }
+        ]
+      }
+    ],
+    "articles": [
+      {
+        "provider": "Marketaux",
+        "article_id": "faf00597-2c86-4709-b990-707cbce2f8fa",
+        "source": "seekingalpha.com",
+        "url": "https://seekingalpha.com/news/4656570-earnings-scorecard-financials-log-80-eps-beat-rate-vs-revenue-this-week",
+        "published_at": "2026-10-24T14:15:14+00:00",
+        "retrieved_at": "2026-10-24T16:20:45.222780+00:00",
+        "field_lengths": {
+          "title": 74,
+          "description": 69,
+          "snippet": 163
+        }
+      },
+      {
+        "provider": "Marketaux",
+        "article_id": "081716b6-519d-4c65-bf3d-90d7ef033394",
+        "source": "greaterfool.ca",
+        "url": "https://www.greaterfool.ca/2026/10/24/leaving-home/",
+        "published_at": "2026-10-24T13:37:30+00:00",
+        "retrieved_at": "2026-10-24T16:20:45.222780+00:00",
+        "field_lengths": {
+          "title": 91,
+          "description": 0,
+          "snippet": 163
+        }
+      },
+      {
+        "provider": "Marketaux",
+        "article_id": "9c1b28e7-acfc-49cc-af8f-5e109ba4e400",
+        "source": "seekingalpha.com",
+        "url": "https://seekingalpha.com/article/4957222-tesla-2027-could-be-massive-growth-inflection-point-upgrade",
+        "published_at": "2026-10-24T13:22:00+00:00",
+        "retrieved_at": "2026-10-24T16:20:45.222780+00:00",
+        "field_lengths": {
+          "title": 74,
+          "description": 144,
+          "snippet": 163
+        }
+      },
+      {
+        "provider": "Marketaux",
+        "article_id": "c25e8629-6914-4a2c-8200-307840e9d351",
+        "source": "seekingalpha.com",
+        "url": "https://seekingalpha.com/article/4957218-wall-street-breakfast-what-moved-markets-this-week",
+        "published_at": "2026-10-24T12:10:57+00:00",
+        "retrieved_at": "2026-10-24T16:20:48.023246+00:00",
+        "field_lengths": {
+          "title": 51,
+          "description": 86,
+          "snippet": 163
+        }
+      },
+      {
+        "provider": "Marketaux",
+        "article_id": "2ad30c46-1f7e-408b-8ebf-c3074d7214c8",
+        "source": "financefeeds.com",
+        "url": "https://financefeeds.com/wells-fargo-arm-and-intuit-join-objections-to-okxice-tokenized-stocks/",
+        "published_at": "2026-10-24T11:49:00+00:00",
+        "retrieved_at": "2026-10-24T16:20:48.023246+00:00",
+        "field_lengths": {
+          "title": 52,
+          "description": 164,
+          "snippet": 163
+        }
+      },
+      {
+        "provider": "Marketaux",
+        "article_id": "63cea541-86f3-44f3-bd42-6073ec6d3a41",
+        "source": "manilatimes.net",
+        "url": "https://www.manilatimes.net/2026/10/24/tmt-newswire/globenewswire/nanobiotix-announces-final-data-from-phase-1-study-evaluating-jnj-1900-nbtxr3-with-immune-checkpoint-inhibitors-as-a-2l-therapy-in-anti-pd-1-resistant-primary-cutaneous-melanoma/2453227",
+        "published_at": "2026-10-24T11:10:12+00:00",
+        "retrieved_at": "2026-10-24T16:20:48.023246+00:00",
+        "field_lengths": {
+          "title": 180,
+          "description": 865,
+          "snippet": 163
+        }
+      },
+      {
+        "provider": "Marketaux",
+        "article_id": "470c7b48-4aca-48db-9e72-9dd7897b9526",
+        "source": "fortune.com",
+        "url": "https://fortune.com/2026/10/24/gen-z-baby-boomers-midterms-investing-patterns/",
+        "published_at": "2026-10-24T11:00:00+00:00",
+        "retrieved_at": "2026-10-24T16:20:51.013898+00:00",
+        "field_lengths": {
+          "title": 90,
+          "description": 135,
+          "snippet": 163
+        }
+      },
+      {
+        "provider": "Marketaux",
+        "article_id": "77a89350-c9e7-419f-92de-92dfd0943028",
+        "source": "financefeeds.com",
+        "url": "https://financefeeds.com/meta-stock-prediction-642-62-bull-910-82-bear-540-47/",
+        "published_at": "2026-10-24T09:50:24+00:00",
+        "retrieved_at": "2026-10-24T16:20:51.013898+00:00",
+        "field_lengths": {
+          "title": 49,
+          "description": 159,
+          "snippet": 159
+        }
+      },
+      {
+        "provider": "Marketaux",
+        "article_id": "1dcbd4f2-cb4b-45bb-8869-409f1e42aa92",
+        "source": "financefeeds.com",
+        "url": "https://financefeeds.com/microsoft-stock-prediction-524-51-bull-771-98-bear-520-19/",
+        "published_at": "2026-10-24T09:20:24+00:00",
+        "retrieved_at": "2026-10-24T16:20:51.013898+00:00",
+        "field_lengths": {
+          "title": 54,
+          "description": 154,
+          "snippet": 163
+        }
+      },
+      {
+        "provider": "Marketaux",
+        "article_id": "1f9a090b-1706-42b2-9bed-a01712350226",
+        "source": "thehindubusinessline.com",
+        "url": "https://www.thehindubusinessline.com/portfolio/mutual-funds/manufacturing-exports-and-banking-are-the-themes-which-can-deliver/article71615248.ece",
+        "published_at": "2026-10-24T15:52:50+00:00",
+        "retrieved_at": "2026-10-24T16:20:54.141963+00:00",
+        "field_lengths": {
+          "title": 69,
+          "description": 104,
+          "snippet": 163
+        }
+      },
+      {
+        "provider": "Marketaux",
+        "article_id": "740ed96f-33a0-4ece-a608-49530bc8a0e7",
+        "source": "thehindubusinessline.com",
+        "url": "https://www.thehindubusinessline.com/money-and-banking/idfc-first-banks-q2fy27-net-profit-zooms-197-to-1045-crore/article71620620.ece",
+        "published_at": "2026-10-24T14:43:03+00:00",
+        "retrieved_at": "2026-10-24T16:20:54.141963+00:00",
+        "field_lengths": {
+          "title": 62,
+          "description": 151,
+          "snippet": 159
+        }
+      },
+      {
+        "provider": "Marketaux",
+        "article_id": "df12e07a-31d7-498b-9da6-1adc80bd4422",
+        "source": "thestockmarketwatch.com",
+        "url": "https://www2.stockmarketwatch.com/stock-market-news/global-unrest-and-economic-contraction-cloud-market-outlook-early-voting-surges-in-u-s-midterms/73550/",
+        "published_at": "2026-10-24T14:38:20+00:00",
+        "retrieved_at": "2026-10-24T16:20:54.141963+00:00",
+        "field_lengths": {
+          "title": 97,
+          "description": 150,
+          "snippet": 161
+        }
+      },
+      {
+        "provider": "Marketaux",
+        "article_id": "66807282-7aa8-4d43-ae3d-f09fab0518d5",
+        "source": "thestockmarketwatch.com",
+        "url": "https://www2.stockmarketwatch.com/stock-market-news/geopolitical-tensions-surge-in-middle-east-as-us-reinforces-strike-groups-brent-crude-near-113/73549/",
+        "published_at": "2026-10-24T14:08:18+00:00",
+        "retrieved_at": "2026-10-24T16:20:57.043771+00:00",
+        "field_lengths": {
+          "title": 96,
+          "description": 147,
+          "snippet": 163
+        }
+      },
+      {
+        "provider": "Marketaux",
+        "article_id": "09080bcc-4009-4b40-a5e7-7ed8225b5808",
+        "source": "manilatimes.net",
+        "url": "https://www.manilatimes.net/2026/10/24/tmt-newswire/globenewswire/jst-buyback-burn-upgrade-gasfree-revenue-and-2034m-surplus-injected-as-justs-ecosystem-trio-solidifies-jst-token-value/2453277",
+        "published_at": "2026-10-24T12:30:28+00:00",
+        "retrieved_at": "2026-10-24T16:20:57.043771+00:00",
+        "field_lengths": {
+          "title": 124,
+          "description": 44,
+          "snippet": 162
+        }
+      },
+      {
+        "provider": "Marketaux",
+        "article_id": "3da9de22-1a1f-4408-b9be-d0ffeab1e81b",
+        "source": "fortune.com",
+        "url": "https://fortune.com/2026/10/24/rick-lazio-we-lost-auto-race-to-japan-china-should-alarm-us/",
+        "published_at": "2026-10-24T11:15:00+00:00",
+        "retrieved_at": "2026-10-24T16:20:57.043771+00:00",
+        "field_lengths": {
+          "title": 76,
+          "description": 154,
+          "snippet": 159
+        }
+      },
+      {
+        "provider": "Marketaux",
+        "article_id": "7d2471c5-b409-433c-b7c8-894a5cb04ee0",
+        "source": "cnbc.com",
+        "url": "https://www.cnbc.com/2026/10/24/nvidias-role-as-ai-financier-faces-first-big-test-as-neoclouds-take-market-hit.html",
+        "published_at": "2026-10-24T11:00:01+00:00",
+        "retrieved_at": "2026-10-24T16:21:00.022886+00:00",
+        "field_lengths": {
+          "title": 79,
+          "description": 136,
+          "snippet": 163
+        }
+      },
+      {
+        "provider": "Marketaux",
+        "article_id": "4d556724-3c9e-4095-8104-5ed72f1b001c",
+        "source": "businessinsider.com",
+        "url": "https://www.businessinsider.com/ai-boom-dotcom-bubble-paul-wick-nvidia-chips-burry-careers-2026-10",
+        "published_at": "2026-10-24T10:45:09+00:00",
+        "retrieved_at": "2026-10-24T16:21:00.022886+00:00",
+        "field_lengths": {
+          "title": 62,
+          "description": 147,
+          "snippet": 163
+        }
+      },
+      {
+        "provider": "Marketaux",
+        "article_id": "e35305c4-e50c-4449-83af-4ded2425fbe1",
+        "source": "livemint.com",
+        "url": "https://www.livemint.com/industry/infrastructure/golden-chariot-luxury-train-returns-with-revamped-rooms-menus-inside-karnataka-s-premium-travel-experience-11792835455365.html",
+        "published_at": "2026-10-24T10:25:31+00:00",
+        "retrieved_at": "2026-10-24T16:21:00.022886+00:00",
+        "field_lengths": {
+          "title": 108,
+          "description": 298,
+          "snippet": 161
+        }
+      }
+    ]
+  },
+  "state": "observed"
+}

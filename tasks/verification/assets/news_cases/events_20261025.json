@@ -1,0 +1,190 @@
+{
+  "version": "known_events_v1",
+  "window_start": "2026-10-18T16:00:00+00:00",
+  "window_end": "2026-10-24T15:00:00+00:00",
+  "note": "Known-event retrospective retrieval, not live discovery or confirmed watchlist. Marker hits are lexical only.",
+  "cases": [
+    {
+      "id": "state_employment",
+      "event_key": "BLS:state_employment:2026-09",
+      "kind": "macro",
+      "official_date": "2026-10-20",
+      "official_url": "https://www.bls.gov/news.release/laus.htm",
+      "expected": "released_scope_review",
+      "search": "\"state employment\"+September",
+      "markers": {
+        "subject": "state|states",
+        "period": "september|2026-09",
+        "fact": "5 states|five states",
+        "action": "unemployment|jobless"
+      }
+    },
+    {
+      "id": "weekly_claims",
+      "event_key": "DOL:initial_claims:2026-10-17",
+      "kind": "macro",
+      "official_date": "2026-10-22",
+      "official_url": "https://www.dol.gov/sites/dolgov/files/OPA/newsreleases/ui-claims/20261613.pdf",
+      "expected": "released",
+      "search": "((\"jobless claims\"|\"initial claims\"))+(194000|\"194,000\")",
+      "markers": {
+        "subject": "claims",
+        "period": "october 17|oct\\.? 17",
+        "fact": "194,000|194000",
+        "action": "fell|decrease|declin|drop"
+      }
+    },
+    {
+      "id": "ibm_results",
+      "event_key": "IBM:earnings:2026-Q3",
+      "kind": "earnings",
+      "official_date": "2026-10-21",
+      "official_url": "https://www.sec.gov/Archives/edgar/data/51143/000005114326000093/ibm-20261021xex991.htm",
+      "expected": "released",
+      "search": "IBM+(\"third quarter\"|\"third-quarter\"|Q3)",
+      "markers": {
+        "subject": "ibm",
+        "period": "third.quarter|q3",
+        "fact": "17\\.1 billion|17,100|17\\.1b",
+        "action": "reported|announced|results|revenue"
+      }
+    },
+    {
+      "id": "tesla_results",
+      "event_key": "TSLA:earnings:2026-Q3",
+      "kind": "earnings",
+      "official_date": "2026-10-21",
+      "official_url": "https://ir.tesla.com/_flysystem/s3/sec/000162828026066738/tsla-20261021-gen.pdf",
+      "expected": "released",
+      "search": "Tesla+(\"third quarter\"|\"third-quarter\"|Q3)",
+      "markers": {
+        "subject": "tesla",
+        "period": "third.quarter|q3",
+        "action": "reported|released|results",
+        "fact": "revenue|net income|earnings per share"
+      }
+    },
+    {
+      "id": "ti_results",
+      "event_key": "TXN:earnings:2026-Q3",
+      "kind": "earnings",
+      "official_date": "2026-10-21",
+      "official_url": "https://investor.ti.com/news-releases/news-release-details/ti-reports-third-quarter-2026-financial-results-and-shareholder",
+      "expected": "released",
+      "search": "\"Texas Instruments\"+(\"third quarter\"|\"third-quarter\"|Q3)",
+      "markers": {
+        "subject": "texas instruments",
+        "period": "third.quarter|q3",
+        "fact": "6\\.06 billion|6,055|6\\.06b",
+        "action": "reported|results|revenue"
+      }
+    },
+    {
+      "id": "netflix_results",
+      "event_key": "NFLX:earnings:2026-Q3",
+      "kind": "earnings",
+      "official_date": "2026-10-20",
+      "official_url": "https://ir.netflix.net/files/doc_financials/2026/q3/FINAL-Q3-26-Shareholder-Letter.pdf",
+      "expected": "released",
+      "search": "Netflix+(\"third quarter\"|\"third-quarter\"|Q3)",
+      "markers": {
+        "subject": "netflix",
+        "period": "third.quarter|q3",
+        "fact": "12\\.9 billion|12\\.9b|34\\.6%",
+        "action": "reported|results|revenue|margin"
+      }
+    },
+    {
+      "id": "att_results",
+      "event_key": "T:earnings:2026-Q3",
+      "kind": "earnings",
+      "official_date": "2026-10-21",
+      "official_url": "https://about.att.com/story/2026/3q-earnings.html",
+      "expected": "released",
+      "search": "\"AT&T\"+(\"third quarter\"|\"third-quarter\"|Q3)",
+      "markers": {
+        "subject": "at&t",
+        "period": "third.quarter|q3",
+        "fact": "350,000|350000|3\\.8%",
+        "action": "reported|results|revenue|converged"
+      }
+    },
+    {
+      "id": "aardvark_hold",
+      "event_key": "AARD:ARD-101:hold_lifted:2026-10-22",
+      "kind": "business",
+      "official_date": "2026-10-22",
+      "official_url": "https://www.sec.gov/Archives/edgar/data/1774857/000119312526428943/ck0001774857-20261022.htm",
+      "expected": "released_outside_trial_watchlist",
+      "search": "Aardvark+(\"ARD-101\"|\"clinical hold\")",
+      "markers": {
+        "subject": "aardvark",
+        "period": "october 22|oct\\.? 22|2026",
+        "fact": "ard-101",
+        "action": "lifted|lifts"
+      }
+    },
+    {
+      "id": "ti_filing_followup",
+      "event_key": "TXN:earnings:2026-Q3",
+      "kind": "followup",
+      "official_date": "2026-10-23",
+      "official_url": "https://investor.ti.com/sec-filings/sec-filing/10-q/0000097476-26-000169",
+      "expected": "same_event_review_new_fact",
+      "search": "\"Texas Instruments\"+(\"10-Q\"|\"quarterly report\")",
+      "markers": {
+        "subject": "texas instruments",
+        "period": "september 30|third.quarter|q3",
+        "fact": "10-q|quarterly report",
+        "action": "filed|filing|report"
+      }
+    },
+    {
+      "id": "intel_future",
+      "event_key": "INTC:earnings:2026-Q3",
+      "kind": "negative_future",
+      "official_date": "2026-10-06",
+      "scheduled_date": "2026-10-29",
+      "official_url": "https://www.intc.com/news-events/press-releases/detail/1782/intel-to-report-third-quarter-2026-financial-results",
+      "expected": "not_yet_released",
+      "search": "Intel+(\"third quarter\"|\"third-quarter\"|Q3)",
+      "markers": {
+        "subject": "intel",
+        "period": "third.quarter|q3",
+        "fact": "october 29|oct\\.? 29",
+        "action": "will report|to report|scheduled|preview"
+      }
+    },
+    {
+      "id": "coca_cola_future",
+      "event_key": "KO:earnings:2026-Q3",
+      "kind": "negative_future",
+      "official_date": "2026-09-29",
+      "scheduled_date": "2026-10-27",
+      "official_url": "https://investors.coca-colacompany.com/_assets/_02744905259cb8240758f5502f105697/cocacolacompany/news/2026-09-29_The_Coca_Cola_Company_Announces_Timing_of_Third_1173.pdf",
+      "expected": "not_yet_released",
+      "search": "\"Coca-Cola\"+(\"third quarter\"|\"third-quarter\"|Q3)",
+      "markers": {
+        "subject": "coca.cola",
+        "period": "third.quarter|q3",
+        "fact": "october 27|oct\\.? 27",
+        "action": "will release|to report|scheduled|preview"
+      }
+    },
+    {
+      "id": "cpi_old",
+      "event_key": "BLS:CPI:2026-09",
+      "kind": "outside_window",
+      "official_date": "2026-10-14",
+      "official_url": "https://www.bls.gov/news.release/archives/cpi_10142026.htm",
+      "expected": "outside_current_test_window",
+      "search": "\"consumer price index\"+September",
+      "markers": {
+        "subject": "consumer price index|cpi",
+        "period": "september",
+        "fact": "3\\.7%|3\\.7 percent",
+        "action": "rose|increased"
+      }
+    }
+  ]
+}

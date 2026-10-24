@@ -1,0 +1,504 @@
+{
+  "mode": "run",
+  "as_of_utc": "2026-10-24T16:55:41.563017+00:00",
+  "from_utc": "2026-07-26T16:55:41.563017+00:00",
+  "max_requests": 6,
+  "sample_status": "first_page_only",
+  "article_text_saved": false,
+  "queries": [
+    {
+      "symbol": "NVDA",
+      "type": "press_release",
+      "params": {
+        "tickers": "NVDA",
+        "type": "press_release",
+        "from": "2026-07-26T16:55:41Z",
+        "to": "2026-10-24T16:55:41Z",
+        "limit": 3
+      },
+      "response": {
+        "returned": 3,
+        "count": 3,
+        "plan": "free",
+        "delayed_minutes": 15,
+        "has_next_cursor": true,
+        "articles": [
+          {
+            "id": "art_3e516d4cb59d7b2f",
+            "url": "https://www.businesswire.com/news/home/20261023237493/en/Newegg-Now-Offers-NVIDIA-RTX-Spark-Laptops-in-the-U.S.-and-Canada/",
+            "source": "Business Wire",
+            "type": "press_release",
+            "published_at_utc": "2026-10-23T13:00:00+00:00",
+            "ingested_at_utc": null,
+            "tickers": [
+              "NVDA",
+              "NEGG"
+            ],
+            "query_symbol": "NVDA",
+            "query_type": "press_release",
+            "symbol_tag_matches": true,
+            "type_matches": true,
+            "title_chars": 65,
+            "snippet_chars": 400,
+            "summary_chars": 187,
+            "body_chars": 517
+          },
+          {
+            "id": "art_7b3751414df450ad",
+            "url": "https://www.prnewswire.com/news-releases/webull-to-introduce-extended-hours-options-trading-expanding-access-beyond-the-regular-market-session-302916965.html",
+            "source": "PR Newswire",
+            "type": "press_release",
+            "published_at_utc": "2026-10-22T13:00:00+00:00",
+            "ingested_at_utc": null,
+            "tickers": [
+              "BULL",
+              "AAPL",
+              "AMZN",
+              "NVDA",
+              "TSLA",
+              "SPY",
+              "QQQ",
+              "IWM",
+              "GLD",
+              "XLF"
+            ],
+            "query_symbol": "NVDA",
+            "query_type": "press_release",
+            "symbol_tag_matches": true,
+            "type_matches": true,
+            "title_chars": 244,
+            "snippet_chars": 396,
+            "summary_chars": 157,
+            "body_chars": 5672
+          },
+          {
+            "id": "art_08b4008c25116c31",
+            "url": "https://www.prnewswire.com/news-releases/rockwell-automation-expands-factorytalk-conductor-with-nvidia-nemotron-support-302916890.html",
+            "source": "PR Newswire",
+            "type": "press_release",
+            "published_at_utc": "2026-10-22T12:00:00+00:00",
+            "ingested_at_utc": null,
+            "tickers": [
+              "ROK",
+              "NVDA"
+            ],
+            "query_symbol": "NVDA",
+            "query_type": "press_release",
+            "symbol_tag_matches": true,
+            "type_matches": true,
+            "title_chars": 227,
+            "snippet_chars": 399,
+            "summary_chars": 364,
+            "body_chars": 4817
+          }
+        ]
+      }
+    },
+    {
+      "symbol": "NVDA",
+      "type": "news",
+      "params": {
+        "tickers": "NVDA",
+        "type": "news",
+        "from": "2026-07-26T16:55:41Z",
+        "to": "2026-10-24T16:55:41Z",
+        "limit": 3
+      },
+      "response": {
+        "returned": 3,
+        "count": 3,
+        "plan": "free",
+        "delayed_minutes": 15,
+        "has_next_cursor": true,
+        "articles": [
+          {
+            "id": "art_2440f5c301667702",
+            "url": "https://www.fool.com/investing/2026/10/24/puzzle-pieces-for-stock-market-crash-taking-shape-4-historically-flawless-indicators-sound-alarm/",
+            "source": "Fool - Investing News",
+            "type": "news",
+            "published_at_utc": "2026-10-24T13:06:02+00:00",
+            "ingested_at_utc": null,
+            "tickers": [
+              "NVDA"
+            ],
+            "query_symbol": "NVDA",
+            "query_type": "news",
+            "symbol_tag_matches": true,
+            "type_matches": true,
+            "title_chars": 123,
+            "snippet_chars": 37,
+            "summary_chars": 0,
+            "body_chars": 8865
+          },
+          {
+            "id": "art_5cad77dea2089443",
+            "url": "https://www.fool.com/investing/2026/10/24/prediction-200-a-month-invested-in-nvidia-will-be/",
+            "source": "The Motley Fool",
+            "type": "news",
+            "published_at_utc": "2026-10-24T11:12:00+00:00",
+            "ingested_at_utc": null,
+            "tickers": [
+              "NVDA"
+            ],
+            "query_symbol": "NVDA",
+            "query_type": "news",
+            "symbol_tag_matches": true,
+            "type_matches": true,
+            "title_chars": 75,
+            "snippet_chars": 178,
+            "summary_chars": 0,
+            "body_chars": 6876
+          },
+          {
+            "id": "art_1b03a51088e25861",
+            "url": "https://www.fool.com/investing/2026/10/24/jensen-huang-says-ai-demand-is-off-the-charts-the-money-to-pay-for-it-isn-t/",
+            "source": "Fool - Investing News",
+            "type": "news",
+            "published_at_utc": "2026-10-24T11:07:02+00:00",
+            "ingested_at_utc": null,
+            "tickers": [
+              "NVDA"
+            ],
+            "query_symbol": "NVDA",
+            "query_type": "news",
+            "symbol_tag_matches": true,
+            "type_matches": true,
+            "title_chars": 78,
+            "snippet_chars": 90,
+            "summary_chars": 0,
+            "body_chars": 4319
+          }
+        ]
+      }
+    },
+    {
+      "symbol": "AAPL",
+      "type": "press_release",
+      "params": {
+        "tickers": "AAPL",
+        "type": "press_release",
+        "from": "2026-07-26T16:55:41Z",
+        "to": "2026-10-24T16:55:41Z",
+        "limit": 3
+      },
+      "response": {
+        "returned": 3,
+        "count": 3,
+        "plan": "free",
+        "delayed_minutes": 15,
+        "has_next_cursor": true,
+        "articles": [
+          {
+            "id": "art_7b3751414df450ad",
+            "url": "https://www.prnewswire.com/news-releases/webull-to-introduce-extended-hours-options-trading-expanding-access-beyond-the-regular-market-session-302916965.html",
+            "source": "PR Newswire",
+            "type": "press_release",
+            "published_at_utc": "2026-10-22T13:00:00+00:00",
+            "ingested_at_utc": null,
+            "tickers": [
+              "BULL",
+              "AAPL",
+              "AMZN",
+              "NVDA",
+              "TSLA",
+              "SPY",
+              "QQQ",
+              "IWM",
+              "GLD",
+              "XLF"
+            ],
+            "query_symbol": "AAPL",
+            "query_type": "press_release",
+            "symbol_tag_matches": true,
+            "type_matches": true,
+            "title_chars": 244,
+            "snippet_chars": 396,
+            "summary_chars": 157,
+            "body_chars": 5672
+          },
+          {
+            "id": "art_a2e368343b18331c",
+            "url": "https://www.prnewswire.com/news-releases/a-20-drop-in-smartphone-shipments-shows-who-wins-when-memory-gets-expensive-302910152.html",
+            "source": "PR Newswire",
+            "type": "press_release",
+            "published_at_utc": "2026-10-15T13:28:00+00:00",
+            "ingested_at_utc": null,
+            "tickers": [
+              "AAPL",
+              "QCOM",
+              "MU",
+              "SNDK",
+              "ARM"
+            ],
+            "query_symbol": "AAPL",
+            "query_type": "press_release",
+            "symbol_tag_matches": true,
+            "type_matches": true,
+            "title_chars": 225,
+            "snippet_chars": 400,
+            "summary_chars": 326,
+            "body_chars": 7781
+          },
+          {
+            "id": "art_0a93f2b5ff8e0487",
+            "url": "https://www.globenewswire.com/news-release/2026/10/13/3379557/0/en/fan-favorite-and-limited-edition-spinach-green-apple-flavored-products-are-returning-for-the-fall-season.html",
+            "source": "GlobeNewswire",
+            "type": "press_release",
+            "published_at_utc": "2026-10-13T11:30:00+00:00",
+            "ingested_at_utc": null,
+            "tickers": [
+              "CRON",
+              "AAPL"
+            ],
+            "query_symbol": "AAPL",
+            "query_type": "press_release",
+            "symbol_tag_matches": true,
+            "type_matches": true,
+            "title_chars": 105,
+            "snippet_chars": 395,
+            "summary_chars": 343,
+            "body_chars": 5522
+          }
+        ]
+      }
+    },
+    {
+      "symbol": "AAPL",
+      "type": "news",
+      "params": {
+        "tickers": "AAPL",
+        "type": "news",
+        "from": "2026-07-26T16:55:41Z",
+        "to": "2026-10-24T16:55:41Z",
+        "limit": 3
+      },
+      "response": {
+        "returned": 3,
+        "count": 3,
+        "plan": "free",
+        "delayed_minutes": 15,
+        "has_next_cursor": true,
+        "articles": [
+          {
+            "id": "art_d92efd51344f3b3b",
+            "url": "https://247wallst.com/investing/2026/10/24/pc-sales-just-crashed-21-as-ai-eats-the-worlds-memory-chips/",
+            "source": "24/7 Wall Street",
+            "type": "news",
+            "published_at_utc": "2026-10-24T15:50:52+00:00",
+            "ingested_at_utc": null,
+            "tickers": [
+              "AAPL"
+            ],
+            "query_symbol": "AAPL",
+            "query_type": "news",
+            "symbol_tag_matches": true,
+            "type_matches": true,
+            "title_chars": 61,
+            "snippet_chars": 172,
+            "summary_chars": 0,
+            "body_chars": 8823
+          },
+          {
+            "id": "art_09e1f19d604cc5d3",
+            "url": "https://247wallst.com/investing/2026/10/24/apple-just-passed-nvidia-as-the-worlds-most-valuable-company-on-iphone-duo-day/",
+            "source": "24/7 Wall Street",
+            "type": "news",
+            "published_at_utc": "2026-10-24T11:15:37+00:00",
+            "ingested_at_utc": null,
+            "tickers": [
+              "AAPL"
+            ],
+            "query_symbol": "AAPL",
+            "query_type": "news",
+            "symbol_tag_matches": true,
+            "type_matches": true,
+            "title_chars": 79,
+            "snippet_chars": 154,
+            "summary_chars": 0,
+            "body_chars": 8050
+          },
+          {
+            "id": "art_44be0a054a7b2578",
+            "url": "https://www.fool.com/investing/2026/10/24/apple-is-one-of-the-most-profitable-businesses-in/",
+            "source": "The Motley Fool",
+            "type": "news",
+            "published_at_utc": "2026-10-24T07:45:00+00:00",
+            "ingested_at_utc": null,
+            "tickers": [
+              "AAPL"
+            ],
+            "query_symbol": "AAPL",
+            "query_type": "news",
+            "symbol_tag_matches": true,
+            "type_matches": true,
+            "title_chars": 114,
+            "snippet_chars": 192,
+            "summary_chars": 0,
+            "body_chars": 3855
+          }
+        ]
+      }
+    },
+    {
+      "symbol": "MSFT",
+      "type": "press_release",
+      "params": {
+        "tickers": "MSFT",
+        "type": "press_release",
+        "from": "2026-07-26T16:55:41Z",
+        "to": "2026-10-24T16:55:41Z",
+        "limit": 3
+      },
+      "response": {
+        "returned": 3,
+        "count": 3,
+        "plan": "free",
+        "delayed_minutes": 15,
+        "has_next_cursor": true,
+        "articles": [
+          {
+            "id": "art_9fda27fbd9efe5d4",
+            "url": "https://www.prnewswire.com/news-releases/commvault-brings-discover-to-recover-resilience-to-microsoft-365-302908824.html",
+            "source": "PR Newswire",
+            "type": "press_release",
+            "published_at_utc": "2026-10-15T12:30:00+00:00",
+            "ingested_at_utc": null,
+            "tickers": [
+              "CVLT",
+              "MSFT"
+            ],
+            "query_symbol": "MSFT",
+            "query_type": "press_release",
+            "symbol_tag_matches": true,
+            "type_matches": true,
+            "title_chars": 215,
+            "snippet_chars": 398,
+            "summary_chars": 370,
+            "body_chars": 5329
+          },
+          {
+            "id": "art_0f53e18eda8c4396",
+            "url": "https://www.globenewswire.com/news-release/2026/10/12/3378869/0/en/contracted-capacity-becomes-key-metric-for-ai-infrastructure-investors-to-watch.html",
+            "source": "GlobeNewswire",
+            "type": "press_release",
+            "published_at_utc": "2026-10-12T12:30:00+00:00",
+            "ingested_at_utc": null,
+            "tickers": [
+              "AZIO",
+              "NVDA",
+              "MSFT",
+              "AMZN",
+              "GOOGL",
+              "GOOG"
+            ],
+            "query_symbol": "MSFT",
+            "query_type": "press_release",
+            "symbol_tag_matches": true,
+            "type_matches": true,
+            "title_chars": 79,
+            "snippet_chars": 398,
+            "summary_chars": 344,
+            "body_chars": 27775
+          },
+          {
+            "id": "art_fa591bed69dca365",
+            "url": "https://www.prnewswire.com/news-releases/protiviti-achieves-2026-2027-microsoft-ai-business-solutions-inner-circle-award-302905132.html",
+            "source": "PR Newswire",
+            "type": "press_release",
+            "published_at_utc": "2026-10-12T09:55:00+00:00",
+            "ingested_at_utc": null,
+            "tickers": [
+              "RHI",
+              "MSFT"
+            ],
+            "query_symbol": "MSFT",
+            "query_type": "press_release",
+            "symbol_tag_matches": true,
+            "type_matches": true,
+            "title_chars": 233,
+            "snippet_chars": 387,
+            "summary_chars": 445,
+            "body_chars": 4045
+          }
+        ]
+      }
+    },
+    {
+      "symbol": "MSFT",
+      "type": "news",
+      "params": {
+        "tickers": "MSFT",
+        "type": "news",
+        "from": "2026-07-26T16:55:41Z",
+        "to": "2026-10-24T16:55:41Z",
+        "limit": 3
+      },
+      "response": {
+        "returned": 3,
+        "count": 3,
+        "plan": "free",
+        "delayed_minutes": 15,
+        "has_next_cursor": true,
+        "articles": [
+          {
+            "id": "art_cadd117c15aa3b66",
+            "url": "https://247wallst.com/investing/2026/10/24/microsofts-50-billion-gamble-can-microsofts-azure-growth-justify-its-exploding-ai-budget/",
+            "source": "24/7 Wall Street",
+            "type": "news",
+            "published_at_utc": "2026-10-24T15:44:52+00:00",
+            "ingested_at_utc": null,
+            "tickers": [
+              "MSFT"
+            ],
+            "query_symbol": "MSFT",
+            "query_type": "news",
+            "symbol_tag_matches": true,
+            "type_matches": true,
+            "title_chars": 93,
+            "snippet_chars": 127,
+            "summary_chars": 0,
+            "body_chars": 8764
+          },
+          {
+            "id": "art_04cefc5844707d0c",
+            "url": "https://www.fool.com/investing/2026/10/24/3-key-things-to-monitor-when-tech-giants-report-ea/",
+            "source": "Fool - Investing News",
+            "type": "news",
+            "published_at_utc": "2026-10-24T09:45:00+00:00",
+            "ingested_at_utc": null,
+            "tickers": [
+              "MSFT"
+            ],
+            "query_symbol": "MSFT",
+            "query_type": "news",
+            "symbol_tag_matches": true,
+            "type_matches": true,
+            "title_chars": 56,
+            "snippet_chars": 57,
+            "summary_chars": 0,
+            "body_chars": 5425
+          },
+          {
+            "id": "art_a182f91697206fed",
+            "url": "https://seekingalpha.com/article/4957084-microsoft-security-and-silicon-set-the-stage-for-cloud-margin-recovery",
+            "source": "Seeking Alpha",
+            "type": "news",
+            "published_at_utc": "2026-10-23T20:00:35+00:00",
+            "ingested_at_utc": null,
+            "tickers": [
+              "MSFT"
+            ],
+            "query_symbol": "MSFT",
+            "query_type": "news",
+            "symbol_tag_matches": true,
+            "type_matches": true,
+            "title_chars": 71,
+            "snippet_chars": 389,
+            "summary_chars": 317,
+            "body_chars": 2740
+          }
+        ]
+      }
+    }
+  ]
+}

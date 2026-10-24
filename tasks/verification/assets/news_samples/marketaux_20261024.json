@@ -1,0 +1,621 @@
+{
+  "mode": "run",
+  "as_of_utc": "2026-10-24T11:57:37.277619+00:00",
+  "published_after_utc": "2026-10-22T11:57:37.277619+00:00",
+  "sample_status": "limited_sample",
+  "universe_note": "AAPL/MSFT/NVDA are trial symbols, not a confirmed watchlist",
+  "max_requests": 8,
+  "queries": [
+    {
+      "query": "macro_policy",
+      "parameters": {
+        "search": "\"Federal Reserve\"|\"interest rate\"",
+        "language": "en",
+        "limit": 3,
+        "published_after": "2026-10-22T11:57:37",
+        "published_before": "2026-10-24T11:57:37",
+        "sort": "published_at"
+      },
+      "pages": [
+        {
+          "found": 201,
+          "returned": 3,
+          "page": 1,
+          "limit": 3
+        },
+        {
+          "found": 201,
+          "returned": 3,
+          "page": 2,
+          "limit": 3
+        }
+      ],
+      "incomplete": true,
+      "zero_results": false
+    },
+    {
+      "query": "macro_indicators",
+      "parameters": {
+        "search": "inflation|CPI|employment|payroll",
+        "language": "en",
+        "limit": 3,
+        "published_after": "2026-10-22T11:57:37",
+        "published_before": "2026-10-24T11:57:37",
+        "sort": "published_at"
+      },
+      "pages": [
+        {
+          "found": 508,
+          "returned": 3,
+          "page": 1,
+          "limit": 3
+        },
+        {
+          "found": 508,
+          "returned": 3,
+          "page": 2,
+          "limit": 3
+        }
+      ],
+      "incomplete": true,
+      "zero_results": false
+    },
+    {
+      "query": "company_results",
+      "parameters": {
+        "search": "earnings|guidance",
+        "language": "en",
+        "limit": 3,
+        "published_after": "2026-10-22T11:57:37",
+        "published_before": "2026-10-24T11:57:37",
+        "sort": "published_at",
+        "symbols": "AAPL,MSFT,NVDA",
+        "filter_entities": "true"
+      },
+      "pages": [
+        {
+          "found": 43,
+          "returned": 3,
+          "page": 1,
+          "limit": 3
+        },
+        {
+          "found": 43,
+          "returned": 3,
+          "page": 2,
+          "limit": 3
+        }
+      ],
+      "incomplete": true,
+      "zero_results": false
+    },
+    {
+      "query": "company_changes",
+      "parameters": {
+        "search": "acquisition|merger|contract|\"regulatory approval\"",
+        "language": "en",
+        "limit": 3,
+        "published_after": "2026-10-22T11:57:37",
+        "published_before": "2026-10-24T11:57:37",
+        "sort": "published_at",
+        "symbols": "AAPL,MSFT,NVDA",
+        "filter_entities": "true"
+      },
+      "pages": [
+        {
+          "found": 3,
+          "returned": 3,
+          "page": 1,
+          "limit": 3
+        }
+      ],
+      "incomplete": false,
+      "zero_results": false
+    }
+  ],
+  "articles": [
+    {
+      "uuid": "e83a3d95-4b85-4284-835e-9a5f7ef1266d",
+      "url": "https://seekingalpha.com/article/4957169-october-fed-meeting-preview-pause-still-recalibration",
+      "source": "seekingalpha.com",
+      "published_at": "2026-10-24T11:05:00+00:00",
+      "query": "macro_policy",
+      "title_chars": 61,
+      "description_chars": 151,
+      "snippet_chars": 163,
+      "field_states": {
+        "title": "present",
+        "description": "present",
+        "snippet": "present",
+        "published_at": "in_window"
+      },
+      "selected_entities": [],
+      "eligible_for_review": true,
+      "matched_queries": [
+        "macro_policy",
+        "macro_indicators"
+      ]
+    },
+    {
+      "uuid": "bd83a1f7-cc77-4381-b3d4-cd1f100c77ca",
+      "url": "https://seekingalpha.com/article/4957189-federal-reserve-at-time-of-uncertainty",
+      "source": "seekingalpha.com",
+      "published_at": "2026-10-24T11:05:00+00:00",
+      "query": "macro_policy",
+      "title_chars": 44,
+      "description_chars": 182,
+      "snippet_chars": 161,
+      "field_states": {
+        "title": "present",
+        "description": "present",
+        "snippet": "present",
+        "published_at": "in_window"
+      },
+      "selected_entities": [],
+      "eligible_for_review": true,
+      "matched_queries": [
+        "macro_policy"
+      ]
+    },
+    {
+      "uuid": "231ffc8a-5913-4b8d-b3be-d550d4f6e450",
+      "url": "https://www.livemint.com/money/personal-finance/you-can-open-only-2-sukanya-samriddhi-accounts-but-what-if-you-have-triplet-daughters-11792835069206.html",
+      "source": "livemint.com",
+      "published_at": "2026-10-24T10:39:10+00:00",
+      "query": "macro_policy",
+      "title_chars": 88,
+      "description_chars": 172,
+      "snippet_chars": 163,
+      "field_states": {
+        "title": "present",
+        "description": "present",
+        "snippet": "present",
+        "published_at": "in_window"
+      },
+      "selected_entities": [],
+      "eligible_for_review": true,
+      "matched_queries": [
+        "macro_policy"
+      ]
+    },
+    {
+      "uuid": "1dcbd4f2-cb4b-45bb-8869-409f1e42aa92",
+      "url": "https://financefeeds.com/microsoft-stock-prediction-524-51-bull-771-98-bear-520-19/",
+      "source": "financefeeds.com",
+      "published_at": "2026-10-24T09:20:24+00:00",
+      "query": "macro_policy",
+      "title_chars": 54,
+      "description_chars": 154,
+      "snippet_chars": 163,
+      "field_states": {
+        "title": "present",
+        "description": "present",
+        "snippet": "present",
+        "published_at": "in_window"
+      },
+      "selected_entities": [
+        {
+          "symbol": "NVDA",
+          "name": "NVIDIA Corporation"
+        },
+        {
+          "symbol": "MSFT",
+          "name": "Microsoft Corporation"
+        }
+      ],
+      "eligible_for_review": true,
+      "matched_queries": [
+        "macro_policy"
+      ]
+    },
+    {
+      "uuid": "08057807-9a3e-44a3-8ae0-0ec82e6ff93e",
+      "url": "https://www.rediff.com/business/report/indian-government-bonds-hit-30-year-low-amid-surging-crude-oil-prices-and-global-yields/20261024.htm",
+      "source": "rediff.com",
+      "published_at": "2026-10-24T08:37:01+00:00",
+      "query": "macro_policy",
+      "title_chars": 84,
+      "description_chars": 282,
+      "snippet_chars": 163,
+      "field_states": {
+        "title": "present",
+        "description": "present",
+        "snippet": "present",
+        "published_at": "in_window"
+      },
+      "selected_entities": [],
+      "eligible_for_review": true,
+      "matched_queries": [
+        "macro_policy"
+      ]
+    },
+    {
+      "uuid": "80c296a4-1fb8-4a3b-8477-115a1e1d89de",
+      "url": "https://www.newtraderu.com/2026/10/24/are-you-rich-heres-the-net-worth-you-need-to-be-considered-working-class-middle-class-and-upper-class-2026/",
+      "source": "newtraderu.com",
+      "published_at": "2026-10-24T08:18:46+00:00",
+      "query": "macro_policy",
+      "title_chars": 112,
+      "description_chars": 150,
+      "snippet_chars": 163,
+      "field_states": {
+        "title": "present",
+        "description": "present",
+        "snippet": "present",
+        "published_at": "in_window"
+      },
+      "selected_entities": [],
+      "eligible_for_review": true,
+      "matched_queries": [
+        "macro_policy"
+      ]
+    },
+    {
+      "uuid": "e819a5b4-b198-41bd-8383-c59fdfe505ba",
+      "url": "https://fortune.com/2026/10/24/cost-of-raising-a-child-by-state-america-2026/",
+      "source": "fortune.com",
+      "published_at": "2026-10-24T10:45:00+00:00",
+      "query": "macro_indicators",
+      "title_chars": 64,
+      "description_chars": 148,
+      "snippet_chars": 163,
+      "field_states": {
+        "title": "present",
+        "description": "present",
+        "snippet": "present",
+        "published_at": "in_window"
+      },
+      "selected_entities": [],
+      "eligible_for_review": true,
+      "matched_queries": [
+        "macro_indicators"
+      ]
+    },
+    {
+      "uuid": "e35305c4-e50c-4449-83af-4ded2425fbe1",
+      "url": "https://www.livemint.com/industry/infrastructure/golden-chariot-luxury-train-returns-with-revamped-rooms-menus-inside-karnataka-s-premium-travel-experience-11792835455365.html",
+      "source": "livemint.com",
+      "published_at": "2026-10-24T10:25:31+00:00",
+      "query": "macro_indicators",
+      "title_chars": 108,
+      "description_chars": 298,
+      "snippet_chars": 161,
+      "field_states": {
+        "title": "present",
+        "description": "present",
+        "snippet": "present",
+        "published_at": "in_window"
+      },
+      "selected_entities": [],
+      "eligible_for_review": true,
+      "matched_queries": [
+        "macro_indicators"
+      ]
+    },
+    {
+      "uuid": "47b2e34c-a79b-47e9-bff1-78e516f5506f",
+      "url": "https://www.businessinsider.com/twitch-show-address-labor-market-entry-level-job-crisis-2026-10",
+      "source": "businessinsider.com",
+      "published_at": "2026-10-24T10:18:03+00:00",
+      "query": "macro_indicators",
+      "title_chars": 70,
+      "description_chars": 116,
+      "snippet_chars": 163,
+      "field_states": {
+        "title": "present",
+        "description": "present",
+        "snippet": "present",
+        "published_at": "in_window"
+      },
+      "selected_entities": [],
+      "eligible_for_review": true,
+      "matched_queries": [
+        "macro_indicators"
+      ]
+    },
+    {
+      "uuid": "b88ced5c-0817-485c-9e1b-47d020f63cb5",
+      "url": "https://www.thehindubusinessline.com/news/neha-bora-refuses-to-sign-peace-bond-questions-curbs-on-dissent/article71619557.ece",
+      "source": "thehindubusinessline.com",
+      "published_at": "2026-10-24T10:17:07+00:00",
+      "query": "macro_indicators",
+      "title_chars": 64,
+      "description_chars": 137,
+      "snippet_chars": 163,
+      "field_states": {
+        "title": "present",
+        "description": "present",
+        "snippet": "present",
+        "published_at": "in_window"
+      },
+      "selected_entities": [],
+      "eligible_for_review": true,
+      "matched_queries": [
+        "macro_indicators"
+      ]
+    },
+    {
+      "uuid": "5c477a8c-fc68-4899-8a95-8d3fc8858fdb",
+      "url": "https://fortune.com/2026/10/24/american-dream-happiness-despair-hope-carol-graham-brookings-maryland/",
+      "source": "fortune.com",
+      "published_at": "2026-10-24T10:00:00+00:00",
+      "query": "macro_indicators",
+      "title_chars": 146,
+      "description_chars": 153,
+      "snippet_chars": 161,
+      "field_states": {
+        "title": "present",
+        "description": "present",
+        "snippet": "present",
+        "published_at": "in_window"
+      },
+      "selected_entities": [],
+      "eligible_for_review": true,
+      "matched_queries": [
+        "macro_indicators"
+      ]
+    },
+    {
+      "uuid": "77a89350-c9e7-419f-92de-92dfd0943028",
+      "url": "https://financefeeds.com/meta-stock-prediction-642-62-bull-910-82-bear-540-47/",
+      "source": "financefeeds.com",
+      "published_at": "2026-10-24T09:50:24+00:00",
+      "query": "company_results",
+      "title_chars": 49,
+      "description_chars": 159,
+      "snippet_chars": 159,
+      "field_states": {
+        "title": "present",
+        "description": "present",
+        "snippet": "present",
+        "published_at": "in_window"
+      },
+      "selected_entities": [
+        {
+          "symbol": "MSFT",
+          "name": "Microsoft Corporation"
+        }
+      ],
+      "eligible_for_review": true,
+      "matched_queries": [
+        "company_results"
+      ]
+    },
+    {
+      "uuid": "4f5509f2-0df6-4e64-90bd-47fbaca2a44a",
+      "url": "https://www.thehindubusinessline.com/info-tech/apples-iphone-duo-hits-stores-in-face-of-short-supply-and-high-demand/article71619030.ece",
+      "source": "thehindubusinessline.com",
+      "published_at": "2026-10-24T05:27:39+00:00",
+      "query": "company_results",
+      "title_chars": 84,
+      "description_chars": 122,
+      "snippet_chars": 163,
+      "field_states": {
+        "title": "present",
+        "description": "present",
+        "snippet": "present",
+        "published_at": "in_window"
+      },
+      "selected_entities": [
+        {
+          "symbol": "AAPL",
+          "name": "Apple Inc."
+        }
+      ],
+      "eligible_for_review": true,
+      "matched_queries": [
+        "company_results"
+      ]
+    },
+    {
+      "uuid": "087e9252-49bb-455b-ab08-70a80e9234b8",
+      "url": "https://economictimes.indiatimes.com/markets/us-stocks/wall-street-guide/wall-st-week-ahead-earnings-flood-fed-meeting-will-test-rickety-ai-market-rally/articleshow/135161141.cms",
+      "source": "economictimes.indiatimes.com",
+      "published_at": "2026-10-24T03:37:13+00:00",
+      "query": "company_results",
+      "title_chars": 85,
+      "description_chars": 432,
+      "snippet_chars": 163,
+      "field_states": {
+        "title": "present",
+        "description": "present",
+        "snippet": "present",
+        "published_at": "in_window"
+      },
+      "selected_entities": [
+        {
+          "symbol": "MSFT",
+          "name": "Microsoft Corporation"
+        }
+      ],
+      "eligible_for_review": true,
+      "matched_queries": [
+        "company_results"
+      ]
+    },
+    {
+      "uuid": "85128aa3-6fc2-494b-9e46-5dd807776cfa",
+      "url": "https://www.cnbc.com/2026/10/23/ai-turmoil-neoclouds-struggle-credit-risks-jump-solidigm-pulls-ipo.html",
+      "source": "cnbc.com",
+      "published_at": "2026-10-23T22:49:04+00:00",
+      "query": "company_results",
+      "title_chars": 95,
+      "description_chars": 115,
+      "snippet_chars": 163,
+      "field_states": {
+        "title": "present",
+        "description": "present",
+        "snippet": "present",
+        "published_at": "in_window"
+      },
+      "selected_entities": [
+        {
+          "symbol": "NVDA",
+          "name": "NVIDIA Corporation"
+        },
+        {
+          "symbol": "MSFT",
+          "name": "Microsoft Corporation"
+        }
+      ],
+      "eligible_for_review": true,
+      "matched_queries": [
+        "company_results"
+      ]
+    },
+    {
+      "uuid": "ed873444-cedd-4716-9b6f-805c7e129308",
+      "url": "https://www2.stockmarketwatch.com/stock-market-news/tech-and-financials-lead-modest-gains-as-earnings-season-intensifies/73522/",
+      "source": "thestockmarketwatch.com",
+      "published_at": "2026-10-23T21:07:18+00:00",
+      "query": "company_results",
+      "title_chars": 68,
+      "description_chars": 150,
+      "snippet_chars": 163,
+      "field_states": {
+        "title": "present",
+        "description": "present",
+        "snippet": "present",
+        "published_at": "in_window"
+      },
+      "selected_entities": [
+        {
+          "symbol": "NVDA",
+          "name": "NVIDIA Corporation"
+        },
+        {
+          "symbol": "MSFT",
+          "name": "Microsoft Corporation"
+        }
+      ],
+      "eligible_for_review": true,
+      "matched_queries": [
+        "company_results"
+      ]
+    },
+    {
+      "uuid": "610436bf-1fb9-4733-a98f-9adfc2f770c2",
+      "url": "https://www.investors.com/market-trend/stock-market-today/dow-jones-futures-microsoft-google-amazon-earnings-what-to-do/",
+      "source": "investors.com",
+      "published_at": "2026-10-23T20:49:37+00:00",
+      "query": "company_results",
+      "title_chars": 89,
+      "description_chars": 136,
+      "snippet_chars": 163,
+      "field_states": {
+        "title": "present",
+        "description": "present",
+        "snippet": "present",
+        "published_at": "in_window"
+      },
+      "selected_entities": [
+        {
+          "symbol": "MSFT",
+          "name": "Microsoft Corporation"
+        }
+      ],
+      "eligible_for_review": true,
+      "matched_queries": [
+        "company_results"
+      ]
+    },
+    {
+      "uuid": "1ced5824-782a-4f59-8632-3bf2f4ff1a78",
+      "url": "https://financefeeds.com/nyse-options-trading-halt-triggers-self-help-across-rival-exchanges/",
+      "source": "financefeeds.com",
+      "published_at": "2026-10-23T17:42:33+00:00",
+      "query": "company_changes",
+      "title_chars": 55,
+      "description_chars": 160,
+      "snippet_chars": 163,
+      "field_states": {
+        "title": "present",
+        "description": "present",
+        "snippet": "present",
+        "published_at": "in_window"
+      },
+      "selected_entities": [
+        {
+          "symbol": "AAPL",
+          "name": "Apple Inc."
+        },
+        {
+          "symbol": "NVDA",
+          "name": "NVIDIA Corporation"
+        },
+        {
+          "symbol": "MSFT",
+          "name": "Microsoft Corporation"
+        }
+      ],
+      "eligible_for_review": true,
+      "matched_queries": [
+        "company_changes"
+      ]
+    },
+    {
+      "uuid": "d14c5a93-f4a8-4799-8f24-6f5eeb91b2df",
+      "url": "https://www.zerohedge.com/markets/futures-wobble-after-ai-bloodbath-brent-hits-114-france-braces-moodys",
+      "source": "zerohedge.com",
+      "published_at": "2026-10-23T12:21:28+00:00",
+      "query": "company_changes",
+      "title_chars": 79,
+      "description_chars": 83,
+      "snippet_chars": 163,
+      "field_states": {
+        "title": "present",
+        "description": "present",
+        "snippet": "present",
+        "published_at": "in_window"
+      },
+      "selected_entities": [
+        {
+          "symbol": "AAPL",
+          "name": "Apple Inc."
+        },
+        {
+          "symbol": "NVDA",
+          "name": "NVIDIA Corporation"
+        },
+        {
+          "symbol": "MSFT",
+          "name": "Microsoft Corporation"
+        }
+      ],
+      "eligible_for_review": true,
+      "matched_queries": [
+        "company_changes"
+      ]
+    },
+    {
+      "uuid": "66571234-756f-41c9-839e-7be4a1d1f762",
+      "url": "https://financefeeds.com/crowdstrike-stock-prediction-239-34-bull-439-39-bear-216-93/",
+      "source": "financefeeds.com",
+      "published_at": "2026-10-22T12:21:31+00:00",
+      "query": "company_changes",
+      "title_chars": 56,
+      "description_chars": 157,
+      "snippet_chars": 163,
+      "field_states": {
+        "title": "present",
+        "description": "present",
+        "snippet": "present",
+        "published_at": "in_window"
+      },
+      "selected_entities": [
+        {
+          "symbol": "NVDA",
+          "name": "NVIDIA Corporation"
+        },
+        {
+          "symbol": "MSFT",
+          "name": "Microsoft Corporation"
+        }
+      ],
+      "eligible_for_review": true,
+      "matched_queries": [
+        "company_changes"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,985 @@
+{
+  "mode": "run",
+  "observed_at_utc": "2026-10-24T15:51:33.368709+00:00",
+  "window_start": "2026-10-18T16:00:00+00:00",
+  "window_end": "2026-10-24T15:00:00+00:00",
+  "manifest_version": "known_events_v1",
+  "state": "sampled",
+  "request_cap": 20,
+  "request_count": 11,
+  "requests": [
+    {
+      "request_number": 1,
+      "status_code": 200,
+      "limit_headers": {
+        "x-usagelimit-limit": "100",
+        "x-usagelimit-remaining": "33",
+        "x-ratelimit-limit": "30",
+        "x-ratelimit-remaining": "29"
+      },
+      "limit_classification": null
+    },
+    {
+      "request_number": 2,
+      "status_code": 200,
+      "limit_headers": {
+        "x-usagelimit-limit": "100",
+        "x-usagelimit-remaining": "32",
+        "x-ratelimit-limit": "30",
+        "x-ratelimit-remaining": "28"
+      },
+      "limit_classification": null
+    },
+    {
+      "request_number": 3,
+      "status_code": 200,
+      "limit_headers": {
+        "x-usagelimit-limit": "100",
+        "x-usagelimit-remaining": "31",
+        "x-ratelimit-limit": "30",
+        "x-ratelimit-remaining": "27"
+      },
+      "limit_classification": null
+    },
+    {
+      "request_number": 4,
+      "status_code": 200,
+      "limit_headers": {
+        "x-usagelimit-limit": "100",
+        "x-usagelimit-remaining": "30",
+        "x-ratelimit-limit": "30",
+        "x-ratelimit-remaining": "26"
+      },
+      "limit_classification": null
+    },
+    {
+      "request_number": 5,
+      "status_code": 200,
+      "limit_headers": {
+        "x-usagelimit-limit": "100",
+        "x-usagelimit-remaining": "29",
+        "x-ratelimit-limit": "30",
+        "x-ratelimit-remaining": "25"
+      },
+      "limit_classification": null
+    },
+    {
+      "request_number": 6,
+      "status_code": 200,
+      "limit_headers": {
+        "x-usagelimit-limit": "100",
+        "x-usagelimit-remaining": "28",
+        "x-ratelimit-limit": "30",
+        "x-ratelimit-remaining": "24"
+      },
+      "limit_classification": null
+    },
+    {
+      "request_number": 7,
+      "status_code": 200,
+      "limit_headers": {
+        "x-usagelimit-limit": "100",
+        "x-usagelimit-remaining": "27",
+        "x-ratelimit-limit": "30",
+        "x-ratelimit-remaining": "23"
+      },
+      "limit_classification": null
+    },
+    {
+      "request_number": 8,
+      "status_code": 200,
+      "limit_headers": {
+        "x-usagelimit-limit": "100",
+        "x-usagelimit-remaining": "26",
+        "x-ratelimit-limit": "30",
+        "x-ratelimit-remaining": "22"
+      },
+      "limit_classification": null
+    },
+    {
+      "request_number": 9,
+      "status_code": 200,
+      "limit_headers": {
+        "x-usagelimit-limit": "100",
+        "x-usagelimit-remaining": "25",
+        "x-ratelimit-limit": "30",
+        "x-ratelimit-remaining": "21"
+      },
+      "limit_classification": null
+    },
+    {
+      "request_number": 10,
+      "status_code": 200,
+      "limit_headers": {
+        "x-usagelimit-limit": "100",
+        "x-usagelimit-remaining": "24",
+        "x-ratelimit-limit": "30",
+        "x-ratelimit-remaining": "20"
+      },
+      "limit_classification": null
+    },
+    {
+      "request_number": 11,
+      "status_code": 200,
+      "limit_headers": {
+        "x-usagelimit-limit": "100",
+        "x-usagelimit-remaining": "23",
+        "x-ratelimit-limit": "30",
+        "x-ratelimit-remaining": "19"
+      },
+      "limit_classification": null
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "state_employment",
+      "event_key": "BLS:state_employment:2026-09",
+      "state": "complete",
+      "articles": [],
+      "parameters": {
+        "search": "\"state employment\"+September",
+        "language": "en",
+        "limit": 3,
+        "sort": "relevance_score",
+        "group_similar": "false",
+        "published_after": "2026-10-18T16:00:00",
+        "published_before": "2026-10-24T15:00:00"
+      },
+      "pagination": {
+        "found": 0,
+        "returned": 0,
+        "page": 1,
+        "limit": 3
+      }
+    },
+    {
+      "case_id": "weekly_claims",
+      "event_key": "DOL:initial_claims:2026-10-17",
+      "state": "partial_sample",
+      "articles": [
+        {
+          "uuid": "afd898a5-65b0-40a8-a616-cebe3e86d54b",
+          "url": "https://www.pymnts.com/economy/2026/dol-data-shows-jobless-claims-drop-to-near-1960s-lows/",
+          "source": "pymnts.com",
+          "published_at": "2026-10-22T17:10:28+00:00",
+          "query": "weekly_claims",
+          "title_chars": 53,
+          "description_chars": 131,
+          "snippet_chars": 163,
+          "field_states": {
+            "title": "present",
+            "description": "present",
+            "snippet": "present",
+            "published_at": "in_window"
+          },
+          "eligible_for_review": true,
+          "marker_matches": {
+            "subject": true,
+            "period": false,
+            "fact": false,
+            "action": true
+          },
+          "meaning_review": "not_performed"
+        },
+        {
+          "uuid": "75a8956d-4b75-4444-bdf3-6a2997a29209",
+          "url": "https://www.rte.ie/news/business/2026/1022/1596470-us-jobless-claims/",
+          "source": "rte.ie",
+          "published_at": "2026-10-22T13:46:42+00:00",
+          "query": "weekly_claims",
+          "title_chars": 42,
+          "description_chars": 160,
+          "snippet_chars": 163,
+          "field_states": {
+            "title": "present",
+            "description": "present",
+            "snippet": "present",
+            "published_at": "in_window"
+          },
+          "eligible_for_review": true,
+          "marker_matches": {
+            "subject": true,
+            "period": false,
+            "fact": false,
+            "action": true
+          },
+          "meaning_review": "not_performed"
+        },
+        {
+          "uuid": "a87eab2a-185e-4688-86f4-1903afa77ee2",
+          "url": "https://www.rttnews.com/3701859/u-s-weekly-jobless-claims-unexpectedly-dip-to-194000.aspx?type=alleco",
+          "source": "rttnews.com",
+          "published_at": "2026-10-22T12:34:08+00:00",
+          "query": "weekly_claims",
+          "title_chars": 54,
+          "description_chars": 170,
+          "snippet_chars": 163,
+          "field_states": {
+            "title": "present",
+            "description": "present",
+            "snippet": "present",
+            "published_at": "in_window"
+          },
+          "eligible_for_review": true,
+          "marker_matches": {
+            "subject": true,
+            "period": true,
+            "fact": true,
+            "action": true
+          },
+          "meaning_review": "not_performed"
+        }
+      ],
+      "parameters": {
+        "search": "((\"jobless claims\"|\"initial claims\"))+(194000|\"194,000\")",
+        "language": "en",
+        "limit": 3,
+        "sort": "relevance_score",
+        "group_similar": "false",
+        "published_after": "2026-10-18T16:00:00",
+        "published_before": "2026-10-24T15:00:00"
+      },
+      "pagination": {
+        "found": 13,
+        "returned": 3,
+        "page": 1,
+        "limit": 3
+      }
+    },
+    {
+      "case_id": "ibm_results",
+      "event_key": "IBM:earnings:2026-Q3",
+      "state": "partial_sample",
+      "articles": [
+        {
+          "uuid": "6c27597c-07a5-4e8f-aaca-abbd76dec9d6",
+          "url": "https://www.gurufocus.com/news/9135150/is-ibm-ibm-overvalued-after-q3-earnings-miss-eps-171-revenue-171b-gf-score-76100",
+          "source": "gurufocus.com",
+          "published_at": "2026-10-21T22:10:39+00:00",
+          "query": "ibm_results",
+          "title_chars": 93,
+          "description_chars": 160,
+          "snippet_chars": 163,
+          "field_states": {
+            "title": "present",
+            "description": "present",
+            "snippet": "present",
+            "published_at": "in_window"
+          },
+          "eligible_for_review": true,
+          "marker_matches": {
+            "subject": true,
+            "period": true,
+            "fact": true,
+            "action": true
+          },
+          "meaning_review": "not_performed"
+        },
+        {
+          "uuid": "9b6d937e-04f7-4ac6-b37b-ea66f5490d1f",
+          "url": "https://www.investors.com/news/technology/ibm-stock-earnings-preview-q3-2026/",
+          "source": "investors.com",
+          "published_at": "2026-10-20T12:54:11+00:00",
+          "query": "ibm_results",
+          "title_chars": 72,
+          "description_chars": 131,
+          "snippet_chars": 163,
+          "field_states": {
+            "title": "present",
+            "description": "present",
+            "snippet": "present",
+            "published_at": "in_window"
+          },
+          "eligible_for_review": true,
+          "marker_matches": {
+            "subject": true,
+            "period": true,
+            "fact": false,
+            "action": true
+          },
+          "meaning_review": "not_performed"
+        },
+        {
+          "uuid": "43ea6982-642c-4640-a958-2bb4ab5ff866",
+          "url": "https://www.investors.com/news/technology/ibm-stock-q3-2026-earnings-ibm-news/",
+          "source": "investors.com",
+          "published_at": "2026-10-21T20:31:08+00:00",
+          "query": "ibm_results",
+          "title_chars": 63,
+          "description_chars": 112,
+          "snippet_chars": 163,
+          "field_states": {
+            "title": "present",
+            "description": "present",
+            "snippet": "present",
+            "published_at": "in_window"
+          },
+          "eligible_for_review": true,
+          "marker_matches": {
+            "subject": true,
+            "period": true,
+            "fact": false,
+            "action": true
+          },
+          "meaning_review": "not_performed"
+        }
+      ],
+      "parameters": {
+        "search": "IBM+(\"third quarter\"|\"third-quarter\"|Q3)",
+        "language": "en",
+        "limit": 3,
+        "sort": "relevance_score",
+        "group_similar": "false",
+        "published_after": "2026-10-18T16:00:00",
+        "published_before": "2026-10-24T15:00:00"
+      },
+      "pagination": {
+        "found": 45,
+        "returned": 3,
+        "page": 1,
+        "limit": 3
+      }
+    },
+    {
+      "case_id": "tesla_results",
+      "event_key": "TSLA:earnings:2026-Q3",
+      "state": "partial_sample",
+      "articles": [
+        {
+          "uuid": "60702860-1ebe-4f60-9c10-eebe326749b6",
+          "url": "https://financefeeds.com/tesla-stock-gains-3-6-ahead-of-q3-earnings-as-musk-touts-optimus-and-cybercab/",
+          "source": "financefeeds.com",
+          "published_at": "2026-10-19T18:52:15+00:00",
+          "query": "tesla_results",
+          "title_chars": 60,
+          "description_chars": 150,
+          "snippet_chars": 135,
+          "field_states": {
+            "title": "present",
+            "description": "present",
+            "snippet": "present",
+            "published_at": "in_window"
+          },
+          "eligible_for_review": true,
+          "marker_matches": {
+            "subject": true,
+            "period": true,
+            "action": false,
+            "fact": false
+          },
+          "meaning_review": "not_performed"
+        },
+        {
+          "uuid": "e78e6d30-ed0f-49fa-b0f0-37fe6eaa465a",
+          "url": "https://www.gurufocus.com/news/9129153/tesla-q3-earnings-preview-what-to-expect-from-upcoming-report",
+          "source": "gurufocus.com",
+          "published_at": "2026-10-19T11:53:45+00:00",
+          "query": "tesla_results",
+          "title_chars": 62,
+          "description_chars": 160,
+          "snippet_chars": 163,
+          "field_states": {
+            "title": "present",
+            "description": "present",
+            "snippet": "present",
+            "published_at": "in_window"
+          },
+          "eligible_for_review": true,
+          "marker_matches": {
+            "subject": true,
+            "period": true,
+            "action": true,
+            "fact": false
+          },
+          "meaning_review": "not_performed"
+        },
+        {
+          "uuid": "208bed8c-80f5-4f50-bec5-1c605eadeffb",
+          "url": "https://seekingalpha.com/article/4956118-tesla-inc-tsla-q3-2026-earnings-call-transcript",
+          "source": "seekingalpha.com",
+          "published_at": "2026-10-22T00:14:02+00:00",
+          "query": "tesla_results",
+          "title_chars": 51,
+          "description_chars": 158,
+          "snippet_chars": 163,
+          "field_states": {
+            "title": "present",
+            "description": "present",
+            "snippet": "present",
+            "published_at": "in_window"
+          },
+          "eligible_for_review": true,
+          "marker_matches": {
+            "subject": true,
+            "period": true,
+            "action": false,
+            "fact": false
+          },
+          "meaning_review": "not_performed"
+        }
+      ],
+      "parameters": {
+        "search": "Tesla+(\"third quarter\"|\"third-quarter\"|Q3)",
+        "language": "en",
+        "limit": 3,
+        "sort": "relevance_score",
+        "group_similar": "false",
+        "published_after": "2026-10-18T16:00:00",
+        "published_before": "2026-10-24T15:00:00"
+      },
+      "pagination": {
+        "found": 157,
+        "returned": 3,
+        "page": 1,
+        "limit": 3
+      }
+    },
+    {
+      "case_id": "ti_results",
+      "event_key": "TXN:earnings:2026-Q3",
+      "state": "partial_sample",
+      "articles": [
+        {
+          "uuid": "838ad08a-52a6-487d-a6ce-d832fb03888d",
+          "url": "https://seekingalpha.com/article/4956090-texas-instruments-incorporated-txn-q3-2026-earnings-call-transcript",
+          "source": "seekingalpha.com",
+          "published_at": "2026-10-21T23:44:00+00:00",
+          "query": "ti_results",
+          "title_chars": 69,
+          "description_chars": 146,
+          "snippet_chars": 163,
+          "field_states": {
+            "title": "present",
+            "description": "present",
+            "snippet": "present",
+            "published_at": "in_window"
+          },
+          "eligible_for_review": true,
+          "marker_matches": {
+            "subject": true,
+            "period": true,
+            "fact": false,
+            "action": false
+          },
+          "meaning_review": "not_performed"
+        },
+        {
+          "uuid": "23330efc-67c3-458c-9dd9-bd845a69d063",
+          "url": "https://www.investors.com/news/technology/texas-instruments-txn-stock-q3-2026-earnings/",
+          "source": "investors.com",
+          "published_at": "2026-10-21T20:18:04+00:00",
+          "query": "ti_results",
+          "title_chars": 56,
+          "description_chars": 130,
+          "snippet_chars": 163,
+          "field_states": {
+            "title": "present",
+            "description": "present",
+            "snippet": "present",
+            "published_at": "in_window"
+          },
+          "eligible_for_review": true,
+          "marker_matches": {
+            "subject": true,
+            "period": true,
+            "fact": false,
+            "action": false
+          },
+          "meaning_review": "not_performed"
+        },
+        {
+          "uuid": "0166b943-3b94-4e00-b818-7a4dbcbe7d12",
+          "url": "https://www.gurufocus.com/news/9134939/is-texas-instruments-inc-txn-positioned-for-future-growth-after-q3-earnings-beat-eps-at-262-on-revenue-of-606-billion-gf-score-84100",
+          "source": "gurufocus.com",
+          "published_at": "2026-10-21T21:50:39+00:00",
+          "query": "ti_results",
+          "title_chars": 142,
+          "description_chars": 160,
+          "snippet_chars": 163,
+          "field_states": {
+            "title": "present",
+            "description": "present",
+            "snippet": "present",
+            "published_at": "in_window"
+          },
+          "eligible_for_review": true,
+          "marker_matches": {
+            "subject": true,
+            "period": true,
+            "fact": true,
+            "action": true
+          },
+          "meaning_review": "not_performed"
+        }
+      ],
+      "parameters": {
+        "search": "\"Texas Instruments\"+(\"third quarter\"|\"third-quarter\"|Q3)",
+        "language": "en",
+        "limit": 3,
+        "sort": "relevance_score",
+        "group_similar": "false",
+        "published_after": "2026-10-18T16:00:00",
+        "published_before": "2026-10-24T15:00:00"
+      },
+      "pagination": {
+        "found": 26,
+        "returned": 3,
+        "page": 1,
+        "limit": 3
+      }
+    },
+    {
+      "case_id": "netflix_results",
+      "event_key": "NFLX:earnings:2026-Q3",
+      "state": "partial_sample",
+      "articles": [
+        {
+          "uuid": "9599b6c8-5c57-42f2-af8a-a7c31e69387c",
+          "url": "https://financefeeds.com/netflix-q3-preview-12-86-billion-33-2-margin/",
+          "source": "financefeeds.com",
+          "published_at": "2026-10-19T13:00:08+00:00",
+          "query": "netflix_results",
+          "title_chars": 53,
+          "description_chars": 149,
+          "snippet_chars": 163,
+          "field_states": {
+            "title": "present",
+            "description": "present",
+            "snippet": "present",
+            "published_at": "in_window"
+          },
+          "eligible_for_review": true,
+          "marker_matches": {
+            "subject": true,
+            "period": true,
+            "fact": false,
+            "action": true
+          },
+          "meaning_review": "not_performed"
+        },
+        {
+          "uuid": "163ae28b-9cb8-430c-b38d-fb40a82a1998",
+          "url": "https://www.rte.ie/news/business/2026/1019/1595978-netflix-faces-questions-on-user-engagement-ahead-of-q3/",
+          "source": "rte.ie",
+          "published_at": "2026-10-19T12:00:02+00:00",
+          "query": "netflix_results",
+          "title_chars": 54,
+          "description_chars": 206,
+          "snippet_chars": 163,
+          "field_states": {
+            "title": "present",
+            "description": "present",
+            "snippet": "present",
+            "published_at": "in_window"
+          },
+          "eligible_for_review": true,
+          "marker_matches": {
+            "subject": true,
+            "period": true,
+            "fact": false,
+            "action": true
+          },
+          "meaning_review": "not_performed"
+        },
+        {
+          "uuid": "feb056d4-4c2d-4256-8358-d81086163a54",
+          "url": "https://www.thehindubusinessline.com/info-tech/netflix-reports-largest-ever-subscriber-net-adds-in-india-in-q3/article71606291.ece",
+          "source": "thehindubusinessline.com",
+          "published_at": "2026-10-21T05:41:14+00:00",
+          "query": "netflix_results",
+          "title_chars": 63,
+          "description_chars": 138,
+          "snippet_chars": 161,
+          "field_states": {
+            "title": "present",
+            "description": "present",
+            "snippet": "present",
+            "published_at": "in_window"
+          },
+          "eligible_for_review": true,
+          "marker_matches": {
+            "subject": true,
+            "period": true,
+            "fact": false,
+            "action": true
+          },
+          "meaning_review": "not_performed"
+        }
+      ],
+      "parameters": {
+        "search": "Netflix+(\"third quarter\"|\"third-quarter\"|Q3)",
+        "language": "en",
+        "limit": 3,
+        "sort": "relevance_score",
+        "group_similar": "false",
+        "published_after": "2026-10-18T16:00:00",
+        "published_before": "2026-10-24T15:00:00"
+      },
+      "pagination": {
+        "found": 101,
+        "returned": 3,
+        "page": 1,
+        "limit": 3
+      }
+    },
+    {
+      "case_id": "att_results",
+      "event_key": "T:earnings:2026-Q3",
+      "state": "partial_sample",
+      "articles": [
+        {
+          "uuid": "b319cdd9-66ec-43fc-8359-76f89963790e",
+          "url": "https://seekingalpha.com/article/4955928-at-and-t-inc-t-q3-2026-earnings-call-transcript",
+          "source": "seekingalpha.com",
+          "published_at": "2026-10-21T17:26:48+00:00",
+          "query": "att_results",
+          "title_chars": 46,
+          "description_chars": 146,
+          "snippet_chars": 163,
+          "field_states": {
+            "title": "present",
+            "description": "present",
+            "snippet": "present",
+            "published_at": "in_window"
+          },
+          "eligible_for_review": true,
+          "marker_matches": {
+            "subject": true,
+            "period": true,
+            "fact": false,
+            "action": false
+          },
+          "meaning_review": "not_performed"
+        },
+        {
+          "uuid": "7f1210b6-30dd-48e0-b854-13f221901d9e",
+          "url": "https://www.investors.com/news/technology/att-earnings-att-stock-q32026-wireless-underwhelms/",
+          "source": "investors.com",
+          "published_at": "2026-10-21T12:22:32+00:00",
+          "query": "att_results",
+          "title_chars": 76,
+          "description_chars": 138,
+          "snippet_chars": 163,
+          "field_states": {
+            "title": "present",
+            "description": "present",
+            "snippet": "present",
+            "published_at": "in_window"
+          },
+          "eligible_for_review": true,
+          "marker_matches": {
+            "subject": true,
+            "period": true,
+            "fact": false,
+            "action": true
+          },
+          "meaning_review": "not_performed"
+        },
+        {
+          "uuid": "def33b39-d688-4487-85e8-ed80d397658a",
+          "url": "https://seekingalpha.com/news/4655069-att-slips-despite-q3-revenue-and-adjusted-earnings-beats",
+          "source": "seekingalpha.com",
+          "published_at": "2026-10-21T11:27:35+00:00",
+          "query": "att_results",
+          "title_chars": 66,
+          "description_chars": 92,
+          "snippet_chars": 163,
+          "field_states": {
+            "title": "present",
+            "description": "present",
+            "snippet": "present",
+            "published_at": "in_window"
+          },
+          "eligible_for_review": true,
+          "marker_matches": {
+            "subject": true,
+            "period": true,
+            "fact": false,
+            "action": true
+          },
+          "meaning_review": "not_performed"
+        }
+      ],
+      "parameters": {
+        "search": "\"AT&T\"+(\"third quarter\"|\"third-quarter\"|Q3)",
+        "language": "en",
+        "limit": 3,
+        "sort": "relevance_score",
+        "group_similar": "false",
+        "published_after": "2026-10-18T16:00:00",
+        "published_before": "2026-10-24T15:00:00"
+      },
+      "pagination": {
+        "found": 30,
+        "returned": 3,
+        "page": 1,
+        "limit": 3
+      }
+    },
+    {
+      "case_id": "aardvark_hold",
+      "event_key": "AARD:ARD-101:hold_lifted:2026-10-22",
+      "state": "complete",
+      "articles": [
+        {
+          "uuid": "d6e6edfa-274a-42ce-978d-c8de38681727",
+          "url": "https://www.manilatimes.net/2026/10/23/tmt-newswire/globenewswire/aardvark-therapeutics-reports-exploratory-data-from-the-terminated-hero-and-open-label-extension-trials/2452696",
+          "source": "manilatimes.net",
+          "published_at": "2026-10-23T11:19:04+00:00",
+          "query": "aardvark_hold",
+          "title_chars": 103,
+          "description_chars": 654,
+          "snippet_chars": 163,
+          "field_states": {
+            "title": "present",
+            "description": "present",
+            "snippet": "present",
+            "published_at": "in_window"
+          },
+          "eligible_for_review": true,
+          "marker_matches": {
+            "subject": true,
+            "period": false,
+            "fact": true,
+            "action": true
+          },
+          "meaning_review": "not_performed"
+        }
+      ],
+      "parameters": {
+        "search": "Aardvark+(\"ARD-101\"|\"clinical hold\")",
+        "language": "en",
+        "limit": 3,
+        "sort": "relevance_score",
+        "group_similar": "false",
+        "published_after": "2026-10-18T16:00:00",
+        "published_before": "2026-10-24T15:00:00"
+      },
+      "pagination": {
+        "found": 1,
+        "returned": 1,
+        "page": 1,
+        "limit": 3
+      }
+    },
+    {
+      "case_id": "ti_filing_followup",
+      "event_key": "TXN:earnings:2026-Q3",
+      "state": "complete",
+      "articles": [],
+      "parameters": {
+        "search": "\"Texas Instruments\"+(\"10-Q\"|\"quarterly report\")",
+        "language": "en",
+        "limit": 3,
+        "sort": "relevance_score",
+        "group_similar": "false",
+        "published_after": "2026-10-18T16:00:00",
+        "published_before": "2026-10-24T15:00:00"
+      },
+      "pagination": {
+        "found": 0,
+        "returned": 0,
+        "page": 1,
+        "limit": 3
+      }
+    },
+    {
+      "case_id": "intel_future",
+      "event_key": "INTC:earnings:2026-Q3",
+      "state": "partial_sample",
+      "articles": [
+        {
+          "uuid": "800f2287-050c-45de-8927-d3b66943c405",
+          "url": "https://www.gurufocus.com/news/9134455/veteran-bank-cuts-intel-stock-price-target-ahead-of-earnings",
+          "source": "gurufocus.com",
+          "published_at": "2026-10-21T18:18:43+00:00",
+          "query": "intel_future",
+          "title_chars": 60,
+          "description_chars": 160,
+          "snippet_chars": 163,
+          "field_states": {
+            "title": "present",
+            "description": "present",
+            "snippet": "present",
+            "published_at": "in_window"
+          },
+          "eligible_for_review": true,
+          "marker_matches": {
+            "subject": true,
+            "period": false,
+            "fact": false,
+            "action": false
+          },
+          "meaning_review": "not_performed"
+        },
+        {
+          "uuid": "99e52c28-c512-4118-b097-52997933273e",
+          "url": "https://www.gurufocus.com/news/9129306/intel-stocks-rise-374-with-october-29-earnings-ahead",
+          "source": "gurufocus.com",
+          "published_at": "2026-10-19T12:00:27+00:00",
+          "query": "intel_future",
+          "title_chars": 54,
+          "description_chars": 160,
+          "snippet_chars": 163,
+          "field_states": {
+            "title": "present",
+            "description": "present",
+            "snippet": "present",
+            "published_at": "in_window"
+          },
+          "eligible_for_review": true,
+          "marker_matches": {
+            "subject": true,
+            "period": false,
+            "fact": true,
+            "action": false
+          },
+          "meaning_review": "not_performed"
+        },
+        {
+          "uuid": "c29f0379-0ef5-4c54-b9b6-9e152686a874",
+          "url": "https://www.gurufocus.com/news/9129346/intel-stock-rises-after-jpmorgan-upgrades-shares-to-neutral",
+          "source": "gurufocus.com",
+          "published_at": "2026-10-19T14:23:27+00:00",
+          "query": "intel_future",
+          "title_chars": 59,
+          "description_chars": 148,
+          "snippet_chars": 163,
+          "field_states": {
+            "title": "present",
+            "description": "present",
+            "snippet": "present",
+            "published_at": "in_window"
+          },
+          "eligible_for_review": true,
+          "marker_matches": {
+            "subject": true,
+            "period": false,
+            "fact": false,
+            "action": false
+          },
+          "meaning_review": "not_performed"
+        }
+      ],
+      "parameters": {
+        "search": "Intel+(\"third quarter\"|\"third-quarter\"|Q3)",
+        "language": "en",
+        "limit": 3,
+        "sort": "relevance_score",
+        "group_similar": "false",
+        "published_after": "2026-10-18T16:00:00",
+        "published_before": "2026-10-24T15:00:00"
+      },
+      "pagination": {
+        "found": 30,
+        "returned": 3,
+        "page": 1,
+        "limit": 3
+      }
+    },
+    {
+      "case_id": "coca_cola_future",
+      "event_key": "KO:earnings:2026-Q3",
+      "state": "partial_sample",
+      "articles": [
+        {
+          "uuid": "91eebc2a-7158-4862-ab5e-acc83c42a380",
+          "url": "https://www.insidermonkey.com/news/can-coca-cola-ko-stock-support-28-times-earnings-1857984/",
+          "source": "insidermonkey.com",
+          "published_at": "2026-10-21T17:30:10+00:00",
+          "query": "coca_cola_future",
+          "title_chars": 51,
+          "description_chars": 152,
+          "snippet_chars": 163,
+          "field_states": {
+            "title": "present",
+            "description": "present",
+            "snippet": "present",
+            "published_at": "in_window"
+          },
+          "eligible_for_review": true,
+          "marker_matches": {
+            "subject": true,
+            "period": false,
+            "fact": false,
+            "action": false
+          },
+          "meaning_review": "not_performed"
+        },
+        {
+          "uuid": "a349fd3b-5601-491b-ae85-8a46e0ca9772",
+          "url": "https://www.marketingdive.com/news/omnicom-ipg-deal-substantially-completed-as-group-wins-cokes-na-media/833837/",
+          "source": "marketingdive.com",
+          "published_at": "2026-10-23T14:26:14+00:00",
+          "query": "coca_cola_future",
+          "title_chars": 72,
+          "description_chars": 134,
+          "snippet_chars": 159,
+          "field_states": {
+            "title": "present",
+            "description": "present",
+            "snippet": "present",
+            "published_at": "in_window"
+          },
+          "eligible_for_review": true,
+          "marker_matches": {
+            "subject": false,
+            "period": true,
+            "fact": false,
+            "action": false
+          },
+          "meaning_review": "not_performed"
+        },
+        {
+          "uuid": "ae928caa-d352-445e-ae7c-650c219c3ae5",
+          "url": "https://www2.stockmarketwatch.com/stock-market-news/small-caps-and-industrials-lead-market-gains-amid-heavy-earnings-volume/73308/",
+          "source": "thestockmarketwatch.com",
+          "published_at": "2026-10-20T14:07:15+00:00",
+          "query": "coca_cola_future",
+          "title_chars": 71,
+          "description_chars": 158,
+          "snippet_chars": 163,
+          "field_states": {
+            "title": "present",
+            "description": "present",
+            "snippet": "present",
+            "published_at": "in_window"
+          },
+          "eligible_for_review": true,
+          "marker_matches": {
+            "subject": false,
+            "period": false,
+            "fact": false,
+            "action": false
+          },
+          "meaning_review": "not_performed"
+        }
+      ],
+      "parameters": {
+        "search": "\"Coca-Cola\"+(\"third quarter\"|\"third-quarter\"|Q3)",
+        "language": "en",
+        "limit": 3,
+        "sort": "relevance_score",
+        "group_similar": "false",
+        "published_after": "2026-10-18T16:00:00",
+        "published_before": "2026-10-24T15:00:00"
+      },
+      "pagination": {
+        "found": 16,
+        "returned": 3,
+        "page": 1,
+        "limit": 3
+      }
+    },
+    {
+      "case_id": "cpi_old",
+      "event_key": "BLS:CPI:2026-09",
+      "state": "skipped",
+      "articles": [],
+      "reason": "reference_event_outside_window"
+    }
+  ],
+  "cursor_written": false,
+  "can_publish": false,
+  "lexical_matches_are_not_event_or_evidence_validation": true
+}

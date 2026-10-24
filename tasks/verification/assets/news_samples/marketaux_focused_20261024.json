@@ -1,0 +1,460 @@
+{
+  "mode": "run",
+  "as_of_utc": "2026-10-24T13:23:06+00:00",
+  "state": "partial",
+  "request_cap": 12,
+  "request_count": 8,
+  "min_request_interval_seconds": 3,
+  "checkpoint_advance": false,
+  "cursor_written": false,
+  "sample_status": "limited_sample",
+  "queries": [
+    {
+      "scope": "fixed_morning",
+      "query_id": "us_policy",
+      "parameters": {
+        "search": "(\"Federal Reserve\"|FOMC)+(announced|raised|cut|held|decision)",
+        "language": "en",
+        "limit": 3,
+        "sort": "published_at",
+        "group_similar": "false",
+        "published_after": "2026-10-21T22:29:00",
+        "published_before": "2026-10-22T22:30:00",
+        "domains": "reuters.com,apnews.com,cnbc.com"
+      },
+      "state": "complete",
+      "checkpoint_advance": true,
+      "pages": [
+        {
+          "found": 1,
+          "returned": 1,
+          "page": 1,
+          "limit": 3
+        }
+      ],
+      "unique_uuids": 1,
+      "duplicate_uuids": 0,
+      "zero_results": false,
+      "required_pages_first_found": 1
+    },
+    {
+      "scope": "fixed_morning",
+      "query_id": "us_indicators",
+      "parameters": {
+        "search": "(\"U.S.\"|US|\"United States\")+(\"consumer price index\"|\"nonfarm payrolls\"|\"gross domestic product\")+(released|reported|rose|fell)",
+        "language": "en",
+        "limit": 3,
+        "sort": "published_at",
+        "group_similar": "false",
+        "published_after": "2026-10-21T22:29:00",
+        "published_before": "2026-10-22T22:30:00",
+        "domains": "reuters.com,apnews.com,cnbc.com"
+      },
+      "state": "complete",
+      "checkpoint_advance": true,
+      "pages": [
+        {
+          "found": 0,
+          "returned": 0,
+          "page": 1,
+          "limit": 3
+        }
+      ],
+      "unique_uuids": 0,
+      "duplicate_uuids": 0,
+      "zero_results": true,
+      "required_pages_first_found": 1
+    },
+    {
+      "scope": "fixed_morning",
+      "query_id": "company_results",
+      "parameters": {
+        "search": "(\"quarterly results\"|\"financial results\"|\"fiscal quarter\")+(reported|announced)",
+        "language": "en",
+        "limit": 3,
+        "sort": "published_at",
+        "group_similar": "false",
+        "published_after": "2026-10-21T22:29:00",
+        "published_before": "2026-10-22T22:30:00",
+        "domains": "reuters.com,businesswire.com,globenewswire.com",
+        "symbols": "AAPL,MSFT,NVDA",
+        "filter_entities": "true"
+      },
+      "state": "complete",
+      "checkpoint_advance": true,
+      "pages": [
+        {
+          "found": 0,
+          "returned": 0,
+          "page": 1,
+          "limit": 3
+        }
+      ],
+      "unique_uuids": 0,
+      "duplicate_uuids": 0,
+      "zero_results": true,
+      "required_pages_first_found": 1
+    },
+    {
+      "scope": "fixed_morning",
+      "query_id": "company_changes",
+      "parameters": {
+        "search": "\"completed acquisition\"|\"signed agreement\"|\"regulatory approval\"|\"awarded contract\"",
+        "language": "en",
+        "limit": 3,
+        "sort": "published_at",
+        "group_similar": "false",
+        "published_after": "2026-10-21T22:29:00",
+        "published_before": "2026-10-22T22:30:00",
+        "domains": "reuters.com,businesswire.com,globenewswire.com",
+        "symbols": "AAPL,MSFT,NVDA",
+        "filter_entities": "true"
+      },
+      "state": "complete",
+      "checkpoint_advance": true,
+      "pages": [
+        {
+          "found": 0,
+          "returned": 0,
+          "page": 1,
+          "limit": 3
+        }
+      ],
+      "unique_uuids": 0,
+      "duplicate_uuids": 0,
+      "zero_results": true,
+      "required_pages_first_found": 1
+    },
+    {
+      "scope": "recent_five_days_first_page",
+      "query_id": "us_policy",
+      "parameters": {
+        "search": "(\"Federal Reserve\"|FOMC)+(announced|raised|cut|held|decision)",
+        "language": "en",
+        "limit": 3,
+        "sort": "published_at",
+        "group_similar": "false",
+        "published_after": "2026-10-19T13:23:06",
+        "published_before": "2026-10-24T13:23:06",
+        "domains": "reuters.com,apnews.com,cnbc.com"
+      },
+      "state": "partial",
+      "checkpoint_advance": false,
+      "pages": [
+        {
+          "found": 6,
+          "returned": 3,
+          "page": 1,
+          "limit": 3
+        }
+      ],
+      "unique_uuids": 3,
+      "duplicate_uuids": 0,
+      "zero_results": false,
+      "required_pages_first_found": 2
+    },
+    {
+      "scope": "recent_five_days_first_page",
+      "query_id": "us_indicators",
+      "parameters": {
+        "search": "(\"U.S.\"|US|\"United States\")+(\"consumer price index\"|\"nonfarm payrolls\"|\"gross domestic product\")+(released|reported|rose|fell)",
+        "language": "en",
+        "limit": 3,
+        "sort": "published_at",
+        "group_similar": "false",
+        "published_after": "2026-10-19T13:23:06",
+        "published_before": "2026-10-24T13:23:06",
+        "domains": "reuters.com,apnews.com,cnbc.com"
+      },
+      "state": "complete",
+      "checkpoint_advance": false,
+      "pages": [
+        {
+          "found": 1,
+          "returned": 1,
+          "page": 1,
+          "limit": 3
+        }
+      ],
+      "unique_uuids": 1,
+      "duplicate_uuids": 0,
+      "zero_results": false,
+      "required_pages_first_found": 1
+    },
+    {
+      "scope": "recent_five_days_first_page",
+      "query_id": "company_results",
+      "parameters": {
+        "search": "(\"quarterly results\"|\"financial results\"|\"fiscal quarter\")+(reported|announced)",
+        "language": "en",
+        "limit": 3,
+        "sort": "published_at",
+        "group_similar": "false",
+        "published_after": "2026-10-19T13:23:06",
+        "published_before": "2026-10-24T13:23:06",
+        "domains": "reuters.com,businesswire.com,globenewswire.com",
+        "symbols": "AAPL,MSFT,NVDA",
+        "filter_entities": "true"
+      },
+      "state": "complete",
+      "checkpoint_advance": false,
+      "pages": [
+        {
+          "found": 0,
+          "returned": 0,
+          "page": 1,
+          "limit": 3
+        }
+      ],
+      "unique_uuids": 0,
+      "duplicate_uuids": 0,
+      "zero_results": true,
+      "required_pages_first_found": 1
+    },
+    {
+      "scope": "recent_five_days_first_page",
+      "query_id": "company_changes",
+      "parameters": {
+        "search": "\"completed acquisition\"|\"signed agreement\"|\"regulatory approval\"|\"awarded contract\"",
+        "language": "en",
+        "limit": 3,
+        "sort": "published_at",
+        "group_similar": "false",
+        "published_after": "2026-10-19T13:23:06",
+        "published_before": "2026-10-24T13:23:06",
+        "domains": "reuters.com,businesswire.com,globenewswire.com",
+        "symbols": "AAPL,MSFT,NVDA",
+        "filter_entities": "true"
+      },
+      "state": "complete",
+      "checkpoint_advance": false,
+      "pages": [
+        {
+          "found": 0,
+          "returned": 0,
+          "page": 1,
+          "limit": 3
+        }
+      ],
+      "unique_uuids": 0,
+      "duplicate_uuids": 0,
+      "zero_results": true,
+      "required_pages_first_found": 1
+    }
+  ],
+  "requests": [
+    {
+      "request_number": 1,
+      "status_code": 200,
+      "limit_headers": {
+        "x-usagelimit-limit": "100",
+        "x-usagelimit-remaining": "45",
+        "x-ratelimit-limit": "30",
+        "x-ratelimit-remaining": "29"
+      },
+      "limit_classification": null
+    },
+    {
+      "request_number": 2,
+      "status_code": 200,
+      "limit_headers": {
+        "x-usagelimit-limit": "100",
+        "x-usagelimit-remaining": "44",
+        "x-ratelimit-limit": "30",
+        "x-ratelimit-remaining": "28"
+      },
+      "limit_classification": null
+    },
+    {
+      "request_number": 3,
+      "status_code": 200,
+      "limit_headers": {
+        "x-usagelimit-limit": "100",
+        "x-usagelimit-remaining": "43",
+        "x-ratelimit-limit": "30",
+        "x-ratelimit-remaining": "27"
+      },
+      "limit_classification": null
+    },
+    {
+      "request_number": 4,
+      "status_code": 200,
+      "limit_headers": {
+        "x-usagelimit-limit": "100",
+        "x-usagelimit-remaining": "42",
+        "x-ratelimit-limit": "30",
+        "x-ratelimit-remaining": "26"
+      },
+      "limit_classification": null
+    },
+    {
+      "request_number": 5,
+      "status_code": 200,
+      "limit_headers": {
+        "x-usagelimit-limit": "100",
+        "x-usagelimit-remaining": "41",
+        "x-ratelimit-limit": "30",
+        "x-ratelimit-remaining": "25"
+      },
+      "limit_classification": null
+    },
+    {
+      "request_number": 6,
+      "status_code": 200,
+      "limit_headers": {
+        "x-usagelimit-limit": "100",
+        "x-usagelimit-remaining": "40",
+        "x-ratelimit-limit": "30",
+        "x-ratelimit-remaining": "24"
+      },
+      "limit_classification": null
+    },
+    {
+      "request_number": 7,
+      "status_code": 200,
+      "limit_headers": {
+        "x-usagelimit-limit": "100",
+        "x-usagelimit-remaining": "39",
+        "x-ratelimit-limit": "30",
+        "x-ratelimit-remaining": "23"
+      },
+      "limit_classification": null
+    },
+    {
+      "request_number": 8,
+      "status_code": 200,
+      "limit_headers": {
+        "x-usagelimit-limit": "100",
+        "x-usagelimit-remaining": "38",
+        "x-ratelimit-limit": "30",
+        "x-ratelimit-remaining": "22"
+      },
+      "limit_classification": null
+    }
+  ],
+  "articles": [
+    {
+      "uuid": "e087f22c-65c4-45d9-acc6-ec98fa45cd2f",
+      "url": "https://www.cnbc.com/2026/10/22/norges-bank-nbim-wealth-fund-q3-results.html",
+      "source": "cnbc.com",
+      "published_at": "2026-10-22T08:32:04+00:00",
+      "query": "us_policy",
+      "title_chars": 79,
+      "description_chars": 0,
+      "snippet_chars": 161,
+      "field_states": {
+        "title": "present",
+        "description": "missing_or_empty",
+        "snippet": "present",
+        "published_at": "in_window"
+      },
+      "selected_entities": [],
+      "eligible_for_review": true,
+      "retrieved_at_utc": "2026-10-24T13:23:07.796446+00:00",
+      "observations": [
+        {
+          "scope": "fixed_morning",
+          "query_id": "us_policy"
+        },
+        {
+          "scope": "recent_five_days_first_page",
+          "query_id": "us_policy"
+        }
+      ]
+    },
+    {
+      "uuid": "47d41e10-c47f-43e3-b725-1efd0dfd3046",
+      "url": "https://www.cnbc.com/investingclub/2026/10/23/crowdstrikes-alarming-prediction-plus-sell-off-spreads-beyond-tech.html",
+      "source": "cnbc.com",
+      "published_at": "2026-10-23T18:49:56+00:00",
+      "query": "us_policy",
+      "title_chars": 78,
+      "description_chars": 133,
+      "snippet_chars": 161,
+      "field_states": {
+        "title": "present",
+        "description": "present",
+        "snippet": "present",
+        "published_at": "in_window"
+      },
+      "selected_entities": [
+        {
+          "symbol": "MSFT",
+          "name": "Microsoft Corporation"
+        }
+      ],
+      "eligible_for_review": true,
+      "retrieved_at_utc": "2026-10-24T13:23:19.630895+00:00",
+      "observations": [
+        {
+          "scope": "recent_five_days_first_page",
+          "query_id": "us_policy"
+        }
+      ]
+    },
+    {
+      "uuid": "22c3f053-a926-47bf-9b8d-d1d66cfccce0",
+      "url": "https://www.cnbc.com/2026/10/23/cnbc-daily-open-ai-spending-elon-musk-bill-ackman-jensen-huang.html",
+      "source": "cnbc.com",
+      "published_at": "2026-10-23T01:42:35+00:00",
+      "query": "us_policy",
+      "title_chars": 65,
+      "description_chars": 98,
+      "snippet_chars": 163,
+      "field_states": {
+        "title": "present",
+        "description": "present",
+        "snippet": "present",
+        "published_at": "in_window"
+      },
+      "selected_entities": [],
+      "eligible_for_review": true,
+      "retrieved_at_utc": "2026-10-24T13:23:19.630895+00:00",
+      "observations": [
+        {
+          "scope": "recent_five_days_first_page",
+          "query_id": "us_policy"
+        }
+      ]
+    },
+    {
+      "uuid": "fb1c6860-befb-4353-bf4c-6d0e39f05f16",
+      "url": "https://www.cnbc.com/2026/10/20/france-protests-europe-cost-living-violence.html",
+      "source": "cnbc.com",
+      "published_at": "2026-10-20T06:31:38+00:00",
+      "query": "us_indicators",
+      "title_chars": 66,
+      "description_chars": 147,
+      "snippet_chars": 163,
+      "field_states": {
+        "title": "present",
+        "description": "present",
+        "snippet": "present",
+        "published_at": "in_window"
+      },
+      "selected_entities": [],
+      "eligible_for_review": true,
+      "retrieved_at_utc": "2026-10-24T13:23:22.613374+00:00",
+      "observations": [
+        {
+          "scope": "recent_five_days_first_page",
+          "query_id": "us_indicators"
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "historical retrieval is not live collection or proof of pre-briefing availability",
+    "zero on a day without US announcements does not establish reliable coverage",
+    "domain/ticker restrictions can omit relevant articles",
+    "UUID deduplication does not identify the same event across different UUIDs",
+    "description/snippet presence is not evidence sufficiency or publication permission"
+  ],
+  "unique_uuids": 4,
+  "completed_at_utc": "2026-10-24T13:23:28.619501+00:00",
+  "fixed_window_checkpoint_eligible": true,
+  "reporting_correction": {
+    "original_checkpoint_advance": true,
+    "reason": "separate fixed-window eligibility from overall partial report; no API or observed-data changes"
+  }
+}

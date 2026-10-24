@@ -1,0 +1,52 @@
+{
+  "observed_at_utc": "2026-10-24T15:28:32.390532+00:00",
+  "direct": {
+    "url": "https://www.bls.gov/news.release/archives/cpi_10142026.htm",
+    "http_status": 200,
+    "bytes": 1373525,
+    "release_date_present": true,
+    "cpi_12_month_3_7_present": true,
+    "cpi_month_0_6_present": true,
+    "credential_needed": false,
+    "openai_cost_usd": 0
+  },
+  "web_search": {
+    "status": "completed",
+    "model": "gpt-6-luna",
+    "web_search_calls": 1,
+    "source_urls": [
+      "https://www.bls.gov/",
+      "https://www.bls.gov/bls/news-release/cpi.htm",
+      "https://www.bls.gov/cpi/?dasrc=web&davuid=1005431790496527534",
+      "https://www.bls.gov/cpi/news.htm",
+      "https://www.bls.gov/cpi/tables/supplemental-files/",
+      "https://www.bls.gov/news.release/CPI.htm",
+      "https://www.bls.gov/news.release/archives/cpi_04102026.pdf",
+      "https://www.bls.gov/news.release/archives/cpi_10142026.htm?trk=article-ssr-frontend-pulse_little-text-block",
+      "https://www.bls.gov/news.release/archives/cpi_10142026.htm?trk=article-ssr-frontend-pulse_little-text-block&utm_source=openai",
+      "https://www.bls.gov/news.release/archives/cpi_10242025.pdf",
+      "https://www.bls.gov/news.release/cpi.htm",
+      "https://www.bls.gov/news.release/cpi.toc.htm",
+      "https://www.bls.gov/regions/southeast/cpi-summary/2026/consumerpriceindex_summary_southeast_202601.pdf",
+      "https://www.bls.gov/schedule/2026/",
+      "https://www.bls.gov/schedule/2026/10_sched_list.htm?_bhlid=42fae41b7a6a8fdc28d95650a2df151d79336697&trk=article-ssr-frontend-pulse_little-text-block",
+      "https://www.bls.gov/schedule/news_release/cpi.htm?source=content_type%3Areact%7Cfirst_level_url%3Aarticle%7Csection%3Amain_content%7Cbutton%3Abody_link"
+    ],
+    "citation_urls": [
+      "https://www.bls.gov/news.release/archives/cpi_10142026.htm?trk=article-ssr-frontend-pulse_little-text-block&utm_source=openai"
+    ],
+    "answer": "- **12-month all-items increase, unadjusted:** 3.7%\n- **1-month all-items increase, seasonally adjusted:** 0.6%\n\nSource: [Official BLS September 2026 CPI release, archived October 14, 2026](https://www.bls.gov/news.release/archives/cpi_10142026.htm). ([bls.gov](https://www.bls.gov/news.release/archives/cpi_10142026.htm?trk=article-ssr-frontend-pulse_little-text-block&utm_source=openai))",
+    "usage": {
+      "input_tokens": 8598,
+      "input_tokens_details": {
+        "cache_write_tokens": 4393,
+        "cached_tokens": 0
+      },
+      "output_tokens": 157,
+      "output_tokens_details": {
+        "reasoning_tokens": 65
+      },
+      "total_tokens": 8755
+    }
+  }
+}

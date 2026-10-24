@@ -1,0 +1,304 @@
+{
+  "mode": "run",
+  "as_of_utc": "2026-10-24T12:29:10.975619+00:00",
+  "state": "complete",
+  "sample_status": "limited_sample",
+  "request_cap": 17,
+  "request_count": 9,
+  "overlap_minutes": 1,
+  "checkpoint_advance": true,
+  "cursor_written": false,
+  "queries": [
+    {
+      "window": 1,
+      "query": "macro_policy",
+      "nominal_after_utc": "2026-10-24T11:29:10+00:00",
+      "nominal_before_utc": "2026-10-24T11:59:10+00:00",
+      "parameters": {
+        "search": "\"Federal Reserve\"|\"interest rate\"",
+        "language": "en",
+        "limit": 3,
+        "sort": "published_at",
+        "published_after": "2026-10-24T11:28:10",
+        "published_before": "2026-10-24T11:59:10"
+      },
+      "state": "complete",
+      "checkpoint_advance": true,
+      "pages": [
+        {
+          "found": 0,
+          "returned": 0,
+          "page": 1,
+          "limit": 3
+        }
+      ],
+      "new_uuids": 0,
+      "duplicate_uuids": 0,
+      "unique_uuids": 0,
+      "first_page_uuids": [],
+      "zero_results": true
+    },
+    {
+      "window": 1,
+      "query": "macro_indicators",
+      "nominal_after_utc": "2026-10-24T11:29:10+00:00",
+      "nominal_before_utc": "2026-10-24T11:59:10+00:00",
+      "parameters": {
+        "search": "inflation|CPI|employment|payroll",
+        "language": "en",
+        "limit": 3,
+        "sort": "published_at",
+        "published_after": "2026-10-24T11:28:10",
+        "published_before": "2026-10-24T11:59:10"
+      },
+      "state": "complete",
+      "checkpoint_advance": true,
+      "pages": [
+        {
+          "found": 0,
+          "returned": 0,
+          "page": 1,
+          "limit": 3
+        }
+      ],
+      "new_uuids": 0,
+      "duplicate_uuids": 0,
+      "unique_uuids": 0,
+      "first_page_uuids": [],
+      "zero_results": true
+    },
+    {
+      "window": 1,
+      "query": "company_results",
+      "nominal_after_utc": "2026-10-24T11:29:10+00:00",
+      "nominal_before_utc": "2026-10-24T11:59:10+00:00",
+      "parameters": {
+        "search": "earnings|guidance",
+        "language": "en",
+        "limit": 3,
+        "sort": "published_at",
+        "published_after": "2026-10-24T11:28:10",
+        "published_before": "2026-10-24T11:59:10",
+        "symbols": "AAPL,MSFT,NVDA",
+        "filter_entities": "true"
+      },
+      "state": "complete",
+      "checkpoint_advance": true,
+      "pages": [
+        {
+          "found": 0,
+          "returned": 0,
+          "page": 1,
+          "limit": 3
+        }
+      ],
+      "new_uuids": 0,
+      "duplicate_uuids": 0,
+      "unique_uuids": 0,
+      "first_page_uuids": [],
+      "zero_results": true
+    },
+    {
+      "window": 1,
+      "query": "company_changes",
+      "nominal_after_utc": "2026-10-24T11:29:10+00:00",
+      "nominal_before_utc": "2026-10-24T11:59:10+00:00",
+      "parameters": {
+        "search": "acquisition|merger|contract|\"regulatory approval\"",
+        "language": "en",
+        "limit": 3,
+        "sort": "published_at",
+        "published_after": "2026-10-24T11:28:10",
+        "published_before": "2026-10-24T11:59:10",
+        "symbols": "AAPL,MSFT,NVDA",
+        "filter_entities": "true"
+      },
+      "state": "complete",
+      "checkpoint_advance": true,
+      "pages": [
+        {
+          "found": 0,
+          "returned": 0,
+          "page": 1,
+          "limit": 3
+        }
+      ],
+      "new_uuids": 0,
+      "duplicate_uuids": 0,
+      "unique_uuids": 0,
+      "first_page_uuids": [],
+      "zero_results": true
+    },
+    {
+      "window": 2,
+      "query": "macro_policy",
+      "nominal_after_utc": "2026-10-24T11:59:10+00:00",
+      "nominal_before_utc": "2026-10-24T12:29:10+00:00",
+      "parameters": {
+        "search": "\"Federal Reserve\"|\"interest rate\"",
+        "language": "en",
+        "limit": 3,
+        "sort": "published_at",
+        "published_after": "2026-10-24T11:58:10",
+        "published_before": "2026-10-24T12:29:10"
+      },
+      "state": "complete",
+      "checkpoint_advance": true,
+      "pages": [
+        {
+          "found": 0,
+          "returned": 0,
+          "page": 1,
+          "limit": 3
+        }
+      ],
+      "new_uuids": 0,
+      "duplicate_uuids": 0,
+      "unique_uuids": 0,
+      "first_page_uuids": [],
+      "zero_results": true
+    },
+    {
+      "window": 2,
+      "query": "macro_indicators",
+      "nominal_after_utc": "2026-10-24T11:59:10+00:00",
+      "nominal_before_utc": "2026-10-24T12:29:10+00:00",
+      "parameters": {
+        "search": "inflation|CPI|employment|payroll",
+        "language": "en",
+        "limit": 3,
+        "sort": "published_at",
+        "published_after": "2026-10-24T11:58:10",
+        "published_before": "2026-10-24T12:29:10"
+      },
+      "state": "complete",
+      "checkpoint_advance": true,
+      "pages": [
+        {
+          "found": 1,
+          "returned": 1,
+          "page": 1,
+          "limit": 3
+        }
+      ],
+      "new_uuids": 1,
+      "duplicate_uuids": 0,
+      "unique_uuids": 1,
+      "first_page_uuids": [
+        "a5503f12-c437-4e71-9e0d-298d0ba486b8"
+      ],
+      "zero_results": false
+    },
+    {
+      "window": 2,
+      "query": "company_results",
+      "nominal_after_utc": "2026-10-24T11:59:10+00:00",
+      "nominal_before_utc": "2026-10-24T12:29:10+00:00",
+      "parameters": {
+        "search": "earnings|guidance",
+        "language": "en",
+        "limit": 3,
+        "sort": "published_at",
+        "published_after": "2026-10-24T11:58:10",
+        "published_before": "2026-10-24T12:29:10",
+        "symbols": "AAPL,MSFT,NVDA",
+        "filter_entities": "true"
+      },
+      "state": "complete",
+      "checkpoint_advance": true,
+      "pages": [
+        {
+          "found": 0,
+          "returned": 0,
+          "page": 1,
+          "limit": 3
+        }
+      ],
+      "new_uuids": 0,
+      "duplicate_uuids": 0,
+      "unique_uuids": 0,
+      "first_page_uuids": [],
+      "zero_results": true
+    },
+    {
+      "window": 2,
+      "query": "company_changes",
+      "nominal_after_utc": "2026-10-24T11:59:10+00:00",
+      "nominal_before_utc": "2026-10-24T12:29:10+00:00",
+      "parameters": {
+        "search": "acquisition|merger|contract|\"regulatory approval\"",
+        "language": "en",
+        "limit": 3,
+        "sort": "published_at",
+        "published_after": "2026-10-24T11:58:10",
+        "published_before": "2026-10-24T12:29:10",
+        "symbols": "AAPL,MSFT,NVDA",
+        "filter_entities": "true"
+      },
+      "state": "complete",
+      "checkpoint_advance": true,
+      "pages": [
+        {
+          "found": 0,
+          "returned": 0,
+          "page": 1,
+          "limit": 3
+        }
+      ],
+      "new_uuids": 0,
+      "duplicate_uuids": 0,
+      "unique_uuids": 0,
+      "first_page_uuids": [],
+      "zero_results": true
+    }
+  ],
+  "articles": [
+    {
+      "uuid": "a5503f12-c437-4e71-9e0d-298d0ba486b8",
+      "url": "https://seekingalpha.com/article/4957210-weyerhaeuser-profound-mispricing",
+      "source": "seekingalpha.com",
+      "published_at": "2026-10-24T12:03:40+00:00",
+      "query": "macro_indicators",
+      "title_chars": 49,
+      "description_chars": 156,
+      "snippet_chars": 161,
+      "field_states": {
+        "title": "present",
+        "description": "present",
+        "snippet": "present",
+        "published_at": "in_window"
+      },
+      "selected_entities": [],
+      "eligible_for_review": true,
+      "observations": [
+        {
+          "window": 2,
+          "query": "macro_indicators"
+        }
+      ]
+    }
+  ],
+  "repeat": {
+    "window": 2,
+    "query": "macro_policy",
+    "page": {
+      "found": 0,
+      "returned": 0,
+      "page": 1,
+      "limit": 3
+    },
+    "same_uuids": 0,
+    "new_uuids": 0,
+    "missing_previous_uuids": 0,
+    "scope": "one first page only; not a second complete collection"
+  },
+  "limitations": [
+    "two short windows cannot prove daily Free quota sufficiency",
+    "weekend sample cannot establish weekday volume",
+    "UUID deduplication does not identify the same event across different UUIDs",
+    "late indexing after this run remains unmeasured",
+    "AAPL/MSFT/NVDA are trial symbols, not a confirmed watchlist"
+  ],
+  "unique_uuids": 1,
+  "completed_at_utc": "2026-10-24T12:29:15.346835+00:00"
+}

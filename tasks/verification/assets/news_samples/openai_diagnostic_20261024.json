@@ -1,0 +1,9 @@
+{
+  "observed_at_utc": "2026-10-24T11:58:52.215722+00:00",
+  "purpose": "single_bounded_429_diagnostic",
+  "status": "failed",
+  "error_class": "RateLimitError",
+  "http_status": 429,
+  "error_code": "credit_balance_exhausted",
+  "api_error_type": "insufficient_quota"
+}

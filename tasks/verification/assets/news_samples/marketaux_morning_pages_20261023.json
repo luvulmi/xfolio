@@ -1,0 +1,179 @@
+{
+  "observed_at_utc": "2026-10-24T12:39:38.775146+00:00",
+  "replay_date_kst": "2026-10-23",
+  "purpose": "two morning first-page samples, not complete collection",
+  "request_cap": 2,
+  "request_count": 2,
+  "request_spacing_seconds": 3,
+  "checkpoint_advance": false,
+  "cursor_written": false,
+  "queries": [
+    {
+      "query": "macro_policy",
+      "parameters": {
+        "search": "\"Federal Reserve\"|\"interest rate\"",
+        "language": "en",
+        "limit": 3,
+        "page": 1,
+        "sort": "published_at",
+        "published_after": "2026-10-21T22:29:00",
+        "published_before": "2026-10-22T22:30:00",
+        "group_similar": "false"
+      },
+      "state": "limited_first_page",
+      "headers": {
+        "X-UsageLimit-Limit": 100,
+        "X-UsageLimit-Remaining": 47,
+        "X-RateLimit-Limit": 30,
+        "X-RateLimit-Remaining": 29
+      },
+      "status_code": 200,
+      "meta": {
+        "found": 112,
+        "returned": 3,
+        "limit": 3,
+        "page": 1
+      },
+      "estimated_pages_from_found": 38
+    },
+    {
+      "query": "macro_indicators",
+      "parameters": {
+        "search": "inflation|CPI|employment|payroll",
+        "language": "en",
+        "limit": 3,
+        "page": 1,
+        "sort": "published_at",
+        "published_after": "2026-10-21T22:29:00",
+        "published_before": "2026-10-22T22:30:00",
+        "group_similar": "false"
+      },
+      "state": "limited_first_page",
+      "headers": {
+        "X-UsageLimit-Limit": 100,
+        "X-UsageLimit-Remaining": 46,
+        "X-RateLimit-Limit": 30,
+        "X-RateLimit-Remaining": 28
+      },
+      "status_code": 200,
+      "meta": {
+        "found": 298,
+        "returned": 3,
+        "limit": 3,
+        "page": 1
+      },
+      "estimated_pages_from_found": 100
+    }
+  ],
+  "articles": [
+    {
+      "uuid": "6e728d6a-dde6-4464-a34f-2da6b128822b",
+      "url": "https://economictimes.indiatimes.com/news/international/us/us-bond-market-down-why-are-10-year-30-year-2-year-treasury-yield-notes-are-falling-check-latest-predictions/articleshow/135129800.cms",
+      "source": "economictimes.indiatimes.com",
+      "published_at": "2026-10-22T22:28:04+00:00",
+      "query": "macro_policy",
+      "title_chars": 112,
+      "description_chars": 199,
+      "snippet_chars": 163,
+      "field_states": {
+        "title": "present",
+        "description": "present",
+        "snippet": "present",
+        "published_at": "in_window"
+      },
+      "selected_entities": [],
+      "eligible_for_review": true
+    },
+    {
+      "uuid": "0a3b6c8c-ade7-4a7d-b6cc-d0d114c1cdd2",
+      "url": "https://themarketonline.com.au/market-open-asx-expected-to-slide-as-oil-takes-off-on-drone-deaths-2026-10-23/",
+      "source": "themarketherald.com.au",
+      "published_at": "2026-10-22T22:12:58+00:00",
+      "query": "macro_policy",
+      "title_chars": 67,
+      "description_chars": 130,
+      "snippet_chars": 163,
+      "field_states": {
+        "title": "present",
+        "description": "present",
+        "snippet": "present",
+        "published_at": "in_window"
+      },
+      "selected_entities": [],
+      "eligible_for_review": true
+    },
+    {
+      "uuid": "fcd62961-5455-4717-8a45-d5719f5e7191",
+      "url": "https://www.americanbanker.com/news/looking-ahead-huntington-sees-growth-warnings-signs",
+      "source": "americanbanker.com",
+      "published_at": "2026-10-22T22:09:12+00:00",
+      "query": "macro_policy",
+      "title_chars": 53,
+      "description_chars": 86,
+      "snippet_chars": 163,
+      "field_states": {
+        "title": "present",
+        "description": "present",
+        "snippet": "present",
+        "published_at": "in_window"
+      },
+      "selected_entities": [],
+      "eligible_for_review": true
+    },
+    {
+      "uuid": "6e728d6a-dde6-4464-a34f-2da6b128822b",
+      "url": "https://economictimes.indiatimes.com/news/international/us/us-bond-market-down-why-are-10-year-30-year-2-year-treasury-yield-notes-are-falling-check-latest-predictions/articleshow/135129800.cms",
+      "source": "economictimes.indiatimes.com",
+      "published_at": "2026-10-22T22:28:04+00:00",
+      "query": "macro_indicators",
+      "title_chars": 112,
+      "description_chars": 199,
+      "snippet_chars": 163,
+      "field_states": {
+        "title": "present",
+        "description": "present",
+        "snippet": "present",
+        "published_at": "in_window"
+      },
+      "selected_entities": [],
+      "eligible_for_review": true
+    },
+    {
+      "uuid": "0a3b6c8c-ade7-4a7d-b6cc-d0d114c1cdd2",
+      "url": "https://themarketonline.com.au/market-open-asx-expected-to-slide-as-oil-takes-off-on-drone-deaths-2026-10-23/",
+      "source": "themarketherald.com.au",
+      "published_at": "2026-10-22T22:12:58+00:00",
+      "query": "macro_indicators",
+      "title_chars": 67,
+      "description_chars": 130,
+      "snippet_chars": 163,
+      "field_states": {
+        "title": "present",
+        "description": "present",
+        "snippet": "present",
+        "published_at": "in_window"
+      },
+      "selected_entities": [],
+      "eligible_for_review": true
+    },
+    {
+      "uuid": "fcd62961-5455-4717-8a45-d5719f5e7191",
+      "url": "https://www.americanbanker.com/news/looking-ahead-huntington-sees-growth-warnings-signs",
+      "source": "americanbanker.com",
+      "published_at": "2026-10-22T22:09:12+00:00",
+      "query": "macro_indicators",
+      "title_chars": 53,
+      "description_chars": 86,
+      "snippet_chars": 163,
+      "field_states": {
+        "title": "present",
+        "description": "present",
+        "snippet": "present",
+        "published_at": "in_window"
+      },
+      "selected_entities": [],
+      "eligible_for_review": true
+    }
+  ],
+  "completed_at_utc": "2026-10-24T12:39:43.256587+00:00"
+}

@@ -1,0 +1,406 @@
+{
+  "mode": "run",
+  "as_of_utc": "2026-10-24T12:01:54.202861+00:00",
+  "published_after_utc": "2026-10-17T12:01:54.202861+00:00",
+  "sample_status": "limited_sample",
+  "universe_note": "AAPL/MSFT/NVDA/META/TSLA are trial symbols, not a confirmed watchlist",
+  "max_requests": 4,
+  "queries": [
+    {
+      "query": "policy_confirmed",
+      "parameters": {
+        "search": "(\"Federal Reserve\"|FOMC)+(announced|decision|statement|raises|cuts)-preview-prediction-forecast",
+        "language": "en",
+        "limit": 3,
+        "published_after": "2026-10-17T12:01:54",
+        "published_before": "2026-10-24T12:01:54",
+        "sort": "published_at"
+      },
+      "pages": [
+        {
+          "found": 123,
+          "returned": 3,
+          "page": 1,
+          "limit": 3
+        }
+      ],
+      "incomplete": true,
+      "zero_results": false
+    },
+    {
+      "query": "us_indicators",
+      "parameters": {
+        "search": "(\"consumer price index\"|\"nonfarm payroll\"|\"unemployment rate\")+(\"United States\"|U.S.|US)",
+        "language": "en",
+        "limit": 3,
+        "published_after": "2026-10-17T12:01:54",
+        "published_before": "2026-10-24T12:01:54",
+        "sort": "published_at"
+      },
+      "pages": [
+        {
+          "found": 74,
+          "returned": 3,
+          "page": 1,
+          "limit": 3
+        }
+      ],
+      "incomplete": true,
+      "zero_results": false
+    },
+    {
+      "query": "company_confirmed",
+      "parameters": {
+        "search": "(reported|announced|completed|signed)+(earnings|revenue|acquisition|agreement)-prediction-preview-futures",
+        "language": "en",
+        "limit": 3,
+        "published_after": "2026-10-17T12:01:54",
+        "published_before": "2026-10-24T12:01:54",
+        "sort": "published_at",
+        "symbols": "AAPL,MSFT,NVDA,META,TSLA",
+        "filter_entities": "true"
+      },
+      "pages": [
+        {
+          "found": 227,
+          "returned": 3,
+          "page": 1,
+          "limit": 3
+        }
+      ],
+      "incomplete": true,
+      "zero_results": false
+    },
+    {
+      "query": "issuer_results",
+      "parameters": {
+        "search": "(results|earnings|revenue)",
+        "language": "en",
+        "limit": 3,
+        "published_after": "2026-10-17T12:01:54",
+        "published_before": "2026-10-24T12:01:54",
+        "sort": "published_at",
+        "symbols": "META,TSLA",
+        "filter_entities": "true"
+      },
+      "pages": [
+        {
+          "found": 218,
+          "returned": 3,
+          "page": 1,
+          "limit": 3
+        }
+      ],
+      "incomplete": true,
+      "zero_results": false
+    }
+  ],
+  "articles": [
+    {
+      "uuid": "1dcbd4f2-cb4b-45bb-8869-409f1e42aa92",
+      "url": "https://financefeeds.com/microsoft-stock-prediction-524-51-bull-771-98-bear-520-19/",
+      "source": "financefeeds.com",
+      "published_at": "2026-10-24T09:20:24+00:00",
+      "query": "policy_confirmed",
+      "title_chars": 54,
+      "description_chars": 154,
+      "snippet_chars": 163,
+      "field_states": {
+        "title": "present",
+        "description": "present",
+        "snippet": "present",
+        "published_at": "in_window"
+      },
+      "selected_entities": [
+        {
+          "symbol": "NVDA",
+          "name": "NVIDIA Corporation"
+        },
+        {
+          "symbol": "MSFT",
+          "name": "Microsoft Corporation"
+        }
+      ],
+      "eligible_for_review": true,
+      "trial_entities": [
+        {
+          "symbol": "NVDA",
+          "name": "NVIDIA Corporation"
+        },
+        {
+          "symbol": "MSFT",
+          "name": "Microsoft Corporation"
+        }
+      ],
+      "matched_queries": [
+        "policy_confirmed"
+      ]
+    },
+    {
+      "uuid": "731d490e-59c0-4f1c-88d3-9f50462f9ae5",
+      "url": "https://timesofindia.indiatimes.com/business/international-business/from-fuel-price-hikes-to-cost-of-living-concerns-us-consumer-sentiment-nears-record-low/articleshow/135164123.cms",
+      "source": "timesofindia.indiatimes.com",
+      "published_at": "2026-10-24T06:45:16+00:00",
+      "query": "policy_confirmed",
+      "title_chars": 88,
+      "description_chars": 152,
+      "snippet_chars": 163,
+      "field_states": {
+        "title": "present",
+        "description": "present",
+        "snippet": "present",
+        "published_at": "in_window"
+      },
+      "selected_entities": [],
+      "eligible_for_review": true,
+      "trial_entities": [],
+      "matched_queries": [
+        "policy_confirmed"
+      ]
+    },
+    {
+      "uuid": "087e9252-49bb-455b-ab08-70a80e9234b8",
+      "url": "https://economictimes.indiatimes.com/markets/us-stocks/wall-street-guide/wall-st-week-ahead-earnings-flood-fed-meeting-will-test-rickety-ai-market-rally/articleshow/135161141.cms",
+      "source": "economictimes.indiatimes.com",
+      "published_at": "2026-10-24T03:37:13+00:00",
+      "query": "policy_confirmed",
+      "title_chars": 85,
+      "description_chars": 432,
+      "snippet_chars": 163,
+      "field_states": {
+        "title": "present",
+        "description": "present",
+        "snippet": "present",
+        "published_at": "in_window"
+      },
+      "selected_entities": [
+        {
+          "symbol": "MSFT",
+          "name": "Microsoft Corporation"
+        }
+      ],
+      "eligible_for_review": true,
+      "trial_entities": [
+        {
+          "symbol": "MSFT",
+          "name": "Microsoft Corporation"
+        }
+      ],
+      "matched_queries": [
+        "policy_confirmed"
+      ]
+    },
+    {
+      "uuid": "6ab4abdb-f0ba-462c-a8d6-efd4911d6c03",
+      "url": "https://wallethacks.com/how-series-i-bonds-work/",
+      "source": "wallethacks.com",
+      "published_at": "2026-10-24T00:18:56+00:00",
+      "query": "us_indicators",
+      "title_chars": 51,
+      "description_chars": 232,
+      "snippet_chars": 163,
+      "field_states": {
+        "title": "present",
+        "description": "present",
+        "snippet": "present",
+        "published_at": "in_window"
+      },
+      "selected_entities": [],
+      "eligible_for_review": true,
+      "trial_entities": [],
+      "matched_queries": [
+        "us_indicators"
+      ]
+    },
+    {
+      "uuid": "88903197-ad10-4a86-aa51-5f415e26d3f2",
+      "url": "https://economictimes.indiatimes.com/news/economy/policy/strong-macro-fundamentals-policy-interventions-to-anchor-eco-against-global-headwinds-rbi-bulletin/articleshow/135151046.cms",
+      "source": "economictimes.indiatimes.com",
+      "published_at": "2026-10-23T16:56:53+00:00",
+      "query": "us_indicators",
+      "title_chars": 100,
+      "description_chars": 458,
+      "snippet_chars": 163,
+      "field_states": {
+        "title": "present",
+        "description": "present",
+        "snippet": "present",
+        "published_at": "in_window"
+      },
+      "selected_entities": [],
+      "eligible_for_review": true,
+      "trial_entities": [],
+      "matched_queries": [
+        "us_indicators"
+      ]
+    },
+    {
+      "uuid": "4d108b2c-9348-4974-96b6-51d7b423129c",
+      "url": "https://www.livemint.com/industry/rbi-bulletin-india-s-strength-faces-fresh-test-as-us-iran-war-fuels-inflation-11792762354560.html",
+      "source": "livemint.com",
+      "published_at": "2026-10-23T16:45:50+00:00",
+      "query": "us_indicators",
+      "title_chars": 78,
+      "description_chars": 151,
+      "snippet_chars": 163,
+      "field_states": {
+        "title": "present",
+        "description": "present",
+        "snippet": "present",
+        "published_at": "in_window"
+      },
+      "selected_entities": [],
+      "eligible_for_review": true,
+      "trial_entities": [],
+      "matched_queries": [
+        "us_indicators"
+      ]
+    },
+    {
+      "uuid": "77a89350-c9e7-419f-92de-92dfd0943028",
+      "url": "https://financefeeds.com/meta-stock-prediction-642-62-bull-910-82-bear-540-47/",
+      "source": "financefeeds.com",
+      "published_at": "2026-10-24T09:50:24+00:00",
+      "query": "company_confirmed",
+      "title_chars": 49,
+      "description_chars": 159,
+      "snippet_chars": 159,
+      "field_states": {
+        "title": "present",
+        "description": "present",
+        "snippet": "present",
+        "published_at": "in_window"
+      },
+      "selected_entities": [
+        {
+          "symbol": "MSFT",
+          "name": "Microsoft Corporation"
+        }
+      ],
+      "eligible_for_review": true,
+      "trial_entities": [
+        {
+          "symbol": "MSFT",
+          "name": "Microsoft Corporation"
+        }
+      ],
+      "matched_queries": [
+        "company_confirmed"
+      ]
+    },
+    {
+      "uuid": "acd281d4-306c-4f3b-b503-f9db42e6bffe",
+      "url": "https://seekingalpha.com/article/4957188-meta-the-q4-guide-is-the-real-profit-warning",
+      "source": "seekingalpha.com",
+      "published_at": "2026-10-24T09:42:40+00:00",
+      "query": "company_confirmed",
+      "title_chars": 59,
+      "description_chars": 149,
+      "snippet_chars": 163,
+      "field_states": {
+        "title": "present",
+        "description": "present",
+        "snippet": "present",
+        "published_at": "in_window"
+      },
+      "selected_entities": [],
+      "eligible_for_review": true,
+      "trial_entities": [
+        {
+          "symbol": "META",
+          "name": "Meta Platforms Inc"
+        }
+      ],
+      "matched_queries": [
+        "company_confirmed",
+        "issuer_results"
+      ]
+    },
+    {
+      "uuid": "4f5509f2-0df6-4e64-90bd-47fbaca2a44a",
+      "url": "https://www.thehindubusinessline.com/info-tech/apples-iphone-duo-hits-stores-in-face-of-short-supply-and-high-demand/article71619030.ece",
+      "source": "thehindubusinessline.com",
+      "published_at": "2026-10-24T05:27:39+00:00",
+      "query": "company_confirmed",
+      "title_chars": 84,
+      "description_chars": 122,
+      "snippet_chars": 163,
+      "field_states": {
+        "title": "present",
+        "description": "present",
+        "snippet": "present",
+        "published_at": "in_window"
+      },
+      "selected_entities": [
+        {
+          "symbol": "AAPL",
+          "name": "Apple Inc."
+        }
+      ],
+      "eligible_for_review": true,
+      "trial_entities": [
+        {
+          "symbol": "AAPL",
+          "name": "Apple Inc."
+        }
+      ],
+      "matched_queries": [
+        "company_confirmed"
+      ]
+    },
+    {
+      "uuid": "ed873444-cedd-4716-9b6f-805c7e129308",
+      "url": "https://www2.stockmarketwatch.com/stock-market-news/tech-and-financials-lead-modest-gains-as-earnings-season-intensifies/73522/",
+      "source": "thestockmarketwatch.com",
+      "published_at": "2026-10-23T21:07:18+00:00",
+      "query": "issuer_results",
+      "title_chars": 68,
+      "description_chars": 150,
+      "snippet_chars": 163,
+      "field_states": {
+        "title": "present",
+        "description": "present",
+        "snippet": "present",
+        "published_at": "in_window"
+      },
+      "selected_entities": [],
+      "eligible_for_review": true,
+      "trial_entities": [
+        {
+          "symbol": "META",
+          "name": "Meta Platforms Inc"
+        }
+      ],
+      "matched_queries": [
+        "issuer_results"
+      ]
+    },
+    {
+      "uuid": "7cb60615-94a8-4cf3-ac86-b23a540749f1",
+      "url": "https://www2.stockmarketwatch.com/stock-market-news/market-stability-prevails-as-earnings-season-gains-momentum-2/73518/",
+      "source": "thestockmarketwatch.com",
+      "published_at": "2026-10-23T20:07:15+00:00",
+      "query": "issuer_results",
+      "title_chars": 59,
+      "description_chars": 152,
+      "snippet_chars": 163,
+      "field_states": {
+        "title": "present",
+        "description": "present",
+        "snippet": "present",
+        "published_at": "in_window"
+      },
+      "selected_entities": [],
+      "eligible_for_review": true,
+      "trial_entities": [
+        {
+          "symbol": "META",
+          "name": "Meta Platforms Inc"
+        }
+      ],
+      "matched_queries": [
+        "issuer_results"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,139 @@
+{
+  "mode": "run",
+  "request_count": 12,
+  "cases": [
+    {
+      "case_id": "state_employment",
+      "url": "https://www.bls.gov/news.release/laus.htm",
+      "state": "retrieved",
+      "observed_at_utc": "2026-10-24T15:54:52.698405+00:00",
+      "http_status": 200,
+      "content_type": "text/html",
+      "bytes": 875423,
+      "redirects": 0,
+      "parsed": false
+    },
+    {
+      "case_id": "weekly_claims",
+      "url": "https://www.dol.gov/sites/dolgov/files/OPA/newsreleases/ui-claims/20261613.pdf",
+      "state": "retrieved",
+      "observed_at_utc": "2026-10-24T15:54:53.183899+00:00",
+      "http_status": 200,
+      "content_type": "application/pdf",
+      "bytes": 548860,
+      "redirects": 0,
+      "parsed": false
+    },
+    {
+      "case_id": "ibm_results",
+      "url": "https://www.sec.gov/Archives/edgar/data/51143/000005114326000093/ibm-20261021xex991.htm",
+      "state": "retrieved",
+      "observed_at_utc": "2026-10-24T15:54:53.330710+00:00",
+      "http_status": 200,
+      "content_type": "text/html",
+      "bytes": 609201,
+      "redirects": 0,
+      "parsed": false
+    },
+    {
+      "case_id": "tesla_results",
+      "url": "https://ir.tesla.com/_flysystem/s3/sec/000162828026066738/tsla-20261021-gen.pdf",
+      "state": "retrieved",
+      "observed_at_utc": "2026-10-24T15:54:53.414227+00:00",
+      "http_status": 200,
+      "content_type": "application/pdf",
+      "bytes": 6497200,
+      "redirects": 0,
+      "parsed": false
+    },
+    {
+      "case_id": "ti_results",
+      "url": "https://investor.ti.com/news-releases/news-release-details/ti-reports-third-quarter-2026-financial-results-and-shareholder",
+      "state": "retrieved",
+      "observed_at_utc": "2026-10-24T15:54:54.715782+00:00",
+      "http_status": 200,
+      "content_type": "text/html; charset=UTF-8",
+      "bytes": 459154,
+      "redirects": 0,
+      "parsed": false
+    },
+    {
+      "case_id": "netflix_results",
+      "url": "https://ir.netflix.net/files/doc_financials/2026/q3/FINAL-Q3-26-Shareholder-Letter.pdf",
+      "state": "retrieved",
+      "observed_at_utc": "2026-10-24T15:54:55.668901+00:00",
+      "http_status": 200,
+      "content_type": "application/pdf",
+      "bytes": 1748280,
+      "redirects": 1,
+      "parsed": false
+    },
+    {
+      "case_id": "att_results",
+      "url": "https://about.att.com/story/2026/3q-earnings.html",
+      "state": "retrieved",
+      "observed_at_utc": "2026-10-24T15:54:56.435474+00:00",
+      "http_status": 200,
+      "content_type": "text/html;charset=utf-8",
+      "bytes": 58389,
+      "redirects": 0,
+      "parsed": false
+    },
+    {
+      "case_id": "aardvark_hold",
+      "url": "https://www.sec.gov/Archives/edgar/data/1774857/000119312526428943/ck0001774857-20261022.htm",
+      "state": "retrieved",
+      "observed_at_utc": "2026-10-24T15:54:58.571314+00:00",
+      "http_status": 200,
+      "content_type": "text/html",
+      "bytes": 48407,
+      "redirects": 0,
+      "parsed": false
+    },
+    {
+      "case_id": "ti_filing_followup",
+      "url": "https://investor.ti.com/sec-filings/sec-filing/10-q/0000097476-26-000169",
+      "state": "retrieved",
+      "observed_at_utc": "2026-10-24T15:54:58.664118+00:00",
+      "http_status": 200,
+      "content_type": "text/html; charset=UTF-8",
+      "bytes": 27836,
+      "redirects": 0,
+      "parsed": false
+    },
+    {
+      "case_id": "intel_future",
+      "url": "https://www.intc.com/news-events/press-releases/detail/1782/intel-to-report-third-quarter-2026-financial-results",
+      "state": "retrieved",
+      "observed_at_utc": "2026-10-24T15:54:58.999045+00:00",
+      "http_status": 200,
+      "content_type": "text/html; charset=UTF-8",
+      "bytes": 29655,
+      "redirects": 0,
+      "parsed": false
+    },
+    {
+      "case_id": "coca_cola_future",
+      "url": "https://investors.coca-colacompany.com/_assets/_02744905259cb8240758f5502f105697/cocacolacompany/news/2026-09-29_The_Coca_Cola_Company_Announces_Timing_of_Third_1173.pdf",
+      "state": "retrieved",
+      "observed_at_utc": "2026-10-24T15:54:59.204711+00:00",
+      "http_status": 200,
+      "content_type": "application/pdf",
+      "bytes": 80988,
+      "redirects": 0,
+      "parsed": false
+    },
+    {
+      "case_id": "cpi_old",
+      "url": "https://www.bls.gov/news.release/archives/cpi_10142026.htm",
+      "state": "retrieved",
+      "observed_at_utc": "2026-10-24T15:55:00.097466+00:00",
+      "http_status": 200,
+      "content_type": "text/html",
+      "bytes": 1373525,
+      "redirects": 0,
+      "parsed": false
+    }
+  ],
+  "content_saved": false
+}

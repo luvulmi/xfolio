@@ -1,0 +1,20 @@
+[
+  {
+    "uuid": "a87eab2a-185e-4688-86f4-1903afa77ee2",
+    "status_code": 200,
+    "observed_at_utc": "2026-10-24T15:53:20.821464+00:00",
+    "daily_remaining": "22"
+  },
+  {
+    "uuid": "6c27597c-07a5-4e8f-aaca-abbd76dec9d6",
+    "status_code": 200,
+    "observed_at_utc": "2026-10-24T15:53:24.225299+00:00",
+    "daily_remaining": "21"
+  },
+  {
+    "uuid": "0166b943-3b94-4e00-b818-7a4dbcbe7d12",
+    "status_code": 200,
+    "observed_at_utc": "2026-10-24T15:53:27.642339+00:00",
+    "daily_remaining": "20"
+  }
+]

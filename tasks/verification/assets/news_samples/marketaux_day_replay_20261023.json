@@ -1,0 +1,1830 @@
+{
+  "mode": "run",
+  "as_of_utc": "2026-10-24T12:34:24.499965+00:00",
+  "state": "failed",
+  "sample_status": "limited_sample",
+  "request_cap": 60,
+  "replay_date_kst": "2026-10-23",
+  "pages_per_query_cap": 10,
+  "request_count": 31,
+  "overlap_minutes": 1,
+  "checkpoint_advance": false,
+  "cursor_written": false,
+  "queries": [
+    {
+      "window": 1,
+      "query": "company_results",
+      "nominal_after_utc": "2026-10-22T08:30:00+00:00",
+      "nominal_before_utc": "2026-10-23T00:00:00+00:00",
+      "parameters": {
+        "search": "earnings|guidance",
+        "language": "en",
+        "limit": 3,
+        "sort": "published_at",
+        "published_after": "2026-10-22T08:29:00",
+        "published_before": "2026-10-23T00:00:00",
+        "symbols": "AAPL,MSFT,NVDA",
+        "filter_entities": "true"
+      },
+      "state": "partial",
+      "checkpoint_advance": false,
+      "pages": [
+        {
+          "found": 14,
+          "returned": 3,
+          "page": 1,
+          "limit": 3
+        },
+        {
+          "found": 14,
+          "returned": 3,
+          "page": 2,
+          "limit": 3
+        },
+        {
+          "found": 14,
+          "returned": 3,
+          "page": 3,
+          "limit": 3
+        },
+        {
+          "found": 14,
+          "returned": 3,
+          "page": 4,
+          "limit": 3
+        },
+        {
+          "found": 14,
+          "returned": 1,
+          "page": 5,
+          "limit": 3
+        }
+      ],
+      "new_uuids": 13,
+      "duplicate_uuids": 0,
+      "unique_uuids": 13,
+      "first_page_uuids": [
+        "22b865be-ea15-4129-b2e4-bf4d8647f0cd",
+        "e2198f08-eaf8-4888-9e0a-40d1cc986568",
+        "eadd6dab-5da0-47eb-a1de-6d3f36566789"
+      ],
+      "required_pages_first_found": 5,
+      "zero_results": false
+    },
+    {
+      "window": 1,
+      "query": "company_changes",
+      "nominal_after_utc": "2026-10-22T08:30:00+00:00",
+      "nominal_before_utc": "2026-10-23T00:00:00+00:00",
+      "parameters": {
+        "search": "acquisition|merger|contract|\"regulatory approval\"",
+        "language": "en",
+        "limit": 3,
+        "sort": "published_at",
+        "published_after": "2026-10-22T08:29:00",
+        "published_before": "2026-10-23T00:00:00",
+        "symbols": "AAPL,MSFT,NVDA",
+        "filter_entities": "true"
+      },
+      "state": "complete",
+      "checkpoint_advance": true,
+      "pages": [
+        {
+          "found": 2,
+          "returned": 2,
+          "page": 1,
+          "limit": 3
+        }
+      ],
+      "new_uuids": 0,
+      "duplicate_uuids": 2,
+      "unique_uuids": 2,
+      "first_page_uuids": [
+        "66571234-756f-41c9-839e-7be4a1d1f762",
+        "7dfeb7ce-5811-4e08-94bf-9b3082f37eae"
+      ],
+      "required_pages_first_found": 1,
+      "zero_results": false
+    },
+    {
+      "window": 2,
+      "query": "company_results",
+      "nominal_after_utc": "2026-10-23T00:00:00+00:00",
+      "nominal_before_utc": "2026-10-23T00:30:00+00:00",
+      "parameters": {
+        "search": "earnings|guidance",
+        "language": "en",
+        "limit": 3,
+        "sort": "published_at",
+        "published_after": "2026-10-22T23:59:00",
+        "published_before": "2026-10-23T00:30:00",
+        "symbols": "AAPL,MSFT,NVDA",
+        "filter_entities": "true"
+      },
+      "state": "complete",
+      "checkpoint_advance": true,
+      "pages": [
+        {
+          "found": 0,
+          "returned": 0,
+          "page": 1,
+          "limit": 3
+        }
+      ],
+      "new_uuids": 0,
+      "duplicate_uuids": 0,
+      "unique_uuids": 0,
+      "first_page_uuids": [],
+      "required_pages_first_found": 1,
+      "zero_results": true
+    },
+    {
+      "window": 2,
+      "query": "company_changes",
+      "nominal_after_utc": "2026-10-23T00:00:00+00:00",
+      "nominal_before_utc": "2026-10-23T00:30:00+00:00",
+      "parameters": {
+        "search": "acquisition|merger|contract|\"regulatory approval\"",
+        "language": "en",
+        "limit": 3,
+        "sort": "published_at",
+        "published_after": "2026-10-22T23:59:00",
+        "published_before": "2026-10-23T00:30:00",
+        "symbols": "AAPL,MSFT,NVDA",
+        "filter_entities": "true"
+      },
+      "state": "complete",
+      "checkpoint_advance": true,
+      "pages": [
+        {
+          "found": 0,
+          "returned": 0,
+          "page": 1,
+          "limit": 3
+        }
+      ],
+      "new_uuids": 0,
+      "duplicate_uuids": 0,
+      "unique_uuids": 0,
+      "first_page_uuids": [],
+      "required_pages_first_found": 1,
+      "zero_results": true
+    },
+    {
+      "window": 3,
+      "query": "company_results",
+      "nominal_after_utc": "2026-10-23T00:30:00+00:00",
+      "nominal_before_utc": "2026-10-23T01:00:00+00:00",
+      "parameters": {
+        "search": "earnings|guidance",
+        "language": "en",
+        "limit": 3,
+        "sort": "published_at",
+        "published_after": "2026-10-23T00:29:00",
+        "published_before": "2026-10-23T01:00:00",
+        "symbols": "AAPL,MSFT,NVDA",
+        "filter_entities": "true"
+      },
+      "state": "complete",
+      "checkpoint_advance": true,
+      "pages": [
+        {
+          "found": 1,
+          "returned": 1,
+          "page": 1,
+          "limit": 3
+        }
+      ],
+      "new_uuids": 1,
+      "duplicate_uuids": 0,
+      "unique_uuids": 1,
+      "first_page_uuids": [
+        "1616456d-ef96-4ed1-aeb9-beaf0b035b64"
+      ],
+      "required_pages_first_found": 1,
+      "zero_results": false
+    },
+    {
+      "window": 3,
+      "query": "company_changes",
+      "nominal_after_utc": "2026-10-23T00:30:00+00:00",
+      "nominal_before_utc": "2026-10-23T01:00:00+00:00",
+      "parameters": {
+        "search": "acquisition|merger|contract|\"regulatory approval\"",
+        "language": "en",
+        "limit": 3,
+        "sort": "published_at",
+        "published_after": "2026-10-23T00:29:00",
+        "published_before": "2026-10-23T01:00:00",
+        "symbols": "AAPL,MSFT,NVDA",
+        "filter_entities": "true"
+      },
+      "state": "complete",
+      "checkpoint_advance": true,
+      "pages": [
+        {
+          "found": 0,
+          "returned": 0,
+          "page": 1,
+          "limit": 3
+        }
+      ],
+      "new_uuids": 0,
+      "duplicate_uuids": 0,
+      "unique_uuids": 0,
+      "first_page_uuids": [],
+      "required_pages_first_found": 1,
+      "zero_results": true
+    },
+    {
+      "window": 4,
+      "query": "company_results",
+      "nominal_after_utc": "2026-10-23T01:00:00+00:00",
+      "nominal_before_utc": "2026-10-23T01:30:00+00:00",
+      "parameters": {
+        "search": "earnings|guidance",
+        "language": "en",
+        "limit": 3,
+        "sort": "published_at",
+        "published_after": "2026-10-23T00:59:00",
+        "published_before": "2026-10-23T01:30:00",
+        "symbols": "AAPL,MSFT,NVDA",
+        "filter_entities": "true"
+      },
+      "state": "complete",
+      "checkpoint_advance": true,
+      "pages": [
+        {
+          "found": 0,
+          "returned": 0,
+          "page": 1,
+          "limit": 3
+        }
+      ],
+      "new_uuids": 0,
+      "duplicate_uuids": 0,
+      "unique_uuids": 0,
+      "first_page_uuids": [],
+      "required_pages_first_found": 1,
+      "zero_results": true
+    },
+    {
+      "window": 4,
+      "query": "company_changes",
+      "nominal_after_utc": "2026-10-23T01:00:00+00:00",
+      "nominal_before_utc": "2026-10-23T01:30:00+00:00",
+      "parameters": {
+        "search": "acquisition|merger|contract|\"regulatory approval\"",
+        "language": "en",
+        "limit": 3,
+        "sort": "published_at",
+        "published_after": "2026-10-23T00:59:00",
+        "published_before": "2026-10-23T01:30:00",
+        "symbols": "AAPL,MSFT,NVDA",
+        "filter_entities": "true"
+      },
+      "state": "complete",
+      "checkpoint_advance": true,
+      "pages": [
+        {
+          "found": 0,
+          "returned": 0,
+          "page": 1,
+          "limit": 3
+        }
+      ],
+      "new_uuids": 0,
+      "duplicate_uuids": 0,
+      "unique_uuids": 0,
+      "first_page_uuids": [],
+      "required_pages_first_found": 1,
+      "zero_results": true
+    },
+    {
+      "window": 5,
+      "query": "company_results",
+      "nominal_after_utc": "2026-10-23T01:30:00+00:00",
+      "nominal_before_utc": "2026-10-23T02:00:00+00:00",
+      "parameters": {
+        "search": "earnings|guidance",
+        "language": "en",
+        "limit": 3,
+        "sort": "published_at",
+        "published_after": "2026-10-23T01:29:00",
+        "published_before": "2026-10-23T02:00:00",
+        "symbols": "AAPL,MSFT,NVDA",
+        "filter_entities": "true"
+      },
+      "state": "complete",
+      "checkpoint_advance": true,
+      "pages": [
+        {
+          "found": 0,
+          "returned": 0,
+          "page": 1,
+          "limit": 3
+        }
+      ],
+      "new_uuids": 0,
+      "duplicate_uuids": 0,
+      "unique_uuids": 0,
+      "first_page_uuids": [],
+      "required_pages_first_found": 1,
+      "zero_results": true
+    },
+    {
+      "window": 5,
+      "query": "company_changes",
+      "nominal_after_utc": "2026-10-23T01:30:00+00:00",
+      "nominal_before_utc": "2026-10-23T02:00:00+00:00",
+      "parameters": {
+        "search": "acquisition|merger|contract|\"regulatory approval\"",
+        "language": "en",
+        "limit": 3,
+        "sort": "published_at",
+        "published_after": "2026-10-23T01:29:00",
+        "published_before": "2026-10-23T02:00:00",
+        "symbols": "AAPL,MSFT,NVDA",
+        "filter_entities": "true"
+      },
+      "state": "complete",
+      "checkpoint_advance": true,
+      "pages": [
+        {
+          "found": 0,
+          "returned": 0,
+          "page": 1,
+          "limit": 3
+        }
+      ],
+      "new_uuids": 0,
+      "duplicate_uuids": 0,
+      "unique_uuids": 0,
+      "first_page_uuids": [],
+      "required_pages_first_found": 1,
+      "zero_results": true
+    },
+    {
+      "window": 6,
+      "query": "company_results",
+      "nominal_after_utc": "2026-10-23T02:00:00+00:00",
+      "nominal_before_utc": "2026-10-23T02:30:00+00:00",
+      "parameters": {
+        "search": "earnings|guidance",
+        "language": "en",
+        "limit": 3,
+        "sort": "published_at",
+        "published_after": "2026-10-23T01:59:00",
+        "published_before": "2026-10-23T02:30:00",
+        "symbols": "AAPL,MSFT,NVDA",
+        "filter_entities": "true"
+      },
+      "state": "complete",
+      "checkpoint_advance": true,
+      "pages": [
+        {
+          "found": 0,
+          "returned": 0,
+          "page": 1,
+          "limit": 3
+        }
+      ],
+      "new_uuids": 0,
+      "duplicate_uuids": 0,
+      "unique_uuids": 0,
+      "first_page_uuids": [],
+      "required_pages_first_found": 1,
+      "zero_results": true
+    },
+    {
+      "window": 6,
+      "query": "company_changes",
+      "nominal_after_utc": "2026-10-23T02:00:00+00:00",
+      "nominal_before_utc": "2026-10-23T02:30:00+00:00",
+      "parameters": {
+        "search": "acquisition|merger|contract|\"regulatory approval\"",
+        "language": "en",
+        "limit": 3,
+        "sort": "published_at",
+        "published_after": "2026-10-23T01:59:00",
+        "published_before": "2026-10-23T02:30:00",
+        "symbols": "AAPL,MSFT,NVDA",
+        "filter_entities": "true"
+      },
+      "state": "complete",
+      "checkpoint_advance": true,
+      "pages": [
+        {
+          "found": 0,
+          "returned": 0,
+          "page": 1,
+          "limit": 3
+        }
+      ],
+      "new_uuids": 0,
+      "duplicate_uuids": 0,
+      "unique_uuids": 0,
+      "first_page_uuids": [],
+      "required_pages_first_found": 1,
+      "zero_results": true
+    },
+    {
+      "window": 7,
+      "query": "company_results",
+      "nominal_after_utc": "2026-10-23T02:30:00+00:00",
+      "nominal_before_utc": "2026-10-23T03:00:00+00:00",
+      "parameters": {
+        "search": "earnings|guidance",
+        "language": "en",
+        "limit": 3,
+        "sort": "published_at",
+        "published_after": "2026-10-23T02:29:00",
+        "published_before": "2026-10-23T03:00:00",
+        "symbols": "AAPL,MSFT,NVDA",
+        "filter_entities": "true"
+      },
+      "state": "complete",
+      "checkpoint_advance": true,
+      "pages": [
+        {
+          "found": 0,
+          "returned": 0,
+          "page": 1,
+          "limit": 3
+        }
+      ],
+      "new_uuids": 0,
+      "duplicate_uuids": 0,
+      "unique_uuids": 0,
+      "first_page_uuids": [],
+      "required_pages_first_found": 1,
+      "zero_results": true
+    },
+    {
+      "window": 7,
+      "query": "company_changes",
+      "nominal_after_utc": "2026-10-23T02:30:00+00:00",
+      "nominal_before_utc": "2026-10-23T03:00:00+00:00",
+      "parameters": {
+        "search": "acquisition|merger|contract|\"regulatory approval\"",
+        "language": "en",
+        "limit": 3,
+        "sort": "published_at",
+        "published_after": "2026-10-23T02:29:00",
+        "published_before": "2026-10-23T03:00:00",
+        "symbols": "AAPL,MSFT,NVDA",
+        "filter_entities": "true"
+      },
+      "state": "complete",
+      "checkpoint_advance": true,
+      "pages": [
+        {
+          "found": 0,
+          "returned": 0,
+          "page": 1,
+          "limit": 3
+        }
+      ],
+      "new_uuids": 0,
+      "duplicate_uuids": 0,
+      "unique_uuids": 0,
+      "first_page_uuids": [],
+      "required_pages_first_found": 1,
+      "zero_results": true
+    },
+    {
+      "window": 8,
+      "query": "company_results",
+      "nominal_after_utc": "2026-10-23T03:00:00+00:00",
+      "nominal_before_utc": "2026-10-23T03:30:00+00:00",
+      "parameters": {
+        "search": "earnings|guidance",
+        "language": "en",
+        "limit": 3,
+        "sort": "published_at",
+        "published_after": "2026-10-23T02:59:00",
+        "published_before": "2026-10-23T03:30:00",
+        "symbols": "AAPL,MSFT,NVDA",
+        "filter_entities": "true"
+      },
+      "state": "complete",
+      "checkpoint_advance": true,
+      "pages": [
+        {
+          "found": 0,
+          "returned": 0,
+          "page": 1,
+          "limit": 3
+        }
+      ],
+      "new_uuids": 0,
+      "duplicate_uuids": 0,
+      "unique_uuids": 0,
+      "first_page_uuids": [],
+      "required_pages_first_found": 1,
+      "zero_results": true
+    },
+    {
+      "window": 8,
+      "query": "company_changes",
+      "nominal_after_utc": "2026-10-23T03:00:00+00:00",
+      "nominal_before_utc": "2026-10-23T03:30:00+00:00",
+      "parameters": {
+        "search": "acquisition|merger|contract|\"regulatory approval\"",
+        "language": "en",
+        "limit": 3,
+        "sort": "published_at",
+        "published_after": "2026-10-23T02:59:00",
+        "published_before": "2026-10-23T03:30:00",
+        "symbols": "AAPL,MSFT,NVDA",
+        "filter_entities": "true"
+      },
+      "state": "complete",
+      "checkpoint_advance": true,
+      "pages": [
+        {
+          "found": 0,
+          "returned": 0,
+          "page": 1,
+          "limit": 3
+        }
+      ],
+      "new_uuids": 0,
+      "duplicate_uuids": 0,
+      "unique_uuids": 0,
+      "first_page_uuids": [],
+      "required_pages_first_found": 1,
+      "zero_results": true
+    },
+    {
+      "window": 9,
+      "query": "company_results",
+      "nominal_after_utc": "2026-10-23T03:30:00+00:00",
+      "nominal_before_utc": "2026-10-23T04:00:00+00:00",
+      "parameters": {
+        "search": "earnings|guidance",
+        "language": "en",
+        "limit": 3,
+        "sort": "published_at",
+        "published_after": "2026-10-23T03:29:00",
+        "published_before": "2026-10-23T04:00:00",
+        "symbols": "AAPL,MSFT,NVDA",
+        "filter_entities": "true"
+      },
+      "state": "complete",
+      "checkpoint_advance": true,
+      "pages": [
+        {
+          "found": 1,
+          "returned": 1,
+          "page": 1,
+          "limit": 3
+        }
+      ],
+      "new_uuids": 1,
+      "duplicate_uuids": 0,
+      "unique_uuids": 1,
+      "first_page_uuids": [
+        "a30b73ed-2e19-4599-bac2-3f6f83a8de71"
+      ],
+      "required_pages_first_found": 1,
+      "zero_results": false
+    },
+    {
+      "window": 9,
+      "query": "company_changes",
+      "nominal_after_utc": "2026-10-23T03:30:00+00:00",
+      "nominal_before_utc": "2026-10-23T04:00:00+00:00",
+      "parameters": {
+        "search": "acquisition|merger|contract|\"regulatory approval\"",
+        "language": "en",
+        "limit": 3,
+        "sort": "published_at",
+        "published_after": "2026-10-23T03:29:00",
+        "published_before": "2026-10-23T04:00:00",
+        "symbols": "AAPL,MSFT,NVDA",
+        "filter_entities": "true"
+      },
+      "state": "complete",
+      "checkpoint_advance": true,
+      "pages": [
+        {
+          "found": 0,
+          "returned": 0,
+          "page": 1,
+          "limit": 3
+        }
+      ],
+      "new_uuids": 0,
+      "duplicate_uuids": 0,
+      "unique_uuids": 0,
+      "first_page_uuids": [],
+      "required_pages_first_found": 1,
+      "zero_results": true
+    },
+    {
+      "window": 10,
+      "query": "company_results",
+      "nominal_after_utc": "2026-10-23T04:00:00+00:00",
+      "nominal_before_utc": "2026-10-23T04:30:00+00:00",
+      "parameters": {
+        "search": "earnings|guidance",
+        "language": "en",
+        "limit": 3,
+        "sort": "published_at",
+        "published_after": "2026-10-23T03:59:00",
+        "published_before": "2026-10-23T04:30:00",
+        "symbols": "AAPL,MSFT,NVDA",
+        "filter_entities": "true"
+      },
+      "state": "complete",
+      "checkpoint_advance": true,
+      "pages": [
+        {
+          "found": 2,
+          "returned": 2,
+          "page": 1,
+          "limit": 3
+        }
+      ],
+      "new_uuids": 2,
+      "duplicate_uuids": 0,
+      "unique_uuids": 2,
+      "first_page_uuids": [
+        "6ae40d30-cb60-4cad-9dae-a76385756389",
+        "cdb0b6c1-d8a3-48aa-8b52-cb9f24f116bc"
+      ],
+      "required_pages_first_found": 1,
+      "zero_results": false
+    },
+    {
+      "window": 10,
+      "query": "company_changes",
+      "nominal_after_utc": "2026-10-23T04:00:00+00:00",
+      "nominal_before_utc": "2026-10-23T04:30:00+00:00",
+      "parameters": {
+        "search": "acquisition|merger|contract|\"regulatory approval\"",
+        "language": "en",
+        "limit": 3,
+        "sort": "published_at",
+        "published_after": "2026-10-23T03:59:00",
+        "published_before": "2026-10-23T04:30:00",
+        "symbols": "AAPL,MSFT,NVDA",
+        "filter_entities": "true"
+      },
+      "state": "complete",
+      "checkpoint_advance": true,
+      "pages": [
+        {
+          "found": 0,
+          "returned": 0,
+          "page": 1,
+          "limit": 3
+        }
+      ],
+      "new_uuids": 0,
+      "duplicate_uuids": 0,
+      "unique_uuids": 0,
+      "first_page_uuids": [],
+      "required_pages_first_found": 1,
+      "zero_results": true
+    },
+    {
+      "window": 11,
+      "query": "company_results",
+      "nominal_after_utc": "2026-10-23T04:30:00+00:00",
+      "nominal_before_utc": "2026-10-23T05:00:00+00:00",
+      "parameters": {
+        "search": "earnings|guidance",
+        "language": "en",
+        "limit": 3,
+        "sort": "published_at",
+        "published_after": "2026-10-23T04:29:00",
+        "published_before": "2026-10-23T05:00:00",
+        "symbols": "AAPL,MSFT,NVDA",
+        "filter_entities": "true"
+      },
+      "state": "complete",
+      "checkpoint_advance": true,
+      "pages": [
+        {
+          "found": 0,
+          "returned": 0,
+          "page": 1,
+          "limit": 3
+        }
+      ],
+      "new_uuids": 0,
+      "duplicate_uuids": 0,
+      "unique_uuids": 0,
+      "first_page_uuids": [],
+      "required_pages_first_found": 1,
+      "zero_results": true
+    },
+    {
+      "window": 11,
+      "query": "company_changes",
+      "nominal_after_utc": "2026-10-23T04:30:00+00:00",
+      "nominal_before_utc": "2026-10-23T05:00:00+00:00",
+      "parameters": {
+        "search": "acquisition|merger|contract|\"regulatory approval\"",
+        "language": "en",
+        "limit": 3,
+        "sort": "published_at",
+        "published_after": "2026-10-23T04:29:00",
+        "published_before": "2026-10-23T05:00:00",
+        "symbols": "AAPL,MSFT,NVDA",
+        "filter_entities": "true"
+      },
+      "state": "complete",
+      "checkpoint_advance": true,
+      "pages": [
+        {
+          "found": 0,
+          "returned": 0,
+          "page": 1,
+          "limit": 3
+        }
+      ],
+      "new_uuids": 0,
+      "duplicate_uuids": 0,
+      "unique_uuids": 0,
+      "first_page_uuids": [],
+      "required_pages_first_found": 1,
+      "zero_results": true
+    },
+    {
+      "window": 12,
+      "query": "company_results",
+      "nominal_after_utc": "2026-10-23T05:00:00+00:00",
+      "nominal_before_utc": "2026-10-23T05:30:00+00:00",
+      "parameters": {
+        "search": "earnings|guidance",
+        "language": "en",
+        "limit": 3,
+        "sort": "published_at",
+        "published_after": "2026-10-23T04:59:00",
+        "published_before": "2026-10-23T05:30:00",
+        "symbols": "AAPL,MSFT,NVDA",
+        "filter_entities": "true"
+      },
+      "state": "complete",
+      "checkpoint_advance": true,
+      "pages": [
+        {
+          "found": 0,
+          "returned": 0,
+          "page": 1,
+          "limit": 3
+        }
+      ],
+      "new_uuids": 0,
+      "duplicate_uuids": 0,
+      "unique_uuids": 0,
+      "first_page_uuids": [],
+      "required_pages_first_found": 1,
+      "zero_results": true
+    },
+    {
+      "window": 12,
+      "query": "company_changes",
+      "nominal_after_utc": "2026-10-23T05:00:00+00:00",
+      "nominal_before_utc": "2026-10-23T05:30:00+00:00",
+      "parameters": {
+        "search": "acquisition|merger|contract|\"regulatory approval\"",
+        "language": "en",
+        "limit": 3,
+        "sort": "published_at",
+        "published_after": "2026-10-23T04:59:00",
+        "published_before": "2026-10-23T05:30:00",
+        "symbols": "AAPL,MSFT,NVDA",
+        "filter_entities": "true"
+      },
+      "state": "complete",
+      "checkpoint_advance": true,
+      "pages": [
+        {
+          "found": 0,
+          "returned": 0,
+          "page": 1,
+          "limit": 3
+        }
+      ],
+      "new_uuids": 0,
+      "duplicate_uuids": 0,
+      "unique_uuids": 0,
+      "first_page_uuids": [],
+      "required_pages_first_found": 1,
+      "zero_results": true
+    },
+    {
+      "window": 13,
+      "query": "company_results",
+      "nominal_after_utc": "2026-10-23T05:30:00+00:00",
+      "nominal_before_utc": "2026-10-23T06:00:00+00:00",
+      "parameters": {
+        "search": "earnings|guidance",
+        "language": "en",
+        "limit": 3,
+        "sort": "published_at",
+        "published_after": "2026-10-23T05:29:00",
+        "published_before": "2026-10-23T06:00:00",
+        "symbols": "AAPL,MSFT,NVDA",
+        "filter_entities": "true"
+      },
+      "state": "complete",
+      "checkpoint_advance": true,
+      "pages": [
+        {
+          "found": 0,
+          "returned": 0,
+          "page": 1,
+          "limit": 3
+        }
+      ],
+      "new_uuids": 0,
+      "duplicate_uuids": 0,
+      "unique_uuids": 0,
+      "first_page_uuids": [],
+      "required_pages_first_found": 1,
+      "zero_results": true
+    },
+    {
+      "window": 13,
+      "query": "company_changes",
+      "nominal_after_utc": "2026-10-23T05:30:00+00:00",
+      "nominal_before_utc": "2026-10-23T06:00:00+00:00",
+      "parameters": {
+        "search": "acquisition|merger|contract|\"regulatory approval\"",
+        "language": "en",
+        "limit": 3,
+        "sort": "published_at",
+        "published_after": "2026-10-23T05:29:00",
+        "published_before": "2026-10-23T06:00:00",
+        "symbols": "AAPL,MSFT,NVDA",
+        "filter_entities": "true"
+      },
+      "state": "complete",
+      "checkpoint_advance": true,
+      "pages": [
+        {
+          "found": 0,
+          "returned": 0,
+          "page": 1,
+          "limit": 3
+        }
+      ],
+      "new_uuids": 0,
+      "duplicate_uuids": 0,
+      "unique_uuids": 0,
+      "first_page_uuids": [],
+      "required_pages_first_found": 1,
+      "zero_results": true
+    },
+    {
+      "window": 14,
+      "query": "company_results",
+      "nominal_after_utc": "2026-10-23T06:00:00+00:00",
+      "nominal_before_utc": "2026-10-23T06:30:00+00:00",
+      "parameters": {
+        "search": "earnings|guidance",
+        "language": "en",
+        "limit": 3,
+        "sort": "published_at",
+        "published_after": "2026-10-23T05:59:00",
+        "published_before": "2026-10-23T06:30:00",
+        "symbols": "AAPL,MSFT,NVDA",
+        "filter_entities": "true"
+      },
+      "state": "failed",
+      "checkpoint_advance": false,
+      "pages": [],
+      "new_uuids": 0,
+      "duplicate_uuids": 0,
+      "unique_uuids": 0
+    },
+    {
+      "window": 14,
+      "query": "company_changes",
+      "nominal_after_utc": "2026-10-23T06:00:00+00:00",
+      "nominal_before_utc": "2026-10-23T06:30:00+00:00",
+      "parameters": {
+        "search": "acquisition|merger|contract|\"regulatory approval\"",
+        "language": "en",
+        "limit": 3,
+        "sort": "published_at",
+        "published_after": "2026-10-23T05:59:00",
+        "published_before": "2026-10-23T06:30:00",
+        "symbols": "AAPL,MSFT,NVDA",
+        "filter_entities": "true"
+      },
+      "state": "skipped",
+      "checkpoint_advance": false,
+      "pages": [],
+      "new_uuids": 0,
+      "duplicate_uuids": 0,
+      "unique_uuids": 0,
+      "skip_reason": "previous_collection_failed"
+    },
+    {
+      "window": 15,
+      "query": "company_results",
+      "nominal_after_utc": "2026-10-23T06:30:00+00:00",
+      "nominal_before_utc": "2026-10-23T07:00:00+00:00",
+      "parameters": {
+        "search": "earnings|guidance",
+        "language": "en",
+        "limit": 3,
+        "sort": "published_at",
+        "published_after": "2026-10-23T06:29:00",
+        "published_before": "2026-10-23T07:00:00",
+        "symbols": "AAPL,MSFT,NVDA",
+        "filter_entities": "true"
+      },
+      "state": "skipped",
+      "checkpoint_advance": false,
+      "pages": [],
+      "new_uuids": 0,
+      "duplicate_uuids": 0,
+      "unique_uuids": 0,
+      "skip_reason": "previous_collection_failed"
+    },
+    {
+      "window": 15,
+      "query": "company_changes",
+      "nominal_after_utc": "2026-10-23T06:30:00+00:00",
+      "nominal_before_utc": "2026-10-23T07:00:00+00:00",
+      "parameters": {
+        "search": "acquisition|merger|contract|\"regulatory approval\"",
+        "language": "en",
+        "limit": 3,
+        "sort": "published_at",
+        "published_after": "2026-10-23T06:29:00",
+        "published_before": "2026-10-23T07:00:00",
+        "symbols": "AAPL,MSFT,NVDA",
+        "filter_entities": "true"
+      },
+      "state": "skipped",
+      "checkpoint_advance": false,
+      "pages": [],
+      "new_uuids": 0,
+      "duplicate_uuids": 0,
+      "unique_uuids": 0,
+      "skip_reason": "previous_collection_failed"
+    },
+    {
+      "window": 16,
+      "query": "company_results",
+      "nominal_after_utc": "2026-10-23T07:00:00+00:00",
+      "nominal_before_utc": "2026-10-23T07:30:00+00:00",
+      "parameters": {
+        "search": "earnings|guidance",
+        "language": "en",
+        "limit": 3,
+        "sort": "published_at",
+        "published_after": "2026-10-23T06:59:00",
+        "published_before": "2026-10-23T07:30:00",
+        "symbols": "AAPL,MSFT,NVDA",
+        "filter_entities": "true"
+      },
+      "state": "skipped",
+      "checkpoint_advance": false,
+      "pages": [],
+      "new_uuids": 0,
+      "duplicate_uuids": 0,
+      "unique_uuids": 0,
+      "skip_reason": "previous_collection_failed"
+    },
+    {
+      "window": 16,
+      "query": "company_changes",
+      "nominal_after_utc": "2026-10-23T07:00:00+00:00",
+      "nominal_before_utc": "2026-10-23T07:30:00+00:00",
+      "parameters": {
+        "search": "acquisition|merger|contract|\"regulatory approval\"",
+        "language": "en",
+        "limit": 3,
+        "sort": "published_at",
+        "published_after": "2026-10-23T06:59:00",
+        "published_before": "2026-10-23T07:30:00",
+        "symbols": "AAPL,MSFT,NVDA",
+        "filter_entities": "true"
+      },
+      "state": "skipped",
+      "checkpoint_advance": false,
+      "pages": [],
+      "new_uuids": 0,
+      "duplicate_uuids": 0,
+      "unique_uuids": 0,
+      "skip_reason": "previous_collection_failed"
+    },
+    {
+      "window": 17,
+      "query": "company_results",
+      "nominal_after_utc": "2026-10-23T07:30:00+00:00",
+      "nominal_before_utc": "2026-10-23T08:00:00+00:00",
+      "parameters": {
+        "search": "earnings|guidance",
+        "language": "en",
+        "limit": 3,
+        "sort": "published_at",
+        "published_after": "2026-10-23T07:29:00",
+        "published_before": "2026-10-23T08:00:00",
+        "symbols": "AAPL,MSFT,NVDA",
+        "filter_entities": "true"
+      },
+      "state": "skipped",
+      "checkpoint_advance": false,
+      "pages": [],
+      "new_uuids": 0,
+      "duplicate_uuids": 0,
+      "unique_uuids": 0,
+      "skip_reason": "previous_collection_failed"
+    },
+    {
+      "window": 17,
+      "query": "company_changes",
+      "nominal_after_utc": "2026-10-23T07:30:00+00:00",
+      "nominal_before_utc": "2026-10-23T08:00:00+00:00",
+      "parameters": {
+        "search": "acquisition|merger|contract|\"regulatory approval\"",
+        "language": "en",
+        "limit": 3,
+        "sort": "published_at",
+        "published_after": "2026-10-23T07:29:00",
+        "published_before": "2026-10-23T08:00:00",
+        "symbols": "AAPL,MSFT,NVDA",
+        "filter_entities": "true"
+      },
+      "state": "skipped",
+      "checkpoint_advance": false,
+      "pages": [],
+      "new_uuids": 0,
+      "duplicate_uuids": 0,
+      "unique_uuids": 0,
+      "skip_reason": "previous_collection_failed"
+    },
+    {
+      "window": 18,
+      "query": "company_results",
+      "nominal_after_utc": "2026-10-23T08:00:00+00:00",
+      "nominal_before_utc": "2026-10-23T08:30:00+00:00",
+      "parameters": {
+        "search": "earnings|guidance",
+        "language": "en",
+        "limit": 3,
+        "sort": "published_at",
+        "published_after": "2026-10-23T07:59:00",
+        "published_before": "2026-10-23T08:30:00",
+        "symbols": "AAPL,MSFT,NVDA",
+        "filter_entities": "true"
+      },
+      "state": "skipped",
+      "checkpoint_advance": false,
+      "pages": [],
+      "new_uuids": 0,
+      "duplicate_uuids": 0,
+      "unique_uuids": 0,
+      "skip_reason": "previous_collection_failed"
+    },
+    {
+      "window": 18,
+      "query": "company_changes",
+      "nominal_after_utc": "2026-10-23T08:00:00+00:00",
+      "nominal_before_utc": "2026-10-23T08:30:00+00:00",
+      "parameters": {
+        "search": "acquisition|merger|contract|\"regulatory approval\"",
+        "language": "en",
+        "limit": 3,
+        "sort": "published_at",
+        "published_after": "2026-10-23T07:59:00",
+        "published_before": "2026-10-23T08:30:00",
+        "symbols": "AAPL,MSFT,NVDA",
+        "filter_entities": "true"
+      },
+      "state": "skipped",
+      "checkpoint_advance": false,
+      "pages": [],
+      "new_uuids": 0,
+      "duplicate_uuids": 0,
+      "unique_uuids": 0,
+      "skip_reason": "previous_collection_failed"
+    },
+    {
+      "window": "morning",
+      "query": "macro_policy",
+      "nominal_after_utc": "2026-10-21T22:30:00+00:00",
+      "nominal_before_utc": "2026-10-22T22:30:00+00:00",
+      "parameters": {
+        "search": "\"Federal Reserve\"|\"interest rate\"",
+        "language": "en",
+        "limit": 3,
+        "sort": "published_at",
+        "published_after": "2026-10-21T22:29:00",
+        "published_before": "2026-10-22T22:30:00"
+      },
+      "state": "skipped",
+      "checkpoint_advance": false,
+      "pages": [],
+      "new_uuids": 0,
+      "duplicate_uuids": 0,
+      "unique_uuids": 0,
+      "skip_reason": "previous_collection_failed"
+    },
+    {
+      "window": "morning",
+      "query": "macro_indicators",
+      "nominal_after_utc": "2026-10-21T22:30:00+00:00",
+      "nominal_before_utc": "2026-10-22T22:30:00+00:00",
+      "parameters": {
+        "search": "inflation|CPI|employment|payroll",
+        "language": "en",
+        "limit": 3,
+        "sort": "published_at",
+        "published_after": "2026-10-21T22:29:00",
+        "published_before": "2026-10-22T22:30:00"
+      },
+      "state": "skipped",
+      "checkpoint_advance": false,
+      "pages": [],
+      "new_uuids": 0,
+      "duplicate_uuids": 0,
+      "unique_uuids": 0,
+      "skip_reason": "previous_collection_failed"
+    }
+  ],
+  "articles": [
+    {
+      "uuid": "e2198f08-eaf8-4888-9e0a-40d1cc986568",
+      "url": "https://www2.stockmarketwatch.com/stock-market-news/global-markets-retreat-on-ai-spending-jitters-and-middle-east-conflict/73458/",
+      "source": "thestockmarketwatch.com",
+      "published_at": "2026-10-22T21:11:22+00:00",
+      "query": "company_results",
+      "title_chars": 70,
+      "description_chars": 152,
+      "snippet_chars": 163,
+      "field_states": {
+        "title": "present",
+        "description": "present",
+        "snippet": "present",
+        "published_at": "in_window"
+      },
+      "selected_entities": [
+        {
+          "symbol": "AAPL",
+          "name": "Apple Inc."
+        }
+      ],
+      "eligible_for_review": true,
+      "evidence_signals": {
+        "subject_name_present": false,
+        "change_verb_present": false,
+        "period_or_date_present": true,
+        "number_present": false,
+        "condition_marker_present": false,
+        "classification": "lexical_presence_only_not_fact_validation"
+      },
+      "observations": [
+        {
+          "window": 1,
+          "query": "company_results"
+        }
+      ]
+    },
+    {
+      "uuid": "eadd6dab-5da0-47eb-a1de-6d3f36566789",
+      "url": "https://theetfbully.com/2026/10/ai-dreams-meet-capital-reality-tech-leads-market-lower/",
+      "source": "theetfbully.com",
+      "published_at": "2026-10-22T20:55:10+00:00",
+      "query": "company_results",
+      "title_chars": 55,
+      "description_chars": 405,
+      "snippet_chars": 163,
+      "field_states": {
+        "title": "present",
+        "description": "present",
+        "snippet": "present",
+        "published_at": "in_window"
+      },
+      "selected_entities": [
+        {
+          "symbol": "NVDA",
+          "name": "NVIDIA Corporation"
+        }
+      ],
+      "eligible_for_review": true,
+      "evidence_signals": {
+        "subject_name_present": false,
+        "change_verb_present": false,
+        "period_or_date_present": false,
+        "number_present": false,
+        "condition_marker_present": false,
+        "classification": "lexical_presence_only_not_fact_validation"
+      },
+      "observations": [
+        {
+          "window": 1,
+          "query": "company_results"
+        }
+      ]
+    },
+    {
+      "uuid": "22b865be-ea15-4129-b2e4-bf4d8647f0cd",
+      "url": "https://www2.stockmarketwatch.com/stock-market-news/nasdaq-plummets-in-worst-session-since-june-as-ai-spending-fears-rattle-markets/73456/",
+      "source": "thestockmarketwatch.com",
+      "published_at": "2026-10-22T20:38:19+00:00",
+      "query": "company_results",
+      "title_chars": 79,
+      "description_chars": 149,
+      "snippet_chars": 163,
+      "field_states": {
+        "title": "present",
+        "description": "present",
+        "snippet": "present",
+        "published_at": "in_window"
+      },
+      "selected_entities": [
+        {
+          "symbol": "NVDA",
+          "name": "NVIDIA Corporation"
+        }
+      ],
+      "eligible_for_review": true,
+      "evidence_signals": {
+        "subject_name_present": false,
+        "change_verb_present": false,
+        "period_or_date_present": true,
+        "number_present": true,
+        "condition_marker_present": false,
+        "classification": "lexical_presence_only_not_fact_validation"
+      },
+      "observations": [
+        {
+          "window": 1,
+          "query": "company_results"
+        }
+      ]
+    },
+    {
+      "uuid": "cc60907e-072c-41af-9b54-b50c7fdffbf3",
+      "url": "https://www2.stockmarketwatch.com/stock-market-news/tech-and-semiconductors-lead-modest-gains-amid-heavy-earnings-volume/73453/",
+      "source": "thestockmarketwatch.com",
+      "published_at": "2026-10-22T20:07:14+00:00",
+      "query": "company_results",
+      "title_chars": 68,
+      "description_chars": 152,
+      "snippet_chars": 163,
+      "field_states": {
+        "title": "present",
+        "description": "present",
+        "snippet": "present",
+        "published_at": "in_window"
+      },
+      "selected_entities": [
+        {
+          "symbol": "NVDA",
+          "name": "NVIDIA Corporation"
+        }
+      ],
+      "eligible_for_review": true,
+      "evidence_signals": {
+        "subject_name_present": false,
+        "change_verb_present": false,
+        "period_or_date_present": true,
+        "number_present": true,
+        "condition_marker_present": false,
+        "classification": "lexical_presence_only_not_fact_validation"
+      },
+      "observations": [
+        {
+          "window": 1,
+          "query": "company_results"
+        }
+      ]
+    },
+    {
+      "uuid": "27943086-0bb3-4f65-956f-f3dcc17bae31",
+      "url": "https://www.cnbc.com/investingclub/2026/10/22/perfect-storm-behind-the-nasdaqs-rout-plus-some-bright-spots-in-the-market.html",
+      "source": "cnbc.com",
+      "published_at": "2026-10-22T18:23:05+00:00",
+      "query": "company_results",
+      "title_chars": 89,
+      "description_chars": 133,
+      "snippet_chars": 161,
+      "field_states": {
+        "title": "present",
+        "description": "present",
+        "snippet": "present",
+        "published_at": "in_window"
+      },
+      "selected_entities": [
+        {
+          "symbol": "NVDA",
+          "name": "NVIDIA Corporation"
+        }
+      ],
+      "eligible_for_review": true,
+      "evidence_signals": {
+        "subject_name_present": false,
+        "change_verb_present": false,
+        "period_or_date_present": false,
+        "number_present": false,
+        "condition_marker_present": false,
+        "classification": "lexical_presence_only_not_fact_validation"
+      },
+      "observations": [
+        {
+          "window": 1,
+          "query": "company_results"
+        }
+      ]
+    },
+    {
+      "uuid": "2ac5fbf1-79ac-407a-bb5e-dd004688ebfd",
+      "url": "https://www2.stockmarketwatch.com/stock-market-news/tech-rout-and-volatility-surge-nasdaq-plummets-as-semiconductor-weakness-weighs-on-markets/73447/",
+      "source": "thestockmarketwatch.com",
+      "published_at": "2026-10-22T18:07:13+00:00",
+      "query": "company_results",
+      "title_chars": 91,
+      "description_chars": 153,
+      "snippet_chars": 163,
+      "field_states": {
+        "title": "present",
+        "description": "present",
+        "snippet": "present",
+        "published_at": "in_window"
+      },
+      "selected_entities": [
+        {
+          "symbol": "NVDA",
+          "name": "NVIDIA Corporation"
+        },
+        {
+          "symbol": "MSFT",
+          "name": "Microsoft Corporation"
+        }
+      ],
+      "eligible_for_review": true,
+      "evidence_signals": {
+        "subject_name_present": false,
+        "change_verb_present": false,
+        "period_or_date_present": true,
+        "number_present": false,
+        "condition_marker_present": false,
+        "classification": "lexical_presence_only_not_fact_validation"
+      },
+      "observations": [
+        {
+          "window": 1,
+          "query": "company_results"
+        }
+      ]
+    },
+    {
+      "uuid": "3b728d26-1bc5-4be4-a0a2-5e5a57f74e5e",
+      "url": "https://www2.stockmarketwatch.com/stock-market-news/tech-sector-sell-off-drags-down-nasdaq-and-sp-500-amid-earnings-volatility/73441/",
+      "source": "thestockmarketwatch.com",
+      "published_at": "2026-10-22T16:07:15+00:00",
+      "query": "company_results",
+      "title_chars": 75,
+      "description_chars": 150,
+      "snippet_chars": 163,
+      "field_states": {
+        "title": "present",
+        "description": "present",
+        "snippet": "present",
+        "published_at": "in_window"
+      },
+      "selected_entities": [
+        {
+          "symbol": "NVDA",
+          "name": "NVIDIA Corporation"
+        },
+        {
+          "symbol": "MSFT",
+          "name": "Microsoft Corporation"
+        }
+      ],
+      "eligible_for_review": true,
+      "evidence_signals": {
+        "subject_name_present": false,
+        "change_verb_present": false,
+        "period_or_date_present": true,
+        "number_present": true,
+        "condition_marker_present": false,
+        "classification": "lexical_presence_only_not_fact_validation"
+      },
+      "observations": [
+        {
+          "window": 1,
+          "query": "company_results"
+        }
+      ]
+    },
+    {
+      "uuid": "317fabdb-8ae2-4ab0-a239-fb1839210041",
+      "url": "https://www.businessinsider.com/stock-market-today-tech-sell-off-meta-tesla-oil-prices-2026-10",
+      "source": "markets.businessinsider.com",
+      "published_at": "2026-10-22T14:08:00+00:00",
+      "query": "company_results",
+      "title_chars": 62,
+      "description_chars": 151,
+      "snippet_chars": 163,
+      "field_states": {
+        "title": "present",
+        "description": "present",
+        "snippet": "present",
+        "published_at": "in_window"
+      },
+      "selected_entities": [
+        {
+          "symbol": "NVDA",
+          "name": "NVIDIA Corporation"
+        }
+      ],
+      "eligible_for_review": true,
+      "evidence_signals": {
+        "subject_name_present": false,
+        "change_verb_present": false,
+        "period_or_date_present": true,
+        "number_present": false,
+        "condition_marker_present": false,
+        "classification": "lexical_presence_only_not_fact_validation"
+      },
+      "observations": [
+        {
+          "window": 1,
+          "query": "company_results"
+        }
+      ]
+    },
+    {
+      "uuid": "62cc132d-86dc-4592-ae18-dba0bbb4fa85",
+      "url": "https://www2.stockmarketwatch.com/stock-market-news/tech-sector-slump-drags-down-major-indexes-as-yields-rebound/73434/",
+      "source": "thestockmarketwatch.com",
+      "published_at": "2026-10-22T14:07:13+00:00",
+      "query": "company_results",
+      "title_chars": 60,
+      "description_chars": 157,
+      "snippet_chars": 163,
+      "field_states": {
+        "title": "present",
+        "description": "present",
+        "snippet": "present",
+        "published_at": "in_window"
+      },
+      "selected_entities": [
+        {
+          "symbol": "MSFT",
+          "name": "Microsoft Corporation"
+        }
+      ],
+      "eligible_for_review": true,
+      "evidence_signals": {
+        "subject_name_present": false,
+        "change_verb_present": false,
+        "period_or_date_present": true,
+        "number_present": true,
+        "condition_marker_present": false,
+        "classification": "lexical_presence_only_not_fact_validation"
+      },
+      "observations": [
+        {
+          "window": 1,
+          "query": "company_results"
+        }
+      ]
+    },
+    {
+      "uuid": "1353d171-56d7-4616-a19d-41739788dd22",
+      "url": "https://www.zerohedge.com/markets/futures-slide-market-runs-out-ai-patience-oil-jumps-saudi-attacks",
+      "source": "zerohedge.com",
+      "published_at": "2026-10-22T12:25:42+00:00",
+      "query": "company_results",
+      "title_chars": 75,
+      "description_chars": 83,
+      "snippet_chars": 163,
+      "field_states": {
+        "title": "present",
+        "description": "present",
+        "snippet": "present",
+        "published_at": "in_window"
+      },
+      "selected_entities": [
+        {
+          "symbol": "AAPL",
+          "name": "Apple Inc."
+        },
+        {
+          "symbol": "NVDA",
+          "name": "NVIDIA Corporation"
+        },
+        {
+          "symbol": "MSFT",
+          "name": "Microsoft Corporation"
+        }
+      ],
+      "eligible_for_review": true,
+      "evidence_signals": {
+        "subject_name_present": false,
+        "change_verb_present": false,
+        "period_or_date_present": false,
+        "number_present": false,
+        "condition_marker_present": false,
+        "classification": "lexical_presence_only_not_fact_validation"
+      },
+      "observations": [
+        {
+          "window": 1,
+          "query": "company_results"
+        }
+      ]
+    },
+    {
+      "uuid": "66571234-756f-41c9-839e-7be4a1d1f762",
+      "url": "https://financefeeds.com/crowdstrike-stock-prediction-239-34-bull-439-39-bear-216-93/",
+      "source": "financefeeds.com",
+      "published_at": "2026-10-22T12:21:31+00:00",
+      "query": "company_results",
+      "title_chars": 56,
+      "description_chars": 157,
+      "snippet_chars": 163,
+      "field_states": {
+        "title": "present",
+        "description": "present",
+        "snippet": "present",
+        "published_at": "in_window"
+      },
+      "selected_entities": [
+        {
+          "symbol": "NVDA",
+          "name": "NVIDIA Corporation"
+        },
+        {
+          "symbol": "MSFT",
+          "name": "Microsoft Corporation"
+        }
+      ],
+      "eligible_for_review": true,
+      "evidence_signals": {
+        "subject_name_present": false,
+        "change_verb_present": false,
+        "period_or_date_present": true,
+        "number_present": true,
+        "condition_marker_present": false,
+        "classification": "lexical_presence_only_not_fact_validation"
+      },
+      "observations": [
+        {
+          "window": 1,
+          "query": "company_results"
+        },
+        {
+          "window": 1,
+          "query": "company_changes"
+        }
+      ]
+    },
+    {
+      "uuid": "7dfeb7ce-5811-4e08-94bf-9b3082f37eae",
+      "url": "https://financefeeds.com/nebius-stock-prediction-171-57-bull-322-33-bear-85-57/",
+      "source": "financefeeds.com",
+      "published_at": "2026-10-22T11:21:31+00:00",
+      "query": "company_results",
+      "title_chars": 50,
+      "description_chars": 158,
+      "snippet_chars": 163,
+      "field_states": {
+        "title": "present",
+        "description": "present",
+        "snippet": "present",
+        "published_at": "in_window"
+      },
+      "selected_entities": [
+        {
+          "symbol": "NVDA",
+          "name": "NVIDIA Corporation"
+        },
+        {
+          "symbol": "MSFT",
+          "name": "Microsoft Corporation"
+        }
+      ],
+      "eligible_for_review": true,
+      "evidence_signals": {
+        "subject_name_present": false,
+        "change_verb_present": false,
+        "period_or_date_present": true,
+        "number_present": true,
+        "condition_marker_present": false,
+        "classification": "lexical_presence_only_not_fact_validation"
+      },
+      "observations": [
+        {
+          "window": 1,
+          "query": "company_results"
+        },
+        {
+          "window": 1,
+          "query": "company_changes"
+        }
+      ]
+    },
+    {
+      "uuid": "d4852c69-503a-4c52-b3a9-ecb8074a9a25",
+      "url": "https://fortune.com/2026/10/22/markets-sell-off-worldwide-further-conflict-looms-middle-east-elon-musk-cuts-capex-guidance/",
+      "source": "fortune.com",
+      "published_at": "2026-10-22T10:10:02+00:00",
+      "query": "company_results",
+      "title_chars": 105,
+      "description_chars": 65,
+      "snippet_chars": 163,
+      "field_states": {
+        "title": "present",
+        "description": "present",
+        "snippet": "present",
+        "published_at": "in_window"
+      },
+      "selected_entities": [
+        {
+          "symbol": "NVDA",
+          "name": "NVIDIA Corporation"
+        }
+      ],
+      "eligible_for_review": true,
+      "evidence_signals": {
+        "subject_name_present": false,
+        "change_verb_present": false,
+        "period_or_date_present": false,
+        "number_present": true,
+        "condition_marker_present": false,
+        "classification": "lexical_presence_only_not_fact_validation"
+      },
+      "observations": [
+        {
+          "window": 1,
+          "query": "company_results"
+        }
+      ]
+    },
+    {
+      "uuid": "1616456d-ef96-4ed1-aeb9-beaf0b035b64",
+      "url": "https://www.cnbc.com/2026/10/23/sk-hynix-solidigm-ipo-.html",
+      "source": "cnbc.com",
+      "published_at": "2026-10-23T00:53:36+00:00",
+      "query": "company_results",
+      "title_chars": 63,
+      "description_chars": 112,
+      "snippet_chars": 163,
+      "field_states": {
+        "title": "present",
+        "description": "present",
+        "snippet": "present",
+        "published_at": "in_window"
+      },
+      "selected_entities": [
+        {
+          "symbol": "NVDA",
+          "name": "NVIDIA Corporation"
+        }
+      ],
+      "eligible_for_review": true,
+      "evidence_signals": {
+        "subject_name_present": false,
+        "change_verb_present": false,
+        "period_or_date_present": true,
+        "number_present": true,
+        "condition_marker_present": false,
+        "classification": "lexical_presence_only_not_fact_validation"
+      },
+      "observations": [
+        {
+          "window": 3,
+          "query": "company_results"
+        }
+      ]
+    },
+    {
+      "uuid": "a30b73ed-2e19-4599-bac2-3f6f83a8de71",
+      "url": "https://www.business-standard.com/technology/tech-news/apple-s-iphone-duo-hits-stores-in-face-of-short-supply-high-demand-126102300125_1.html",
+      "source": "business-standard.com",
+      "published_at": "2026-10-23T03:33:20+00:00",
+      "query": "company_results",
+      "title_chars": 67,
+      "description_chars": 106,
+      "snippet_chars": 161,
+      "field_states": {
+        "title": "present",
+        "description": "present",
+        "snippet": "present",
+        "published_at": "in_window"
+      },
+      "selected_entities": [
+        {
+          "symbol": "AAPL",
+          "name": "Apple Inc."
+        }
+      ],
+      "eligible_for_review": true,
+      "evidence_signals": {
+        "subject_name_present": true,
+        "change_verb_present": false,
+        "period_or_date_present": true,
+        "number_present": true,
+        "condition_marker_present": false,
+        "classification": "lexical_presence_only_not_fact_validation"
+      },
+      "observations": [
+        {
+          "window": 9,
+          "query": "company_results"
+        }
+      ]
+    },
+    {
+      "uuid": "cdb0b6c1-d8a3-48aa-8b52-cb9f24f116bc",
+      "url": "https://www.businessinsider.com/ai-selloff-companies-rethink-ipo-sk-hynix-kospi-2026-10",
+      "source": "businessinsider.com",
+      "published_at": "2026-10-23T04:22:00+00:00",
+      "query": "company_results",
+      "title_chars": 66,
+      "description_chars": 98,
+      "snippet_chars": 163,
+      "field_states": {
+        "title": "present",
+        "description": "present",
+        "snippet": "present",
+        "published_at": "in_window"
+      },
+      "selected_entities": [
+        {
+          "symbol": "NVDA",
+          "name": "NVIDIA Corporation"
+        }
+      ],
+      "eligible_for_review": true,
+      "evidence_signals": {
+        "subject_name_present": false,
+        "change_verb_present": false,
+        "period_or_date_present": false,
+        "number_present": false,
+        "condition_marker_present": false,
+        "classification": "lexical_presence_only_not_fact_validation"
+      },
+      "observations": [
+        {
+          "window": 10,
+          "query": "company_results"
+        }
+      ]
+    },
+    {
+      "uuid": "6ae40d30-cb60-4cad-9dae-a76385756389",
+      "url": "https://economictimes.indiatimes.com/markets/us-stocks/news/japans-nikkei-falls-over-1-as-wall-street-tech-selloff-rattles-markets/articleshow/135133891.cms",
+      "source": "economictimes.indiatimes.com",
+      "published_at": "2026-10-23T04:01:41+00:00",
+      "query": "company_results",
+      "title_chars": 72,
+      "description_chars": 213,
+      "snippet_chars": 163,
+      "field_states": {
+        "title": "present",
+        "description": "present",
+        "snippet": "present",
+        "published_at": "in_window"
+      },
+      "selected_entities": [
+        {
+          "symbol": "NVDA",
+          "name": "NVIDIA Corporation"
+        }
+      ],
+      "eligible_for_review": true,
+      "evidence_signals": {
+        "subject_name_present": false,
+        "change_verb_present": false,
+        "period_or_date_present": false,
+        "number_present": true,
+        "condition_marker_present": false,
+        "classification": "lexical_presence_only_not_fact_validation"
+      },
+      "observations": [
+        {
+          "window": 10,
+          "query": "company_results"
+        }
+      ]
+    }
+  ],
+  "repeat": null,
+  "limitations": [
+    "one historical weekday replay is not live 18-poll or weekday-volume validation",
+    "only complete observed jobs can support this replay day's request demand",
+    "UUID deduplication does not identify the same event across different UUIDs",
+    "late indexing after this run remains unmeasured",
+    "AAPL/MSFT/NVDA are trial symbols, not a confirmed watchlist"
+  ],
+  "error": "HTTP 429; no retry",
+  "unique_uuids": 17,
+  "completed_at_utc": "2026-10-24T12:34:38.299972+00:00"
+}

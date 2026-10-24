@@ -1,0 +1,99 @@
+{
+  "mode": "run",
+  "observed_at_utc": "2026-10-24T17:10:51.963708+00:00",
+  "model": "gpt-5.4-mini",
+  "source": "SEC EDGAR EX-99.1 factual cards; no article body sent",
+  "requests": 3,
+  "all_checks_passed": true,
+  "human_review_required": true,
+  "can_publish": false,
+  "results": [
+    {
+      "case_id": "NVDA-FY27-Q2",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000073/q2fy27pr.htm",
+      "post_preview": "NVIDIA는 2027회계연도 2분기 매출이 962억 달러로 전년 동기 대비 106% 증가했다고 발표했다.\n원문: https://www.sec.gov/Archives/edgar/data/1045810/000104581026000073/q2fy27pr.htm",
+      "review_note_ko": "주체, 회계연도 분기, 매출, 전년 동기 증가율을 사실 카드 그대로 반영했으며, 추가 해석이나 추정은 넣지 않았다.",
+      "weighted_length_estimate": 118,
+      "checks": {
+        "required_facts": true,
+        "no_new_numbers": true,
+        "korean": true,
+        "length": true
+      },
+      "mechanical_checks_passed": true,
+      "human_review_required": true,
+      "can_publish": false,
+      "usage": {
+        "input_tokens": 240,
+        "input_tokens_details": {
+          "cache_write_tokens": 0,
+          "cached_tokens": 0
+        },
+        "output_tokens": 93,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 333
+      },
+      "cost_usd_estimate": 0.0005985
+    },
+    {
+      "case_id": "AAPL-FY26-Q3",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/320193/000032019326000018/a8-kex991q3202606272026.htm",
+      "post_preview": "Apple은 2026회계연도 3분기에 매출 1,094억 달러를 기록해 전년 동기 대비 16% 증가했다고 발표했다.\n원문: https://www.sec.gov/Archives/edgar/data/320193/000032019326000018/a8-kex991q3202606272026.htm",
+      "review_note_ko": "주체, 회계연도 분기, 매출, 전년 동기 증가율을 사실 카드대로 반영했으며, 추가 해석은 넣지 않았다.",
+      "weighted_length_estimate": 125,
+      "checks": {
+        "required_facts": true,
+        "no_new_numbers": true,
+        "korean": true,
+        "length": true
+      },
+      "mechanical_checks_passed": true,
+      "human_review_required": true,
+      "can_publish": false,
+      "usage": {
+        "input_tokens": 241,
+        "input_tokens_details": {
+          "cache_write_tokens": 0,
+          "cached_tokens": 0
+        },
+        "output_tokens": 92,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 333
+      },
+      "cost_usd_estimate": 0.00059475
+    },
+    {
+      "case_id": "MSFT-FY26-Q4",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/789019/000119312526323632/msft-ex99_1.htm",
+      "post_preview": "Microsoft는 2026회계연도 4분기에 매출 900억 달러를 기록해 전년 동기 대비 18% 증가했다.\n원문: https://www.sec.gov/Archives/edgar/data/789019/000119312526323632/msft-ex99_1.htm",
+      "review_note_ko": "주체, 회계연도 분기, 매출, 전년 동기 증가율을 사실 카드대로 반영했으며, 추가 해석이나 전망은 넣지 않았습니다.",
+      "weighted_length_estimate": 116,
+      "checks": {
+        "required_facts": true,
+        "no_new_numbers": true,
+        "korean": true,
+        "length": true
+      },
+      "mechanical_checks_passed": true,
+      "human_review_required": true,
+      "can_publish": false,
+      "usage": {
+        "input_tokens": 239,
+        "input_tokens_details": {
+          "cache_write_tokens": 0,
+          "cached_tokens": 0
+        },
+        "output_tokens": 91,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 330
+      },
+      "cost_usd_estimate": 0.00058875
+    }
+  ]
+}

@@ -1,0 +1,169 @@
+{
+  "provider": "Marketaux",
+  "status": "complete",
+  "window_start": "2026-10-21T22:29:00+00:00",
+  "window_end": "2026-10-22T22:30:00+00:00",
+  "collected_at": "2026-10-24T13:43:26.555127+00:00",
+  "requests": 4,
+  "checkpoint_eligible": true,
+  "error": null,
+  "min_request_interval_seconds": 3.0,
+  "max_retries": 0,
+  "query_reports": [
+    {
+      "query_id": "us_policy",
+      "search": "(\"Federal Reserve\"|FOMC)+(announced|raised|cut|held|decision)",
+      "domains": [
+        "reuters.com",
+        "apnews.com",
+        "cnbc.com"
+      ],
+      "symbols": [],
+      "group_similar": false,
+      "status": "complete",
+      "requests": 1,
+      "error": null,
+      "pages": [
+        {
+          "found": 1,
+          "returned": 1,
+          "page": 1,
+          "limit": 3
+        }
+      ],
+      "responses": [
+        {
+          "status_code": 200,
+          "limit_headers": {
+            "x-usagelimit-limit": "100",
+            "x-usagelimit-remaining": "37",
+            "x-ratelimit-limit": "30",
+            "x-ratelimit-remaining": "29"
+          }
+        }
+      ]
+    },
+    {
+      "query_id": "us_indicators",
+      "search": "(\"U.S.\"|US|\"United States\")+(\"consumer price index\"|\"nonfarm payrolls\"|\"gross domestic product\")+(released|reported|rose|fell)",
+      "domains": [
+        "reuters.com",
+        "apnews.com",
+        "cnbc.com"
+      ],
+      "symbols": [],
+      "group_similar": false,
+      "status": "complete",
+      "requests": 1,
+      "error": null,
+      "pages": [
+        {
+          "found": 0,
+          "returned": 0,
+          "page": 1,
+          "limit": 3
+        }
+      ],
+      "responses": [
+        {
+          "status_code": 200,
+          "limit_headers": {
+            "x-usagelimit-limit": "100",
+            "x-usagelimit-remaining": "36",
+            "x-ratelimit-limit": "30",
+            "x-ratelimit-remaining": "28"
+          }
+        }
+      ]
+    },
+    {
+      "query_id": "company_results",
+      "search": "(\"quarterly results\"|\"financial results\"|\"fiscal quarter\")+(reported|announced)",
+      "domains": [
+        "reuters.com",
+        "businesswire.com",
+        "globenewswire.com"
+      ],
+      "symbols": [
+        "AAPL",
+        "MSFT",
+        "NVDA"
+      ],
+      "group_similar": false,
+      "status": "complete",
+      "requests": 1,
+      "error": null,
+      "pages": [
+        {
+          "found": 0,
+          "returned": 0,
+          "page": 1,
+          "limit": 3
+        }
+      ],
+      "responses": [
+        {
+          "status_code": 200,
+          "limit_headers": {
+            "x-usagelimit-limit": "100",
+            "x-usagelimit-remaining": "35",
+            "x-ratelimit-limit": "30",
+            "x-ratelimit-remaining": "27"
+          }
+        }
+      ]
+    },
+    {
+      "query_id": "company_changes",
+      "search": "\"completed acquisition\"|\"signed agreement\"|\"regulatory approval\"|\"awarded contract\"",
+      "domains": [
+        "reuters.com",
+        "businesswire.com",
+        "globenewswire.com"
+      ],
+      "symbols": [
+        "AAPL",
+        "MSFT",
+        "NVDA"
+      ],
+      "group_similar": false,
+      "status": "complete",
+      "requests": 1,
+      "error": null,
+      "pages": [
+        {
+          "found": 0,
+          "returned": 0,
+          "page": 1,
+          "limit": 3
+        }
+      ],
+      "responses": [
+        {
+          "status_code": 200,
+          "limit_headers": {
+            "x-usagelimit-limit": "100",
+            "x-usagelimit-remaining": "34",
+            "x-ratelimit-limit": "30",
+            "x-ratelimit-remaining": "26"
+          }
+        }
+      ]
+    }
+  ],
+  "articles": [
+    {
+      "provider": "Marketaux",
+      "article_id": "e087f22c-65c4-45d9-acc6-ec98fa45cd2f",
+      "source": "cnbc.com",
+      "url": "https://www.cnbc.com/2026/10/22/norges-bank-nbim-wealth-fund-q3-results.html",
+      "published_at": "2026-10-22T08:32:04+00:00",
+      "retrieved_at": "2026-10-24T13:43:18.043716+00:00",
+      "field_lengths": {
+        "title": 79,
+        "description": 0,
+        "snippet": 161
+      }
+    }
+  ]
+}

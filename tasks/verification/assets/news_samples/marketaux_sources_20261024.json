@@ -1,0 +1,108 @@
+{
+  "as_of_utc": "2026-10-24T12:04:21.054069+00:00",
+  "published_after_utc": "2026-10-17T12:04:21.054069+00:00",
+  "sample_status": "limited_sample",
+  "queries": [
+    {
+      "query": "macro_sources",
+      "parameters": {
+        "search": "\"Federal Reserve\" | \"consumer price index\" | \"unemployment rate\"",
+        "domains": "apnews.com,reuters.com,cnbc.com",
+        "language": "en",
+        "limit": 3,
+        "page": 1,
+        "sort": "published_at",
+        "published_after": "2026-10-17T12:04:21",
+        "published_before": "2026-10-24T12:04:21"
+      },
+      "meta": {
+        "found": 16,
+        "returned": 3,
+        "limit": 3,
+        "page": 1
+      },
+      "incomplete": true
+    },
+    {
+      "query": "company_issuer_sources",
+      "parameters": {
+        "search": "\"NVIDIA\" | \"Microsoft\" | \"Apple\" | \"Meta\" | \"Tesla\"",
+        "domains": "businesswire.com,globenewswire.com",
+        "language": "en",
+        "limit": 3,
+        "page": 1,
+        "sort": "published_at",
+        "published_after": "2026-10-17T12:04:21",
+        "published_before": "2026-10-24T12:04:21"
+      },
+      "meta": {
+        "found": 0,
+        "returned": 0,
+        "limit": 3,
+        "page": 1
+      },
+      "incomplete": false
+    }
+  ],
+  "articles": [
+    {
+      "uuid": "47d41e10-c47f-43e3-b725-1efd0dfd3046",
+      "url": "https://www.cnbc.com/investingclub/2026/10/23/crowdstrikes-alarming-prediction-plus-sell-off-spreads-beyond-tech.html",
+      "source": "cnbc.com",
+      "published_at": "2026-10-23T18:49:56+00:00",
+      "query": "macro_sources",
+      "title_chars": 78,
+      "description_chars": 133,
+      "snippet_chars": 161,
+      "field_states": {
+        "title": "present",
+        "description": "present",
+        "snippet": "present",
+        "published_at": "in_window"
+      },
+      "selected_entities": [
+        {
+          "symbol": "MSFT",
+          "name": "Microsoft Corporation"
+        }
+      ],
+      "eligible_for_review": true
+    },
+    {
+      "uuid": "0489d55f-b016-4f32-a486-7c994059ab08",
+      "url": "https://www.cnbc.com/2026/10/23/bonds-yields-us-treasurys.html",
+      "source": "cnbc.com",
+      "published_at": "2026-10-23T12:12:18+00:00",
+      "query": "macro_sources",
+      "title_chars": 89,
+      "description_chars": 83,
+      "snippet_chars": 163,
+      "field_states": {
+        "title": "present",
+        "description": "present",
+        "snippet": "present",
+        "published_at": "in_window"
+      },
+      "selected_entities": [],
+      "eligible_for_review": true
+    },
+    {
+      "uuid": "22c3f053-a926-47bf-9b8d-d1d66cfccce0",
+      "url": "https://www.cnbc.com/2026/10/23/cnbc-daily-open-ai-spending-elon-musk-bill-ackman-jensen-huang.html",
+      "source": "cnbc.com",
+      "published_at": "2026-10-23T01:42:35+00:00",
+      "query": "macro_sources",
+      "title_chars": 65,
+      "description_chars": 98,
+      "snippet_chars": 163,
+      "field_states": {
+        "title": "present",
+        "description": "present",
+        "snippet": "present",
+        "published_at": "in_window"
+      },
+      "selected_entities": [],
+      "eligible_for_review": true
+    }
+  ]
+}
