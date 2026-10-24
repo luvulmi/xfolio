@@ -4,11 +4,11 @@ XFolio는 현재의 시장 정보와 뉴스를 수집·분석해 X 게시용 브
 
 ## 개발 환경
 
-2026-10-24 [yfinance](docs/research/week3/yfinance_index_collection.md) 지수 조회를 구현하고 실제 응답을 확인했습니다. S&P 500은 `^GSPC`, Nasdaq-100은 `^NDX`로 조회하고 종가로 등락률을 계산합니다. 일반 가격 조회용 API 키는 필요하지 않습니다. 휴장·서머타임·조기 마감 판정에는 `pandas-market-calendars`의 NYSE·NASDAQ 달력을 사용합니다.
+2026-10-24 [yfinance](docs/research/지수_데이터.md) 지수 조회를 구현하고 실제 응답을 확인했습니다. S&P 500은 `^GSPC`, Nasdaq-100은 `^NDX`로 조회하고 종가로 등락률을 계산합니다. 일반 가격 조회용 API 키는 필요하지 않습니다. 휴장·서머타임·조기 마감 판정에는 `pandas-market-calendars`의 NYSE·NASDAQ 달력을 사용합니다.
 
-운영 설계는 [지수 수집과 게시 모드](docs/market_search_and_publishing_modes.md)를 따릅니다. 관리자 승인은 개발·테스트 기간에 적용하고 안정화 후 자동 검증·게시로 전환할 계획입니다. 공개 게시 조건과 오전 자료 도착은 후속 검증입니다.
+운영 설계는 [지수 수집과 게시 모드](docs/운영_정책.md)를 따릅니다. 관리자 승인은 개발·테스트 기간에 적용하고 안정화 후 자동 검증·게시로 전환할 계획입니다. 공개 게시 조건과 오전 자료 도착은 후속 검증입니다.
 
-초기 운영은 [비용 절감 구성](docs/minimum_cost_configuration.md)에 따라 기존 Windows PC·SQLite·로컬 Streamlit·Windows 작업 스케줄러를 사용하도록 정했습니다. 아침 출처 링크는 한 글로 모으고 기업 뉴스는 하루 최대 1회·1개 글입니다. 승인·예약 게시 기능과 Windows 작업 등록은 구현 전입니다.
+초기 운영은 [비용 절감 구성](docs/research/월_비용.md)에 따라 기존 Windows PC·SQLite·로컬 Streamlit·Windows 작업 스케줄러를 사용하도록 정했습니다. 아침 출처 링크는 한 글로 모으고 기업 뉴스는 하루 최대 1회·1개 글입니다. 승인·예약 게시 기능과 Windows 작업 등록은 구현 전입니다.
 
 - Python 3.12
 - `uv`로 의존성 설치 및 명령 실행
@@ -36,7 +36,7 @@ uv run xfolio market-close --json
 
 기본 출력은 두 지수의 완료 거래일 종가·등락률·출처·수집 시각입니다. `--json`은 원본 종가 정밀도, 직전 종가, 미국 거래일, 달력상 마감 시각과 실제 수집 UTC 시각을 포함합니다. JSON의 소수는 문자열로 보존합니다. 종가 화면 표시는 소수 둘째 자리 `HALF_UP` 반올림입니다.
 
-기대한 거래일의 종가가 없거나 한 지수라도 실패하면 종료 코드1과 오류를 표시하고 전체 결과를 보류합니다. 낡은 데이터로 대체하지 않습니다. 조회만 수행하며 X에 게시하거나 예약 작업을 등록하지 않습니다. 수집 계획은 [수집 작업 문서](tasks/market_data_collection.md)를 참고하세요.
+기대한 거래일의 종가가 없거나 한 지수라도 실패하면 종료 코드1과 오류를 표시하고 전체 결과를 보류합니다. 낡은 데이터로 대체하지 않습니다. 조회만 수행하며 X에 게시하거나 예약 작업을 등록하지 않습니다. 상세 계약·검증 범위는 [종가 조회 검증](tasks/verification/지수_종가_조회.md), 오전 도착 시험은 [검증 계획·기록](tasks/verification/지수_오전_도착.md)을 참고하세요.
 
 ## 환경 변수
 
@@ -61,7 +61,6 @@ uv run ruff format --check .
 
 ## 문서와 작업 기록
 
-- `docs/overview.md`: 프로젝트 목표와 개발 범위
-- `docs/weekly_schedule.md`: 스터디 일정
-- `docs/project_structure_and_tech_stack.md`: 이번 구조·스택 선택과 남은 결정
-- `tasks/README.md`: 주제별 작업 문서와 날짜별 진행 기록 안내
+- [프로젝트 문서](docs/README.md): 개요·요구사항·기술·운영 기준과 조사 근거
+- [작업 문서](tasks/README.md): 계획·검증·기록·발표·논의
+- [3주차 발표 자료](tasks/presentations/3주차_기술_조사.md): 기술 선택과 예상 비용
