@@ -194,3 +194,29 @@ def test_cli_saves_idempotently_and_partial_has_nonzero_exit(tmp_path, capsys):
     assert error.value.code == 1
     result = json.loads(capsys.readouterr().out)
     assert result["status"] == "held" and result["posts"] == []
+
+
+def test_cli_news_defaults_to_plan_and_actual_failures_never_echo_token(
+    monkeypatch, capsys
+):
+    args = [
+        "news-check",
+        "--start",
+        "2026-10-22T22:30:00Z",
+        "--end",
+        "2026-10-23T22:30:00Z",
+    ]
+    cli.main(args)
+    plan = json.loads(capsys.readouterr().out)
+    assert plan["network_requests"] == 0 and len(plan["queries"]) == 4
+    monkeypatch.setenv("MARKETAUX_API_TOKEN", "secret-value-for-test")
+
+    def fail(**kwargs):
+        raise ValueError("secret-value-for-test")
+
+    monkeypatch.setattr(cli, "collect_news", fail)
+    with pytest.raises(SystemExit) as error:
+        cli.main(args + ["--run"])
+    assert error.value.code == 1
+    output = capsys.readouterr()
+    assert "secret-value-for-test" not in output.out + output.err
