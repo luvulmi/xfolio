@@ -1,0 +1,2 @@
+# Community Cloud runs from the repository root; dependencies stay in pyproject.toml.
+.[dashboard,cloud]

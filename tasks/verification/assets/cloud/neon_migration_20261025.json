@@ -1,0 +1,1 @@
+{"mode": "run", "observed_at_utc": "2026-10-24T16:26:12.133005+00:00", "status": "passed", "synthetic": true, "can_publish": false, "inserted": false, "roundtrip": true, "deduplicated": true, "migration": {"source_rows": 2, "inserted": 1}}

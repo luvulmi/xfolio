@@ -1,6 +1,20 @@
 # XFolio
 
-XFolio는 현재의 시장 정보와 뉴스를 수집·분석해 X 게시용 브리핑을 만드는 개인 AI 에이전트 프로젝트입니다. 현재는 yfinance로 두 지수의 완료 거래일 종가를 조회하는 CLI를 구현했습니다. 뉴스 수집·AI 분석·X 게시는 아직 구현 전입니다.
+XFolio는 현재의 시장 정보와 뉴스를 수집·분석해 X 게시용 브리핑을 만드는 개인 AI 에이전트 프로젝트입니다. 현재는 yfinance로 두 지수의 완료 거래일 종가를 조회하는 CLI를 구현했습니다. 클라우드 배포용 가상 미리보기·PostgreSQL 저장과 운영자 인증 진입점을 추가했습니다. 실뉴스 수집·AI 분석·승인·X 게시는 이 커밋에 포함하지 않습니다.
+
+## 클라우드 전환 · 2026-10-25
+
+Neon Free PostgreSQL·비공개 Streamlit Community Cloud·Cloud Run Jobs·Cloud Scheduler를 전환 목표로 선택했습니다. 현재 Neon 가상 초안 저장·조회·중복 방지와 SQLite 가상 자료 복사·재실행을 실제 확인했습니다. 관리자 Google OIDC 진입점과 컨테이너는 준비 단계이며 실제 사이트·job·예약·운영 백업은 배포 전입니다. 아래 Windows 로컬 실행은 개발용으로 유지합니다.
+
+```powershell
+uv sync --extra dashboard --extra cloud
+uv run --extra cloud python -m xfolio.cloud
+uv run --env-file .env --extra cloud python -m xfolio.cloud --run --initialize
+```
+
+두 번째 명령은 무통신이며 세 번째부터 실제 DB에 가상 자료를 씁니다. 접속 URL은 Git에서 제외한 `.env`의 `XFOLIO_DATABASE_URL`에 설정합니다. 값과 비밀번호를 로그·채팅에 출력하지 않습니다. 운영 수집 커서·근거·승인·게시 표의 이전과 실제 예약은 후속 구현입니다.
+
+클라우드 관리자 진입점은 `dashboard/cloud_app.py`입니다. [배포·비밀 설정·시험 절차](deploy/cloud/README.md)와 [전환 계획](tasks/plans/클라우드_전환.md), [실행 결과](tasks/logs/2026-10-25_클라우드_전환_준비.md)를 참고하세요. Cloud 비용은 무료 한도 사용을 목표로 하며 실제 전체 청구 $0을 확정한 것은 아닙니다.
 
 ## 개발 환경
 
@@ -8,7 +22,7 @@ XFolio는 현재의 시장 정보와 뉴스를 수집·분석해 X 게시용 브
 
 운영 설계는 [지수 수집과 게시 모드](docs/운영_정책.md)를 따릅니다. 관리자 승인은 개발·테스트 기간에 적용하고 안정화 후 자동 검증·게시로 전환할 계획입니다. 공개 게시 조건과 오전 자료 도착은 후속 검증입니다.
 
-초기 운영은 [비용 절감 구성](docs/research/월_비용.md)에 따라 기존 Windows PC·SQLite·로컬 Streamlit·Windows 작업 스케줄러를 사용하도록 정했습니다. 아침 출처 링크는 한 글로 모으고 기업 뉴스는 하루 최대 1회·1개 글입니다. 승인·예약 게시 기능과 Windows 작업 등록은 구현 전입니다.
+실행·저장·관리자는 위 클라우드 전환을 목표로 하며 기존 Windows 로컬 실행은 개발용으로 유지합니다. 아침 출처 링크는 한 글로 모으고 기업 뉴스는 하루 최대 1회·1개 글입니다. 승인·예약 게시 기능과 클라우드 예약 등록은 구현 전입니다.
 
 - Python 3.12
 - `uv`로 의존성 설치 및 명령 실행
@@ -20,7 +34,7 @@ uv sync
 uv run xfolio status
 ```
 
-`uv.lock`에 기록된 버전으로 환경을 설치합니다. 대시보드 골격을 실행하려면 선택 의존성을 설치합니다.
+`uv.lock`에 기록된 버전으로 환경을 설치합니다. 로컬 가상 미리보기를 실행하려면 선택 의존성을 설치합니다.
 
 ```powershell
 uv sync --extra dashboard

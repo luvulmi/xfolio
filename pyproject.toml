@@ -14,7 +14,8 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-dashboard = ["streamlit"]
+dashboard = ["streamlit[auth]>=1.42,<2"]
+cloud = ["psycopg[binary]>=3.2.9,<4", "certifi"]
 
 [dependency-groups]
 dev = ["pytest", "ruff"]
