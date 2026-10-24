@@ -7,8 +7,10 @@ requires-python = ">=3.12,<3.13"
 dependencies = [
     "httpx",
     "openai",
+    "pandas-market-calendars>=5.5.0",
     "pydantic",
     "pydantic-settings",
+    "yfinance>=1.7.0",
 ]
 
 [project.optional-dependencies]
