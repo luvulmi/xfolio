@@ -1,0 +1,22 @@
+{
+  "observed_at_utc": "2026-10-24T17:03:10.425659+00:00",
+  "roles": [
+    {
+      "role": "xfolio_preview_app",
+      "select_insert_only": true,
+      "schema_create": false,
+      "database_create": false,
+      "privileged_memberships": false
+    },
+    {
+      "role": "xfolio_cloud_smoke",
+      "select_insert_only": true,
+      "schema_create": false,
+      "database_create": false,
+      "privileged_memberships": false
+    }
+  ],
+  "roundtrip": true,
+  "deduplicated": true,
+  "can_publish": false
+}

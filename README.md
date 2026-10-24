@@ -4,7 +4,7 @@ XFolio는 현재의 시장 정보와 뉴스를 수집·분석해 X 게시용 브
 
 ## 클라우드 전환 · 2026-10-25
 
-Neon Free PostgreSQL·비공개 Streamlit Community Cloud·Cloud Run Jobs·Cloud Scheduler를 전환 목표로 선택했습니다. 현재 Neon 가상 초안 저장·조회·중복 방지와 SQLite 가상 자료 복사·재실행을 실제 확인했습니다. 관리자 Google OIDC 진입점과 컨테이너는 준비 단계이며 실제 사이트·job·예약·운영 백업은 배포 전입니다. 아래 Windows 로컬 실행은 개발용으로 유지합니다.
+Neon Free PostgreSQL과 [비공개 관리자 앱](https://xfolio-yuring.streamlit.app/)을 연결했습니다. 본인 Google 로그인·로그아웃 후 접근 차단, 관리자 화면의 가상 초안 저장·조회·중복 방지를 실제 검증했습니다. 앱에는 가상 표 SELECT·INSERT만 가능한 전용 DB 역할을 사용합니다. Cloud Run Jobs·Cloud Scheduler는 전환 목표이며 결제 계정 미연결로 사용자 요청에 따라 보류했습니다. 실뉴스·승인·X 게시·예약·운영 백업은 후속이며 Windows 로컬 실행은 개발용으로 유지합니다.
 
 ```powershell
 uv sync --extra dashboard --extra cloud

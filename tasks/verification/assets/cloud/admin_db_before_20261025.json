@@ -1,0 +1,20 @@
+{
+  "observed_at_utc": "2026-10-24T17:20:10.802079+00:00",
+  "phase": "before",
+  "role": "xfolio_preview_app",
+  "row_count": 2,
+  "partial_present": false,
+  "synthetic_only": true,
+  "versions": [
+    {
+      "id": "26e9d39b74a9",
+      "status": "ready",
+      "posts": 2
+    },
+    {
+      "id": "29d61a356d03",
+      "status": "ready",
+      "posts": 1
+    }
+  ]
+}

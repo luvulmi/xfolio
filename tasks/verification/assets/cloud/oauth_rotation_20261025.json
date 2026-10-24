@@ -1,0 +1,10 @@
+{
+  "observed_at": "2026-10-24T17:37:26.869Z",
+  "new_secret_saved_locally_and_streamlit": true,
+  "new_secret_client_authentication_passed": true,
+  "new_secret_google_login_passed": true,
+  "old_secret_disabled_and_deleted": true,
+  "remaining_secret_count": 1,
+  "remaining_secret_enabled": true,
+  "secrets_in_output": false
+}
