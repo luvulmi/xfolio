@@ -15,7 +15,7 @@
 | 무료 클라우드 전환 | [계획·계약](plans/클라우드_전환.md) · [진행 기록](logs/2026-10-25_클라우드_전환_준비.md) |
 | 지수 수집 | [계획](plans/지수_수집.md) · [종가 조회 검증](verification/지수_종가_조회.md) |
 | 여러 거래일의 오전 도착 | [검증 계획·관측 기록](verification/지수_오전_도착.md), 현재0/5 |
-| 뉴스 수집·아침 미리보기 | [계획](plans/뉴스_수집.md) · [SEC 공시·한국어 비게시 시험](verification/SEC_기업_공시_발견과_요약_시험.md) · [MarketNewsAPI 실기사 표본](verification/MarketNewsAPI_실기사_표본.md) · [발표용 제공처·예산 가안](verification/발표용_뉴스_제공처와_예산_가안.md) · [BLS 파서·제공처 판정·5일 관측](verification/BLS_파서와_제공처_채택.md) · [결정표·동일사건 비교](verification/뉴스_기술_결정과_동일_사건_비교.md) · [구현/예시](verification/뉴스_수집과_아침_미리보기.md) |
+| 뉴스 수집·아침 미리보기 | [현재 두 지수 관련 Marketaux 단일 흐름](discussions/2026-10-25_두_지수_뉴스_단일_흐름.md) · [계획](plans/뉴스_수집.md) · [구현/예시](verification/뉴스_수집과_아침_미리보기.md) · [이전 BLS·SEC·MarketNewsAPI 조사](verification/뉴스_기술_결정과_동일_사건_비교.md) |
 | X 게시 | [계획](plans/X_게시.md) |
 | 기술 조사 | [3주차 조사 계획](plans/3주차_조사_계획.md) · [후속 검증](verification/기술_조사_후속_검증.md) |
 | 개발 일정 | [실측 결과로 확정한30시간 배분과 단계](plans/개발_일정.md) |
@@ -48,5 +48,7 @@
 - [리더 제공 OpenAI 가이드·현재 사용·개선 추천](discussions/2026-10-24_OpenAI_가이드_적용_검토.md)
 - [발표 갱신 위치·뉴스 기술 결정 보완안](discussions/2026-10-25_발표_보완과_뉴스_기술_결정.md)
 - [DB·관리자·수집·예약의 무료 클라우드 전환 조사](discussions/2026-10-25_무료_클라우드_전환.md)
+- [월 5만 원·Marketaux 단일 뉴스 범위](discussions/2026-10-25_예산과_Marketaux_뉴스_범위.md)
+- [두 지수 관련 뉴스 단일 흐름](discussions/2026-10-25_두_지수_뉴스_단일_흐름.md)
 
 작업 계획은 plans/, 시험 방법·결과·근거는 verification/, 날짜별 수행 결과는 logs/, 주차별 발표·대본·이미지는 presentations/, 질문·답변은 discussions/에 둔다. 같은 사실을 복사해서 중복 관리하지 않는다.
