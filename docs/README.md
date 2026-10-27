@@ -2,6 +2,8 @@
 
 프로젝트의 현재 기준과 조사 근거를 관리한다. 구현·검증의 수행 내용은 [작업 문서](../tasks/README.md)에 기록한다.
 
+**10/28 현재:** React/TypeScript·FastAPI·PostgreSQL·Docker/AWS 2주 MVP, 아침과 18시 편성, Telegram 중요 알림. [구체적 개발 순서](../tasks/plans/개발_우선순위.md) · [API/DB·예약·실패 시험 계약](../tasks/verification/2주_MVP_구현_계약.md)
+
 문서 파일명은 한글, 폴더명은 영어 `snake_case`를 사용한다. 조사 자료는 `research/`, 이전 이력은 `archive/`에 둔다.
 
 | 문서 | 역할 |

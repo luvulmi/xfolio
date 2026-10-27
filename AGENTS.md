@@ -11,6 +11,7 @@
 - XFolio는 시장·뉴스 수집 → AI 분석·콘텐츠 생성 → X 게시를 목표로 하는 Python 3.12·`uv` 프로젝트입니다.
 - `docs/프로젝트_개요.md`는 목적, `docs/요구사항.md`는 기능 범위, `docs/운영_정책.md`는 시각·한도·게시 정책, `docs/기술_구성.md`는 현재 기술 선택, `docs/스터디_일정.md`는 스터디 일정의 기준입니다. 설계 초안과 미결정 사항을 확정 요구사항처럼 다루지 마세요.
 - `pyproject.toml`·`uv.lock`은 루트, 애플리케이션 코드는 `src/xfolio/`, 테스트는 `tests/`, 대시보드는 `dashboard/`에 둡니다.
+- 2026-10-28 제품 목표는 React·TypeScript(`frontend/`) + FastAPI(`src/xfolio/api/`) + PostgreSQL + 별도 Python worker(`src/xfolio/jobs/`) + Docker/AWS입니다. 새 디렉터리·기능의 실제 구현 완료로 취급하지 마세요. `dashboard/`는 기존 Streamlit 가상 시험 자산입니다.
 
 ## 테스트 명령
 
@@ -33,8 +34,9 @@
 - `docs/`: 프로젝트 요구사항과 설계 결정을 기록합니다. 문서 파일명은 한글로, 폴더명은 영어 `snake_case`로 작성합니다. 공백 대신 `_`를 사용합니다. `OpenAI`·`yfinance` 같은 고유명사는 유지합니다. 주차별 일정은 현재 요청보다 우선하지 않습니다.
 - `docs/research/`: 주차별 폴더 대신 주제별로 기술·제공처·이용 조건·비용의 근거를 모읍니다. 같은 주제의 기준 문서는 하나만 두고 나머지는 링크로 연결합니다. 이전 기획·대체된 비교안은 `docs/archive/`에 현재 기준과 구별해 보존합니다.
 - `tasks/`: 작업 계획은 `plans/`, 구현 계약·시험 방법·관측 근거는 `verification/`, 실제 수행 결과는 `logs/YYYY-MM-DD_주제.md`, 발표 자료·대본은 `presentations/`, 질문·결정 과정은 `discussions/`에 둡니다. 구현·검증 전용 문서를 `docs/`에 새로 만들지 마세요. 문서명은 한글과 `_`를 사용하고 `tasks/README.md`에 링크를 유지합니다. GitHub Issues를 쓰면 업무 목록을 중복 관리하지 마세요.
-- `src/xfolio/`: `Market Pipeline`, `News Pipeline`, 분석·생성, `Upload Pipeline`의 입출력 경계를 분명히 하세요. 지수 수집은 `yfinance`의 `^GSPC`·`^NDX`를 사용하기로 확정했습니다. 뉴스 제공처는 미정이며 실행·배포는 현재 기술 스택 문서의 Windows 로컬 구성을 따릅니다. 기술 선택을 실제 연동 완료로 취급하지 마세요.
+- `src/xfolio/`: `Market Pipeline`, `News Pipeline`, 분석·생성, `Upload Pipeline`과 API/worker의 경계를 분명히 하세요. 지수는 `yfinance`의 `^GSPC`·`^NDX`, 뉴스 개발 경로는 Marketaux로 선택했고 공개 운영 적합성은 미검증입니다. 배포는 기술 문서의 AWS Lightsail/Docker 목표, Windows는 개발용입니다. 아침과 18시 편성·Telegram 중요 알림을 운영 정책과 대조하고 선택을 실제 연동 완료로 취급하지 마세요.
 - `dashboard/`: 선택 의존성 `streamlit`을 사용합니다. 실행 명령은 `uv run --extra dashboard streamlit run dashboard/app.py`입니다.
+- `frontend/`: 새 React·TypeScript·Vite 관리자 계획입니다. 인증·승인·DB 검사는 FastAPI가 담당하고 브라우저에 공급자/DB/봇 비밀을 넣지 마세요. 실제 생성 시 package manifest·실행·build/검사 방법을 README에 기록하세요.
 - `tests/`: 기능을 구현할 때 외부 API에 의존하지 않는 검증을 추가하세요.
 
 ## 문서 관리

@@ -1,5 +1,7 @@
 # 가상 자료 클라우드 시험 배포
 
+**이전 시험 절차:** 2026-10-28 새 제품 목표는 React/FastAPI·PostgreSQL·Docker/AWS와 Telegram이다. 이 문서는 Streamlit/Neon 가상 시험 및 보류된 GCP smoke의 이력을 보존한다. 새 제품에 그대로 배포하지 않고 [AWS 계획](../../tasks/plans/클라우드_전환.md)을 따른다.
+
 이 절차는 Neon의 가상 초안 저장, Google 로그인으로 보호한 Streamlit 미리보기, Cloud Run 단발성 시험 실행을 위한 것이다. 실제 뉴스 수집·AI·승인·X 게시·예약 백업을 배포한 절차가 아니다. 진행·결과는 [전환 계획](../../tasks/plans/클라우드_전환.md)과 [수행 기록](../../tasks/logs/2026-10-25_클라우드_전환_준비.md)을 따른다.
 
 10/25 실제 관리자: [xfolio-yuring.streamlit.app](https://xfolio-yuring.streamlit.app/), 비공개·Python3.12·본인 Google 계정만 허용. 관리자 화면의 가상 저장·조회·중복 방지를 검증했다. Cloud Run은 결제 계정 미연결로 사용자 요청에 따라 보류했다. 아래 GCP 명령은 실행 완료 기록이 아닌 후속 템플릿이다.

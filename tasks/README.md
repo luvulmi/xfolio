@@ -12,26 +12,31 @@
 
 | 작업 | 계획·검증 |
 | --- | --- |
-| 무료 클라우드 전환 | [계획·계약](plans/클라우드_전환.md) · [진행 기록](logs/2026-10-25_클라우드_전환_준비.md) |
+| 풀스택 2주 MVP | [우선순위](plans/개발_우선순위.md) · [2화면·8API·8저장·18시·Telegram 계약](verification/2주_MVP_구현_계약.md) |
+| AWS 배포 전환 | [단일 VM/Compose 계획](plans/클라우드_전환.md) · [이전 가상 클라우드 시험](logs/2026-10-25_클라우드_전환_준비.md) |
 | 지수 수집 | [계획](plans/지수_수집.md) · [종가 조회 검증](verification/지수_종가_조회.md) |
 | 여러 거래일의 오전 도착 | [검증 계획·관측 기록](verification/지수_오전_도착.md), 현재0/5 |
 | 뉴스 수집·아침 미리보기 | [현재 두 지수 관련 Marketaux 단일 흐름](discussions/2026-10-25_두_지수_뉴스_단일_흐름.md) · [계획](plans/뉴스_수집.md) · [새 질의·간격·비용 시험](verification/두_지수_뉴스_질의와_감시_비용.md) · [구현/예시](verification/뉴스_수집과_아침_미리보기.md) |
 | X 게시 | [계획](plans/X_게시.md) |
 | 기술 조사 | [3주차 조사 계획](plans/3주차_조사_계획.md) · [후속 검증](verification/기술_조사_후속_검증.md) |
-| 개발 일정 | [실측 결과로 확정한30시간 배분과 단계](plans/개발_일정.md) |
+| 개발 일정 | [최신 기획과 선행 구현을 반영한 주차별 일정·30시간 배분](plans/개발_일정.md) |
 | OpenAI 분석·모델/근거/비용 비교 | [계획](plans/OpenAI_분석과_비용_비교.md) · [실측·판정](verification/OpenAI_분석과_제공처_비교.md) |
 
-지수 CLI와 뉴스 수집기·가상 아침 미리보기를 구현했다. 10/25 Neon 가상 초안 왕복·복사와 비공개 관리자 앱의 Google 로그인·화면 저장·중복 방지를 검증했다. Cloud Run은 결제 계정 미연결로 사용자 요청에 따라 보류했다. 실뉴스 저장 이전·승인·X 게시·예약은 후속이다. 검증 문서의 실제 관측과 예정 표를 구분한다.
+10/28 목표는 React·TypeScript·FastAPI·PostgreSQL·Docker/AWS, 아침과 **18시 최대 2뉴스**, 중요 장애의 **Telegram**이다. 기존 Python 수집·가상 미리보기·Neon/Streamlit 인증은 선행 자산이며 새 API/UI·실제 승인·X·worker·Telegram·AWS는 구현 전이다. [결정](discussions/2026-10-28_풀스택_MVP와_18시_뉴스_편성.md)
 
 ## 발표 자료
 
 - [1주차 개발 환경](presentations/1주차_개발_환경.md)
 - [2주차 요구사항](presentations/2주차_요구사항.md) · [발표 대본](presentations/2주차_발표_대본.md)
 - [3주차 화면용 시각 요약·전체 기술 스택 Mermaid·Luna 월 비용](presentations/3주차_기술_조사.md) · [발표 대본·예상 질문](presentations/3주차_발표_대본.md)
+- [4주차 풀스택 스택·18시 뉴스·Telegram·2주 MVP](presentations/4주차_개발_계획.md) · [발표 대본·예상 질문](presentations/4주차_발표_대본.md)
 
 ## 기록과 논의
 
 - [날짜별 작업 기록](logs/README.md)
+- [풀스택 MVP·18시 뉴스·Telegram 확정](discussions/2026-10-28_풀스택_MVP와_18시_뉴스_편성.md)
+- [새 기획과 30시간 범위 반영](logs/2026-10-28_풀스택_MVP_기획_확정.md)
+- [4주차 발표 재구성·개발 우선순위 작성](logs/2026-10-28_4주차_발표와_개발_우선순위.md)
 - [관찰 기업·MarketNewsAPI 실기사·클라우드 비용](logs/2026-10-25_관찰_기업_실기사_클라우드_비용.md)
 - [SEC 공시·OpenAI 초안·발표 마무리](logs/2026-10-25_SEC_공시_요약_발표_마무리.md)
 - [Luna 모델 확정·3주차 발표 정리](logs/2026-10-25_Luna_모델_확정과_3주차_발표_정리.md)
