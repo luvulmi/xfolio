@@ -1,0 +1,31 @@
+{
+  "automation_id": "yfinance",
+  "scheduled_kst": "2026-10-27T07:50:00+09:00",
+  "heartbeat_started_utc": "2026-10-27T14:32:16+00:00",
+  "command_started_utc": "2026-10-27T14:34:25.571784+00:00",
+  "command_started_kst": "2026-10-27T23:34:25.571784+09:00",
+  "finished_utc": "2026-10-27T14:35:04.187918+00:00",
+  "expected_trade_dates": {
+    "NYSE": "2026-10-26",
+    "NASDAQ": "2026-10-26"
+  },
+  "command": [
+    "uv",
+    "run",
+    "xfolio",
+    "market-close",
+    "--json"
+  ],
+  "exit_code": 0,
+  "parse_error": null,
+  "stdout_file": "지수_조회_20261027_233425.json",
+  "stderr": "",
+  "stdout_on_failure": null,
+  "expected_data_valid": true,
+  "morning_success": false,
+  "reason": "late_execution",
+  "retrieved_at": [
+    "2026-10-27T14:35:02.190312Z",
+    "2026-10-27T14:35:03.481192Z"
+  ]
+}
