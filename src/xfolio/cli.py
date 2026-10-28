@@ -66,7 +66,9 @@ def main(argv: Sequence[str] | None = None) -> None:
 
     if args.command == "status":
         print(
-            "지수·뉴스 수집·BLS CPI 파서·수집 커서·가상 미리보기: 구현됨. 실기사 AI·승인·X 게시: 구현 전."
+            "지수·뉴스 수집·BLS CPI 파서·수집 커서·가상 미리보기: 구현됨. "
+            "뉴스 선정 정책·관리자 API/React·DB migration: 초기 구현. "
+            "실기사 AI·운영 승인 검증·X/worker·Telegram·AWS 배포: 연결 전."
         )
     elif args.command == "bls-check":
         if not args.run:

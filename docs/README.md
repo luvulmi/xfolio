@@ -4,6 +4,8 @@
 
 **10/28 현재:** React/TypeScript·FastAPI·PostgreSQL·Docker/AWS 2주 MVP, 아침과 18시 편성, Telegram 중요 알림. [구체적 개발 순서](../tasks/plans/개발_우선순위.md) · [API/DB·예약·실패 시험 계약](../tasks/verification/2주_MVP_구현_계약.md)
 
+상세 기획: [뉴스 선정 사례](../tasks/verification/뉴스_선정_고정_사례.md) · [관리자 화면·승인 API 예시](../tasks/verification/관리자_화면과_승인_API.md). 편성 전체 승인·CLI 수정·저녁 동결 규칙은 요구사항/운영 정책을 기준으로 한다.
+
 문서 파일명은 한글, 폴더명은 영어 `snake_case`를 사용한다. 조사 자료는 `research/`, 이전 이력은 `archive/`에 둔다.
 
 | 문서 | 역할 |

@@ -2,7 +2,7 @@
 
 XFolio는 미국 시장 수집→AI 생성→검토/버전 승인→정시 X 게시→장애 알림을 연결하는 풀스택 포트폴리오입니다. **2026-10-28 목표는 React·TypeScript + FastAPI + PostgreSQL + Docker + AWS**, 아침 최대 3글과 낮 감시 후 **18시 최대 2뉴스**, 중요 오류/한도의 **Telegram Bot 알림**입니다. [확정 요구사항](docs/요구사항.md) · [2주 MVP 일정](tasks/plans/개발_일정.md) · [우선순위](tasks/plans/개발_우선순위.md)
 
-현재 실제 구현은 Python 지수/뉴스 수집·BLS 시험·가상 미리보기·Luna 가상 분석·Neon 가상 저장과 이전 Streamlit 인증입니다. React/FastAPI·새 운영 DB·X·worker·Telegram·AWS 제품 배포는 구현 전입니다. 새 스택 의존성이나 실행 명령을 아직 설치/생성하지 않았으며 아래는 기존 개발 자산의 실행 안내입니다.
+기존 Python 지수/뉴스 수집·BLS 시험·가상 미리보기·Luna 가상 분석·Neon 가상 저장과 이전 Streamlit 인증에 더해, 뉴스 선정 정책과 합성 회귀 사례·React 관리자·FastAPI 인증/조회/승인 초기 코드·운영 DB migration을 작성했습니다. 실제 Google 로그인·PostgreSQL 운영 배포·실뉴스 연결·X·worker·Telegram·AWS 제품 배포의 완료와 구분합니다. [초기 구현 결과](tasks/logs/2026-10-28_뉴스_선정과_관리자_초기_구현.md)
 
 생성·분석 기본 모델은 **`gpt-6-luna`**입니다. CLI의 가상 `ai-preview`도 옵션 생략 시 Luna를 사용하며, 과거 `gpt-5.4-mini` 시험은 비교 기록으로 유지합니다. [모델 선택·실측](docs/research/OpenAI_활용.md)
 
@@ -19,6 +19,44 @@ uv run --env-file .env --extra cloud python -m xfolio.cloud --run --initialize
 두 번째 명령은 무통신이며 세 번째부터 실제 DB에 가상 자료를 씁니다. 접속 URL은 Git에서 제외한 `.env`의 `XFOLIO_DATABASE_URL`에 설정합니다. 값과 비밀번호를 로그·채팅에 출력하지 않습니다. 운영 수집 커서·근거·승인·게시 표의 이전과 실제 예약은 후속 구현입니다.
 
 클라우드 관리자 진입점은 `dashboard/cloud_app.py`입니다. [배포·비밀 설정·시험 절차](deploy/cloud/README.md)와 [전환 계획](tasks/plans/클라우드_전환.md), [실행 결과](tasks/logs/2026-10-25_클라우드_전환_준비.md)를 참고하세요. Cloud 비용은 무료 한도 사용을 목표로 하며 실제 전체 청구 $0을 확정한 것은 아닙니다.
+
+## React·FastAPI 초기 관리자
+
+Python 의존성은 `uv sync`, 프론트는 Node.js 22에서 설치합니다.
+
+```powershell
+uv sync
+uv run uvicorn xfolio.api.app:app --host 127.0.0.1 --port 8000
+```
+
+별도 터미널에서 다음을 실행합니다.
+
+```powershell
+cd frontend
+npm ci
+npm run dev
+npm test -- --run
+npm run build
+```
+
+Vite의 `/api` 요청은 로컬 `127.0.0.1:8000`으로 전달합니다. 설정이 없는 API는 503으로 차단됩니다. 로그인 성공·운영 데이터·승인 결과를 가짜로 만드는 개발 로그인 경로는 제공하지 않습니다. 실제 Google 로그인에는 같은 origin의 HTTPS 진입점과 등록된 callback이 필요합니다. 단순 HTTP 개발 서버에서는 Secure 세션 쿠키를 사용하는 전체 로그인 흐름을 완료할 수 없습니다.
+
+`.env.example`의 `XFOLIO_API_DATABASE_URL`(API/worker 역할), `XFOLIO_PUBLIC_ORIGIN`(경로 없는 HTTPS origin), Google client ID/secret, 허용 이메일 목록(`XFOLIO_ALLOWED_EMAILS`, 쉼표 구분), `XFOLIO_API_CURSOR_SECRET`(무작위 32자 이상)을 준비합니다. `XFOLIO_MODE` 기본은 `dry_run`입니다. 비밀 파일은 자동으로 읽지 않으며 필요하면 `uv run --env-file .env uvicorn ...`처럼 명시합니다. 브라우저에는 이 환경변수들을 넣지 않습니다.
+
+새 운영 schema는 기존 `preview_drafts`와 별도입니다. DDL 역할의 `XFOLIO_MIGRATION_DATABASE_URL`을 **별도 초기 개발 DB**에 지정한 뒤 migration을 적용합니다. API가 시작하면서 DDL을 실행하지 않습니다.
+
+```powershell
+uv run alembic upgrade head --sql
+# 대상 DB·권한을 확인한 뒤 실제 migration
+uv run --env-file .env alembic upgrade head
+uv run python -m xfolio.api.export_openapi
+```
+
+`--sql`은 DB에 접속하지 않지만 `XFOLIO_MIGRATION_DATABASE_URL`은 필요합니다. 오프라인 검토만 할 때는 `postgresql+psycopg://offline@localhost/offline` 같은 시험용 URL을 현재 셸에 지정할 수 있습니다. 이 URL로 실제 `upgrade head`를 실행하지 않습니다.
+
+OpenAPI 산출물은 [contracts/openapi.json](contracts/openapi.json), 동작 계약은 [관리자 화면·승인 API](tasks/verification/관리자_화면과_승인_API.md)입니다. 합성 뉴스는 `synthetic=true`·발행 불가를 유지합니다. 조회·승인 API가 X에 전송하지 않으며 worker·실기사 입력/생성·CLI 수정·실제 게시 연결은 후속입니다.
+
+뉴스 정책 회귀 시험은 `uv run pytest tests/test_news_selection.py`로 실행합니다. 중요성/관련성/새 사실 판단은 근거를 검토한 입력을 요구하며 이 구현이 원문에서 의미를 자동 추출한 결과라고 보지 않습니다. PostgreSQL 시험에는 일회용 DB의 `XFOLIO_TEST_DATABASE_URL`을 별도로 명시합니다. 미설정 시 관련 통합 시험은 건너뛰고 메모리 시험과 구분합니다.
 
 ## 개발 환경
 
@@ -72,7 +110,7 @@ uv run xfolio news-check --start 2026-10-22T22:29:00Z --end 2026-10-23T22:30:00Z
 
 ## 자동화 실행 방식
 
-운영 목표는 **Cloud Scheduler가 Cloud Run Jobs의 Python 고정 워크플로를 실행**하는 구성입니다. 뉴스 수집 → 규칙 필터 → 제한된 AI 선정/요약 → 원자료·시각·중복·길이·한도 검사 → 모드별 게시 판단 → 결과 저장 순서입니다. AI가 예약·예산·승인을 변경하거나 직접 임의 행동을 결정하지 않습니다. 기존 OpenAI SDK를 쓰며 별도 에이전트 프레임워크는 추가하지 않습니다. Windows 작업 스케줄러는 이전 로컬 운영안으로, 제품 예약은 아직 등록되지 않았습니다.
+현재 운영 목표는 **AWS Lightsail의 Docker Compose에서 별도 Python worker 한 개가 고정 워크플로를 실행**하는 구성입니다. 뉴스 수집 → 규칙 필터 → 제한된 AI 선정/요약 → 원자료·시각·중복·길이·한도 검사 → 모드별 게시 판단 → 결과 저장 순서입니다. AI가 예약·예산·승인을 변경하거나 직접 임의 행동을 결정하지 않습니다. 기존 OpenAI SDK를 쓰며 별도 에이전트 프레임워크는 추가하지 않습니다. Cloud Scheduler/Cloud Run과 Windows 작업 스케줄러는 이전 검토·시험 이력이며 새 worker는 아직 연결 전입니다.
 
 제품 시간표는 아침 07:00 준비·07:30 기준·08:00 목표·09:00 마감, 낮 09:00~17:00 매시간+17:30 최종 확인·17:45 동결·18:00 발행·18:10 전송 마감입니다. 개발은 dry_run→reviewed, 연속5거래일과 장애/중복 검증 뒤 auto입니다. 현재 새 worker·게시·Telegram은 미구현입니다. [운영 정책](docs/운영_정책.md) · [구현 계약](tasks/verification/2주_MVP_구현_계약.md)
 
