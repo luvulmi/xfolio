@@ -22,6 +22,8 @@ uv run --env-file .env --extra cloud python -m xfolio.cloud --run --initialize
 
 ## React·FastAPI 초기 관리자
 
+로컬 HTTPS·기존 Google 설정의 명시적 재사용은 [개발 도구](scripts/dev/README.md)를 따른다. 실제 Google 로그인은 새 callback 등록과 사용자 로그인 확인이 필요하다. 격리 FastAPI·PostgreSQL·HTTPS의 브라우저 시험은 `frontend/`의 `npm run test:integration`이며 Google 제공자만 모의한다.
+
 Python 의존성은 `uv sync`, 프론트는 Node.js 22에서 설치합니다.
 
 ```powershell
@@ -88,6 +90,8 @@ uv run --extra dashboard streamlit run dashboard/app.py --server.address 127.0.0
 의존성을 설치한 뒤에는 `pwsh -NoProfile -File scripts/run_dashboard.ps1`로 같은 설정을 실행할 수 있습니다. 이 스크립트는 작업 스케줄러에 등록하지 않으며 브라우저 자동 열기·외부 바인딩도 하지 않습니다. 실제 관리자 권한 검증·승인 기능은 R11에 맞춰 별도로 연결합니다.
 
 ## 뉴스 수집과 아침 미리보기
+
+허용 근거의 생성→기계검사→PostgreSQL 검토 대기 초안 연결은 [생성 계약](tasks/verification/허용_실자료_생성_연결.md)에 둔다. `uv run python scripts/experiments/bls_workflow_probe.py`는 기본 무통신 계획이며, `--fetch`와 명시적 loopback 시험 DB를 주면 BLS 실자료 1GET→모의 생성→격리 schema 저장/정리를 시험한다. 유료 AI는 호출하지 않는다. 실제 모델 어댑터는 용도별 권한·가격·입출력 토큰 한도·현재 월 예산 확인이 준비된 호출자만 사용할 수 있다.
 
 ```powershell
 uv run xfolio preview

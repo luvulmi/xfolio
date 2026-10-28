@@ -15,6 +15,7 @@
 | 풀스택 2주 MVP | [우선순위](plans/개발_우선순위.md) · [2화면·8API·8저장·18시·Telegram 계약](verification/2주_MVP_구현_계약.md) |
 | 기획 상세 확정 | [뉴스 선정 고정 사례](verification/뉴스_선정_고정_사례.md) · [관리자 화면·승인 API](verification/관리자_화면과_승인_API.md) · [상세화 결과](logs/2026-10-28_뉴스_선정과_승인_기획_상세화.md) |
 | 뉴스 선정·관리자 초기 구현 | [구현·검증 결과](logs/2026-10-28_뉴스_선정과_관리자_초기_구현.md) · [OpenAPI](../contracts/openapi.json) |
+| PostgreSQL·HTTPS·실자료 연결 | [통합 검증 결과](logs/2026-10-28_통합_검증과_실자료_연결.md) · [로컬 HTTPS](../scripts/dev/README.md) · [생성 계약](verification/허용_실자료_생성_연결.md) |
 | AWS 배포 전환 | [단일 VM/Compose 계획](plans/클라우드_전환.md) · [이전 가상 클라우드 시험](logs/2026-10-25_클라우드_전환_준비.md) |
 | 지수 수집 | [계획](plans/지수_수집.md) · [종가 조회 검증](verification/지수_종가_조회.md) |
 | 여러 거래일의 오전 도착 | [검증 계획·관측 기록](verification/지수_오전_도착.md), 현재1/5 |
