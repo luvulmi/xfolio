@@ -1,0 +1,670 @@
+{
+  "synthetic": true,
+  "can_publish": false,
+  "cases": [
+    {
+      "candidate": {
+        "article_id": "N01",
+        "source": "Fixture News",
+        "url": "https://example.invalid/news/N01",
+        "published_at": "2026-10-28T06:00:00+09:00",
+        "updated_at": null,
+        "collected_at": "2026-10-28T06:05:00+09:00",
+        "evidence_version": "15aa8a2f87f18e358012363aa52edcd785bac77c12af74c69f4dcd684c679629",
+        "evidence_text": "US September consumer prices rose 2.4 percent year over year.",
+        "event_key": "US-CPI:2026-09",
+        "fact_version": "v1",
+        "event_type": "macro",
+        "confirmed": true,
+        "claims": [
+          {
+            "claim_id": "N01-claim",
+            "subject": "US-CPI",
+            "action": "US September consumer prices rose 2.4 percent year over year.",
+            "period": "2026-09",
+            "evidence_span": "US September consumer prices rose 2.4 percent year over year.",
+            "evidence_position": "sentence:1",
+            "value": "2.4",
+            "unit": "percent",
+            "comparison_basis": "year over year"
+          }
+        ],
+        "index_relation": {
+          "reviewed": true,
+          "related": true,
+          "reason": "Documented material event in reviewed index scope",
+          "evidence_ref": "fixture:membership-and-scope",
+          "importance": "material",
+          "impact_scope": "market"
+        },
+        "rights": {
+          "collection": "fixture_only",
+          "storage": "fixture_only",
+          "ai_transfer": "fixture_only",
+          "summary_publication": "fixture_only"
+        },
+        "synthetic": true,
+        "can_publish": false
+      },
+      "context": {
+        "target_date": "2026-10-28",
+        "edition": "AM",
+        "window_start": "2026-10-27T07:30:00+09:00",
+        "prior_facts": {},
+        "approved_facts": {}
+      },
+      "expected": {
+        "disposition": "eligible",
+        "reason_code": "ELIGIBLE_MACRO"
+      }
+    },
+    {
+      "candidate": {
+        "article_id": "N02",
+        "source": "Fixture News",
+        "url": "https://example.invalid/news/N02",
+        "published_at": "2026-10-28T06:20:00+09:00",
+        "updated_at": null,
+        "collected_at": "2026-10-28T06:25:00+09:00",
+        "evidence_version": "b431a3cfa1a41552b0cfc6948e9008e132e5031cdfc4583beff382e965422e57",
+        "evidence_text": "A Q3 2026 revenue was 10 billion USD, up 8 percent year over year.",
+        "event_key": "A:EARNINGS:2026-Q3",
+        "fact_version": "v1",
+        "event_type": "earnings",
+        "confirmed": true,
+        "claims": [
+          {
+            "claim_id": "N02-claim",
+            "subject": "A",
+            "action": "A Q3 2026 revenue was 10 billion USD, up 8 percent year over year.",
+            "period": "2026-Q3",
+            "evidence_span": "A Q3 2026 revenue was 10 billion USD, up 8 percent year over year.",
+            "evidence_position": "sentence:1",
+            "value": "10",
+            "unit": "billion USD",
+            "comparison_basis": "year over year"
+          }
+        ],
+        "index_relation": {
+          "reviewed": true,
+          "related": true,
+          "reason": "Documented material event in reviewed index scope",
+          "evidence_ref": "fixture:membership-and-scope",
+          "importance": "material",
+          "impact_scope": "company"
+        },
+        "rights": {
+          "collection": "fixture_only",
+          "storage": "fixture_only",
+          "ai_transfer": "fixture_only",
+          "summary_publication": "fixture_only"
+        },
+        "synthetic": true,
+        "can_publish": false
+      },
+      "context": {
+        "target_date": "2026-10-28",
+        "edition": "AM",
+        "window_start": "2026-10-27T07:30:00+09:00",
+        "prior_facts": {},
+        "approved_facts": {}
+      },
+      "expected": {
+        "disposition": "eligible",
+        "reason_code": "ELIGIBLE_EARNINGS"
+      }
+    },
+    {
+      "candidate": {
+        "article_id": "N03",
+        "source": "Fixture News",
+        "url": "https://example.invalid/news/N03",
+        "published_at": "2026-10-28T06:30:00+09:00",
+        "updated_at": null,
+        "collected_at": "2026-10-28T06:35:00+09:00",
+        "evidence_version": "920200e22e59f5e631982697e6cc35023a361d1acb9d0f5a5393e5bffee20584",
+        "evidence_text": "An analyst increased a price target by 10 percent.",
+        "event_key": "A:TARGET:ANALYST-1",
+        "fact_version": "v1",
+        "event_type": "analyst_opinion",
+        "confirmed": true,
+        "claims": [
+          {
+            "claim_id": "N03-claim",
+            "subject": "A",
+            "action": "An analyst increased a price target by 10 percent.",
+            "period": "2026-10-28",
+            "evidence_span": "An analyst increased a price target by 10 percent.",
+            "evidence_position": "sentence:1"
+          }
+        ],
+        "index_relation": {
+          "reviewed": true,
+          "related": true,
+          "reason": "Documented material event in reviewed index scope",
+          "evidence_ref": "fixture:membership-and-scope",
+          "importance": "material",
+          "impact_scope": "company"
+        },
+        "rights": {
+          "collection": "fixture_only",
+          "storage": "fixture_only",
+          "ai_transfer": "fixture_only",
+          "summary_publication": "fixture_only"
+        },
+        "synthetic": true,
+        "can_publish": false
+      },
+      "context": {
+        "target_date": "2026-10-28",
+        "edition": "AM",
+        "window_start": "2026-10-27T07:30:00+09:00",
+        "prior_facts": {},
+        "approved_facts": {}
+      },
+      "expected": {
+        "disposition": "exclude",
+        "reason_code": "OPINION_ONLY"
+      }
+    },
+    {
+      "candidate": {
+        "article_id": "N04",
+        "source": "Fixture News",
+        "url": "https://example.invalid/news/N04",
+        "published_at": "2026-10-28T06:40:00+09:00",
+        "updated_at": null,
+        "collected_at": "2026-10-28T06:45:00+09:00",
+        "evidence_version": "ad99578f0d075cc63ecd79a62e8c34c14cfa48a9b44bed3f2c9c76e4647d877c",
+        "evidence_text": "An unnamed source suggests a possible acquisition.",
+        "event_key": "A:M&A:RUMOR-1",
+        "fact_version": "v1",
+        "event_type": "rumor",
+        "confirmed": false,
+        "claims": [
+          {
+            "claim_id": "N04-claim",
+            "subject": "A",
+            "action": "An unnamed source suggests a possible acquisition.",
+            "period": "2026-10-28",
+            "evidence_span": "An unnamed source suggests a possible acquisition.",
+            "evidence_position": "sentence:1"
+          }
+        ],
+        "index_relation": {
+          "reviewed": true,
+          "related": true,
+          "reason": "Documented material event in reviewed index scope",
+          "evidence_ref": "fixture:membership-and-scope",
+          "importance": "material",
+          "impact_scope": "company"
+        },
+        "rights": {
+          "collection": "fixture_only",
+          "storage": "fixture_only",
+          "ai_transfer": "fixture_only",
+          "summary_publication": "fixture_only"
+        },
+        "synthetic": true,
+        "can_publish": false
+      },
+      "context": {
+        "target_date": "2026-10-28",
+        "edition": "AM",
+        "window_start": "2026-10-27T07:30:00+09:00",
+        "prior_facts": {},
+        "approved_facts": {}
+      },
+      "expected": {
+        "disposition": "exclude",
+        "reason_code": "UNCONFIRMED"
+      }
+    },
+    {
+      "candidate": {
+        "article_id": "N05",
+        "source": "Fixture News",
+        "url": "https://example.invalid/news/N05",
+        "published_at": "2026-10-28T10:00:00+09:00",
+        "updated_at": null,
+        "collected_at": "2026-10-28T10:05:00+09:00",
+        "evidence_version": "b431a3cfa1a41552b0cfc6948e9008e132e5031cdfc4583beff382e965422e57",
+        "evidence_text": "A Q3 2026 revenue was 10 billion USD, up 8 percent year over year.",
+        "event_key": "A:EARNINGS:2026-Q3",
+        "fact_version": "v1",
+        "event_type": "earnings",
+        "confirmed": true,
+        "claims": [
+          {
+            "claim_id": "N02-claim",
+            "subject": "A",
+            "action": "A Q3 2026 revenue was 10 billion USD, up 8 percent year over year.",
+            "period": "2026-Q3",
+            "evidence_span": "A Q3 2026 revenue was 10 billion USD, up 8 percent year over year.",
+            "evidence_position": "sentence:1",
+            "value": "10",
+            "unit": "billion USD",
+            "comparison_basis": "year over year"
+          }
+        ],
+        "index_relation": {
+          "reviewed": true,
+          "related": true,
+          "reason": "Documented material event in reviewed index scope",
+          "evidence_ref": "fixture:membership-and-scope",
+          "importance": "material",
+          "impact_scope": "company"
+        },
+        "rights": {
+          "collection": "fixture_only",
+          "storage": "fixture_only",
+          "ai_transfer": "fixture_only",
+          "summary_publication": "fixture_only"
+        },
+        "synthetic": true,
+        "can_publish": false
+      },
+      "context": {
+        "target_date": "2026-10-28",
+        "edition": "PM",
+        "window_start": "2026-10-28T07:30:00+09:00",
+        "prior_facts": {
+          "A:EARNINGS:2026-Q3": [
+            "v1"
+          ]
+        },
+        "approved_facts": {}
+      },
+      "expected": {
+        "disposition": "duplicate",
+        "reason_code": "SAME_EVENT_SAME_FACT"
+      }
+    },
+    {
+      "candidate": {
+        "article_id": "N06",
+        "source": "Fixture News",
+        "url": "https://example.invalid/news/N06",
+        "published_at": "2026-10-28T14:00:00+09:00",
+        "updated_at": null,
+        "collected_at": "2026-10-28T14:05:00+09:00",
+        "evidence_version": "c559614a0b8c12370c42f7ffd0fadbf80c332b87e1c6c77d31368ac961583e75",
+        "evidence_text": "Regulator approved B acquisition T1 on October 28. It is B core business acquisition.",
+        "event_key": "B:ACQUISITION:T1",
+        "fact_version": "v2",
+        "event_type": "acquisition",
+        "confirmed": true,
+        "claims": [
+          {
+            "claim_id": "N06-claim",
+            "subject": "B",
+            "action": "Regulator approved B acquisition T1 on October 28. It is B core business acquisition.",
+            "period": "2026-10-28",
+            "evidence_span": "Regulator approved B acquisition T1 on October 28. It is B core business acquisition.",
+            "evidence_position": "sentence:1"
+          }
+        ],
+        "index_relation": {
+          "reviewed": true,
+          "related": true,
+          "reason": "Documented material event in reviewed index scope",
+          "evidence_ref": "fixture:membership-and-scope",
+          "importance": "material",
+          "impact_scope": "company"
+        },
+        "rights": {
+          "collection": "fixture_only",
+          "storage": "fixture_only",
+          "ai_transfer": "fixture_only",
+          "summary_publication": "fixture_only"
+        },
+        "synthetic": true,
+        "can_publish": false,
+        "material_new_fact": true,
+        "new_fact_reason": "Regulatory approval follows signed agreement."
+      },
+      "context": {
+        "target_date": "2026-10-28",
+        "edition": "PM",
+        "window_start": "2026-10-28T07:30:00+09:00",
+        "prior_facts": {
+          "B:ACQUISITION:T1": [
+            "v1"
+          ]
+        },
+        "approved_facts": {}
+      },
+      "expected": {
+        "disposition": "eligible",
+        "reason_code": "MATERIAL_NEW_FACT"
+      }
+    },
+    {
+      "candidate": {
+        "article_id": "N07",
+        "source": "Fixture News",
+        "url": "https://example.invalid/news/N07",
+        "published_at": null,
+        "updated_at": null,
+        "collected_at": "2026-10-28T06:50:00+09:00",
+        "evidence_version": "5ef293dc3cc2c347b074f0d59c099b933c5d7e8044216ae0e3dc6fadc72ca44e",
+        "evidence_text": "US September prices rose 2.4 percent year over year.",
+        "event_key": "US-CPI:2026-09",
+        "fact_version": "v1",
+        "event_type": "macro",
+        "confirmed": true,
+        "claims": [
+          {
+            "claim_id": "N07-claim",
+            "subject": "US-CPI",
+            "action": "US September prices rose 2.4 percent year over year.",
+            "period": "2026-10-28",
+            "evidence_span": "US September prices rose 2.4 percent year over year.",
+            "evidence_position": "sentence:1"
+          }
+        ],
+        "index_relation": {
+          "reviewed": true,
+          "related": true,
+          "reason": "Documented material event in reviewed index scope",
+          "evidence_ref": "fixture:membership-and-scope",
+          "importance": "material",
+          "impact_scope": "market"
+        },
+        "rights": {
+          "collection": "fixture_only",
+          "storage": "fixture_only",
+          "ai_transfer": "fixture_only",
+          "summary_publication": "fixture_only"
+        },
+        "synthetic": true,
+        "can_publish": false
+      },
+      "context": {
+        "target_date": "2026-10-28",
+        "edition": "AM",
+        "window_start": "2026-10-27T07:30:00+09:00",
+        "prior_facts": {},
+        "approved_facts": {}
+      },
+      "expected": {
+        "disposition": "exclude",
+        "reason_code": "PUBLISHED_TIME_UNKNOWN"
+      }
+    },
+    {
+      "candidate": {
+        "article_id": "N08",
+        "source": "Fixture News",
+        "url": "https://example.invalid/news/N08",
+        "published_at": "2026-10-28T06:50:00+09:00",
+        "updated_at": null,
+        "collected_at": "2026-10-28T06:55:00+09:00",
+        "evidence_version": "d4d0f1cbf4ecae6484bd5efc5d5e333b58f818e77f3982d4455525777fe47d8d",
+        "evidence_text": "A revenue surged.",
+        "event_key": "A:EARNINGS:2026-Q3",
+        "fact_version": "v1",
+        "event_type": "earnings",
+        "confirmed": true,
+        "claims": [
+          {
+            "claim_id": "N08-claim",
+            "subject": "A",
+            "action": "A revenue surged.",
+            "period": null,
+            "evidence_span": "A revenue surged.",
+            "evidence_position": "sentence:1",
+            "value": "10",
+            "unit": null,
+            "comparison_basis": null
+          }
+        ],
+        "index_relation": {
+          "reviewed": true,
+          "related": true,
+          "reason": "Documented material event in reviewed index scope",
+          "evidence_ref": "fixture:membership-and-scope",
+          "importance": "material",
+          "impact_scope": "company"
+        },
+        "rights": {
+          "collection": "fixture_only",
+          "storage": "fixture_only",
+          "ai_transfer": "fixture_only",
+          "summary_publication": "fixture_only"
+        },
+        "synthetic": true,
+        "can_publish": false
+      },
+      "context": {
+        "target_date": "2026-10-28",
+        "edition": "AM",
+        "window_start": "2026-10-27T07:30:00+09:00",
+        "prior_facts": {},
+        "approved_facts": {}
+      },
+      "expected": {
+        "disposition": "exclude",
+        "reason_code": "INSUFFICIENT_EVIDENCE"
+      }
+    },
+    {
+      "candidate": {
+        "article_id": "N09",
+        "source": "Fixture News",
+        "url": "https://example.invalid/news/N09",
+        "published_at": "2026-10-28T06:55:00+09:00",
+        "updated_at": null,
+        "collected_at": "2026-10-28T07:00:00+09:00",
+        "evidence_version": "bd1fb92dcab00df627f1857fa335191149490fcc6c22552355346291f3864f9b",
+        "evidence_text": "US adopted policy P1.",
+        "event_key": "US:POLICY:P1",
+        "fact_version": "v1",
+        "event_type": "macro",
+        "confirmed": true,
+        "claims": [
+          {
+            "claim_id": "N09-claim",
+            "subject": "US",
+            "action": "US adopted policy P1.",
+            "period": "2026-10-28",
+            "evidence_span": "US adopted policy P1.",
+            "evidence_position": "sentence:1"
+          }
+        ],
+        "index_relation": {
+          "reviewed": true,
+          "related": true,
+          "reason": "Documented material event in reviewed index scope",
+          "evidence_ref": "fixture:membership-and-scope",
+          "importance": "material",
+          "impact_scope": "market"
+        },
+        "rights": {
+          "collection": "fixture_only",
+          "storage": "fixture_only",
+          "ai_transfer": "unverified",
+          "summary_publication": "unverified"
+        },
+        "synthetic": true,
+        "can_publish": false
+      },
+      "context": {
+        "target_date": "2026-10-28",
+        "edition": "AM",
+        "window_start": "2026-10-27T07:30:00+09:00",
+        "prior_facts": {},
+        "approved_facts": {}
+      },
+      "expected": {
+        "disposition": "exclude",
+        "reason_code": "RIGHTS_UNVERIFIED"
+      }
+    },
+    {
+      "candidate": {
+        "article_id": "N10",
+        "source": "Fixture News",
+        "url": "https://example.invalid/news/N10",
+        "published_at": "2026-10-28T17:31:00+09:00",
+        "updated_at": null,
+        "collected_at": "2026-10-28T17:40:00+09:00",
+        "evidence_version": "f7a009b85b102d7a5f0e9efdbb841d817928ea866623d63ae08a47a0485b7d9b",
+        "evidence_text": "B adopted policy P2.",
+        "event_key": "B:POLICY:P2",
+        "fact_version": "v1",
+        "event_type": "acquisition",
+        "confirmed": true,
+        "claims": [
+          {
+            "claim_id": "N10-claim",
+            "subject": "B",
+            "action": "B adopted policy P2.",
+            "period": "2026-10-28",
+            "evidence_span": "B adopted policy P2.",
+            "evidence_position": "sentence:1"
+          }
+        ],
+        "index_relation": {
+          "reviewed": true,
+          "related": true,
+          "reason": "Documented material event in reviewed index scope",
+          "evidence_ref": "fixture:membership-and-scope",
+          "importance": "material",
+          "impact_scope": "company"
+        },
+        "rights": {
+          "collection": "fixture_only",
+          "storage": "fixture_only",
+          "ai_transfer": "fixture_only",
+          "summary_publication": "fixture_only"
+        },
+        "synthetic": true,
+        "can_publish": false
+      },
+      "context": {
+        "target_date": "2026-10-28",
+        "edition": "PM",
+        "window_start": "2026-10-28T07:30:00+09:00",
+        "prior_facts": {},
+        "approved_facts": {}
+      },
+      "expected": {
+        "disposition": "exclude",
+        "reason_code": "AFTER_PM_CUTOFF"
+      }
+    },
+    {
+      "candidate": {
+        "article_id": "N11",
+        "source": "Fixture News",
+        "url": "https://example.invalid/news/N11",
+        "published_at": "2026-10-28T14:00:00+09:00",
+        "updated_at": "2026-10-28T17:50:00+09:00",
+        "collected_at": "2026-10-28T17:51:00+09:00",
+        "evidence_version": "b135e1451eff784aeaa73f79ee0013714cf1bca07af89826fcd12b8a04568018",
+        "evidence_text": "Correction: B acquisition T1 remains under review, approval is not complete.",
+        "event_key": "B:ACQUISITION:T1",
+        "fact_version": "v3-correction",
+        "event_type": "acquisition",
+        "confirmed": true,
+        "claims": [
+          {
+            "claim_id": "N11-claim",
+            "subject": "B",
+            "action": "Correction: B acquisition T1 remains under review, approval is not complete.",
+            "period": "2026-10-28",
+            "evidence_span": "Correction: B acquisition T1 remains under review, approval is not complete.",
+            "evidence_position": "sentence:1"
+          }
+        ],
+        "index_relation": {
+          "reviewed": true,
+          "related": true,
+          "reason": "Documented material event in reviewed index scope",
+          "evidence_ref": "fixture:membership-and-scope",
+          "importance": "material",
+          "impact_scope": "company"
+        },
+        "rights": {
+          "collection": "fixture_only",
+          "storage": "fixture_only",
+          "ai_transfer": "fixture_only",
+          "summary_publication": "fixture_only"
+        },
+        "synthetic": true,
+        "can_publish": false,
+        "invalidates_fact_version": "v2"
+      },
+      "context": {
+        "target_date": "2026-10-28",
+        "edition": "PM",
+        "window_start": "2026-10-28T07:30:00+09:00",
+        "prior_facts": {},
+        "approved_facts": {
+          "B:ACQUISITION:T1": [
+            "v2"
+          ]
+        }
+      },
+      "expected": {
+        "disposition": "hold",
+        "reason_code": "APPROVED_FACT_CORRECTED"
+      }
+    },
+    {
+      "candidate": {
+        "article_id": "N12",
+        "source": "Fixture News",
+        "url": "https://example.invalid/news/N12",
+        "published_at": "2026-10-28T15:00:00+09:00",
+        "updated_at": null,
+        "collected_at": "2026-10-28T15:05:00+09:00",
+        "evidence_version": "786d9f18f30195361ead8936b24f715d1bcb8773138a8dc6e57a46e030002c5b",
+        "evidence_text": "US license required for region R chip design software exports from November 4; research is exempt.",
+        "event_key": "US:EXPORT:POLICY-P3",
+        "fact_version": "v1",
+        "event_type": "sector_policy",
+        "confirmed": true,
+        "claims": [
+          {
+            "claim_id": "N12-claim",
+            "subject": "US",
+            "action": "US license required for region R chip design software exports from November 4; research is exempt.",
+            "period": "2026-10-28",
+            "evidence_span": "US license required for region R chip design software exports from November 4; research is exempt.",
+            "evidence_position": "sentence:1",
+            "conditions": "research is exempt"
+          }
+        ],
+        "index_relation": {
+          "reviewed": true,
+          "related": true,
+          "reason": "Documented material event in reviewed index scope",
+          "evidence_ref": "fixture:membership-and-scope",
+          "importance": "material",
+          "impact_scope": "sector"
+        },
+        "rights": {
+          "collection": "fixture_only",
+          "storage": "fixture_only",
+          "ai_transfer": "fixture_only",
+          "summary_publication": "fixture_only"
+        },
+        "synthetic": true,
+        "can_publish": false
+      },
+      "context": {
+        "target_date": "2026-10-28",
+        "edition": "PM",
+        "window_start": "2026-10-28T07:30:00+09:00",
+        "prior_facts": {},
+        "approved_facts": {}
+      },
+      "expected": {
+        "disposition": "eligible",
+        "reason_code": "ELIGIBLE_SECTOR_POLICY"
+      }
+    }
+  ]
+}
