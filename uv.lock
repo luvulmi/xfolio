@@ -1285,6 +1285,7 @@ dashboard = [
 
 [package.dev-dependencies]
 dev = [
+    { name = "cryptography" },
     { name = "pytest" },
     { name = "ruff" },
 ]
@@ -1312,6 +1313,7 @@ provides-extras = ["dashboard", "cloud"]
 
 [package.metadata.requires-dev]
 dev = [
+    { name = "cryptography", specifier = ">=50.0.2" },
     { name = "pytest" },
     { name = "ruff" },
 ]

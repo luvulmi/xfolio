@@ -25,7 +25,11 @@ dashboard = ["streamlit[auth]>=1.42,<2"]
 cloud = ["psycopg[binary]>=3.2.9,<4", "certifi"]
 
 [dependency-groups]
-dev = ["pytest", "ruff"]
+dev = [
+    "cryptography>=50.0.2",
+    "pytest",
+    "ruff",
+]
 
 [project.scripts]
 xfolio = "xfolio.cli:main"
