@@ -68,6 +68,30 @@ describe('운영자 편성 검토', () => {
     expect(await screen.findByRole('button', { name: '편성 전체 승인' })).toBeDisabled();
   });
 
+  it('현재 서버에 기록된 보류 사유를 새 입력과 구분해 표시한다', async () => {
+    location.hash = '#/drafts/edition-local-test';
+    vi.stubGlobal('fetch', vi.fn(async (path: string) => path === '/api/auth/me' ? json(session) : json(sample({ status: 'held', hold_reason: '기간과 비교 기준을 재확인해야 합니다.', allowed_actions: [] }))));
+    openApp();
+    expect(await screen.findByRole('heading', { name: '현재 보류 사유' })).toBeInTheDocument();
+    expect(screen.getByText('기간과 비교 기준을 재확인해야 합니다.')).toBeInTheDocument();
+    expect(screen.getByRole('textbox', { name: '보류 사유' })).toHaveValue('');
+    expect(screen.getByRole('button', { name: '편성 전체 승인' })).toBeDisabled();
+  });
+
+  it('상세 조회 403을 권한 오류로 안내하고 이전 자료의 승인을 막는다', async () => {
+    location.hash = '#/drafts/edition-local-test';
+    let calls = 0;
+    vi.stubGlobal('fetch', vi.fn(async (path: string) => {
+      if (path === '/api/auth/me') return json(session);
+      calls += 1; return calls === 1 ? json(sample()) : json({ error: { code: 'OPERATOR_FORBIDDEN' } }, 403);
+    }));
+    openApp();
+    await screen.findByRole('button', { name: '편성 전체 승인' });
+    fireEvent.click(screen.getByRole('button', { name: /최신 상태 확인/ }));
+    expect(await screen.findByRole('alert')).toHaveTextContent('조회 권한이 없습니다. 승인 동작을 차단했습니다.');
+    expect(screen.getByRole('button', { name: '편성 전체 승인' })).toBeDisabled();
+  });
+
   it('409 뒤 최신 버전만 재조회하며 자동으로 재승인하지 않는다', async () => {
     location.hash = '#/drafts/edition-local-test';
     let gets = 0; const mutations: RequestInit[] = [];

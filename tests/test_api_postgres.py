@@ -148,7 +148,7 @@ def test_approve_hold_old_approve_replay_is_not_reapproval(store):
     assert decide(store, key="k2", action="hold", revision=1)["status"] == "held"
     replay = decide(store)
     assert replay["replayed"] is True and replay["status"] == "held"
-    with pytest.raises(ApiError, match="") as conflict:
+    with pytest.raises(ApiError) as conflict:
         decide(store, key="k3", revision=2)
     assert conflict.value.code == "VALIDATION_BLOCKED"
     with store.engine.connect() as conn:
