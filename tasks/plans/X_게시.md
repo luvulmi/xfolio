@@ -1,7 +1,7 @@
 # X 게시 작업 · 아침/18시 편성
 
 - 갱신: 2026-10-28, Asia/Seoul · 상태: 정책/구현 계약 작성, 실제 전송 미구현
-- 기준: [운영 정책 R05~R15](../../docs/운영_정책.md) · [MVP 계약](../verification/2주_MVP_구현_계약.md)
+- 기준: [운영 정책 R05~R15](../../docs/운영_정책.md) · [MVP 계약](../verification/integration/2주_MVP_구현_계약.md)
 
 ## 완료 조건
 

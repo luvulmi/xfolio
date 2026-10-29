@@ -2,7 +2,7 @@
 
 - 시험 시각: 2026-10-25 01:55 KST(응답 기준 2026-10-24 16:55 UTC)
 - 범위: Free 계정의 인증 API, NVDA·AAPL·MSFT, `press_release`·`news` 각 첫 페이지 3건. 추가로 공식 실적 발표 3건을 날짜·문구로 대조했다.
-- 원자료: [본문·키를 제외한 응답 메타데이터](assets/marketnewsapi_sample_20261025.json). 공개 게시·유료 가입·OpenAI 전송은 하지 않았다.
+- 원자료: [본문·키를 제외한 응답 메타데이터](../assets/news_samples/marketnewsapi_sample_20261025.json). 공개 게시·유료 가입·OpenAI 전송은 하지 않았다.
 
 ## 첫 페이지에서 실제 확인한 것
 

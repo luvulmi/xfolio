@@ -2,7 +2,7 @@
 
 - 작성일: 2026-10-25, Asia/Seoul
 - 상태: 가상 경로·비교 완료. `gpt-6-luna`를 기본 모델로 확정; 실기사 품질·운영 연동은 후속
-- 관련: [가이드 적용 검토](../discussions/2026-10-24_OpenAI_가이드_적용_검토.md) · [현재 OpenAI 조사](../../docs/research/OpenAI_활용.md) · [뉴스·미리보기 계약](../verification/뉴스_수집과_아침_미리보기.md)
+- 관련: [가이드 적용 검토](../discussions/2026-10-24_OpenAI_가이드_적용_검토.md) · [현재 OpenAI 조사](../../docs/research/OpenAI_활용.md) · [뉴스·미리보기 계약](../verification/news/뉴스_수집과_아침_미리보기.md)
 
 ## 목표와 범위
 
@@ -23,4 +23,4 @@
 
 ## 결과와 남은 일
 
-[검증 문서](../verification/OpenAI_분석과_제공처_비교.md)와 [당일 기록](../logs/2026-10-25_OpenAI_분석_비용_비교.md)에 기존 시험 결과를 남겼다. 이후 사용자 결정으로 **Luna를 기본 모델로 확정**하고 CLI·분석 함수 기본값에 반영했다. Web search와 실기사 자동 게시 채택은 별도다. SEC 공시의 Luna 문안 품질은 미검증이다.
+[검증 문서](../verification/ai/OpenAI_분석과_제공처_비교.md)와 [당일 기록](../logs/2026-10-25_OpenAI_분석_비용_비교.md)에 기존 시험 결과를 남겼다. 이후 사용자 결정으로 **Luna를 기본 모델로 확정**하고 CLI·분석 함수 기본값에 반영했다. Web search와 실기사 자동 게시 채택은 별도다. SEC 공시의 Luna 문안 품질은 미검증이다.

@@ -14,7 +14,9 @@ from xfolio.analysis import usage_cost_usd
 from xfolio.compose import weighted_length_estimate
 
 MODEL = "gpt-5.4-mini"
-OUTPUT = Path("tasks/verification/assets/sec_fact_card_preview_20261025.json")
+OUTPUT = Path(
+    "tasks/verification/assets/news_cases/sec_fact_card_preview_20261025.json"
+)
 INSTRUCTIONS = (
     "다음은 SEC EDGAR 공시에서 사람이 대조해 직접 작성한 사실 카드다. "
     "본문 인용·외부 검색 없이 이 카드만으로 과거 실적 발표의 한국어 X 초안 한 문장을 작성한다. "

@@ -2,7 +2,7 @@
 
 - 확인: 2026-10-25, Asia/Seoul
 - 범위: NVDA·AAPL·MSFT의 과거 실적 발표 각 1건. **과거 재생·비게시 시험**이며 실시간 수집 성공을 뜻하지 않는다.
-- 출력: [OpenAI 사용량·초안·기계 검사 JSON](assets/sec_fact_card_preview_20261025.json)
+- 출력: [OpenAI 사용량·초안·기계 검사 JSON](../assets/news_cases/sec_fact_card_preview_20261025.json)
 
 ## 발견 경로와 권리
 
@@ -20,7 +20,7 @@
 
 ## OpenAI 실제 비게시 시험
 
-[실험 스크립트](../../scripts/experiments/sec_fact_card_preview.py)는 위 세 EX-99.1에서 직접 대조한 **주체·분기·매출·전년 동기 증가율의 짧은 사실 카드**만 OpenAI Responses API `gpt-5.4-mini`에 보냈다. `store=False`, 도구 없음, 최대 3회이며 회사 원문 본문·MarketNewsAPI 기사 본문은 전송하지 않았다. 링크는 모델 출력이 아니라 Python이 붙였다. 초안은 `can_publish=false`로 저장했다. [OpenAI 구조화 출력](https://developers.openai.com/api/docs/guides/structured-outputs?api-mode=responses)과 [모델 단가](https://developers.openai.com/api/docs/models/gpt-5.4-mini)를 사용했다.
+[실험 스크립트](../../../scripts/experiments/sec_fact_card_preview.py)는 위 세 EX-99.1에서 직접 대조한 **주체·분기·매출·전년 동기 증가율의 짧은 사실 카드**만 OpenAI Responses API `gpt-5.4-mini`에 보냈다. `store=False`, 도구 없음, 최대 3회이며 회사 원문 본문·MarketNewsAPI 기사 본문은 전송하지 않았다. 링크는 모델 출력이 아니라 Python이 붙였다. 초안은 `can_publish=false`로 저장했다. [OpenAI 구조화 출력](https://developers.openai.com/api/docs/guides/structured-outputs?api-mode=responses)과 [모델 단가](https://developers.openai.com/api/docs/models/gpt-5.4-mini)를 사용했다.
 
 | 회사 | 입력/출력 토큰 | 계산 비용 | 필수 사실·새 숫자·한국어·280 가중 길이 |
 | --- | ---: | ---: | --- |

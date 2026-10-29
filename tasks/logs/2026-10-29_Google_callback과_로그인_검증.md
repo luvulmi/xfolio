@@ -3,7 +3,7 @@
 - 수행일: 2026-10-29, Asia/Seoul
 - 요청: Google callback 등록과 실제 로그인 검증 대행. 저장 직전 추가 확인을 받은 뒤 실행
 - 결과: 로컬 개발 환경의 실제 Google 로그인·세션 유지·로그아웃 검증 완료
-- 관련: [검증 계약](../verification/Google_로그인_실제_검증.md) · [관측 메타데이터](../verification/assets/auth/google_login_20261029.json)
+- 관련: [검증 계약](../verification/admin/Google_로그인_실제_검증.md) · [관측 메타데이터](../verification/assets/auth/google_login_20261029.json)
 
 ## 등록과 실제 확인
 
