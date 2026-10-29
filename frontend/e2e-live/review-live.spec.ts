@@ -12,7 +12,7 @@ test('실제 HTTPS·FastAPI·PostgreSQL 세션으로 조회·합성 차단·보�
   const sessionCookie = cookies.find(cookie => cookie.name === 'xfolio_session');
   expect(sessionCookie).toMatchObject({ secure: true, httpOnly: true, sameSite: 'Lax', path: '/api' });
   expect(cookies.find(cookie => cookie.name === 'xfolio_oidc_flow')).toBeUndefined();
-  await page.getByRole('link', { name: '검토 →' }).click();
+  await page.locator('a[href="#/drafts/browser-pm"]').click();
   await expect(page.getByText('합성 시험 자료 · 실제 게시 예약 불가')).toBeVisible();
   await expect(page.getByRole('button', { name: '편성 전체 승인' })).toBeDisabled();
   await expect(page.getByText('표시 가능한 상세 근거가 없습니다. 연결 근거와 검증 결과를 확인하세요.')).toBeVisible();
@@ -55,5 +55,44 @@ test('실제 HTTPS·FastAPI·PostgreSQL 세션으로 조회·합성 차단·보�
   await expect(page.getByRole('link', { name: 'Google로 로그인' })).toBeVisible();
   expect((await page.request.get('/api/auth/me')).status()).toBe(401);
   expect((await context.cookies()).find(cookie => cookie.name === 'xfolio_session')).toBeUndefined();
+  expect(requests.every(url => url.startsWith(baseURL!))).toBe(true);
+});
+
+test('생성·의미·길이 검사를 거친 CPI 편성을 실제 API에서 승인하고 철회한다', async ({ page, baseURL }) => {
+  // API와 브라우저 시각만 시험용 17:50으로 맞춘다. 외부 게시 도구는 없다.
+  const day = new Date().toLocaleDateString('sv-SE', { timeZone: 'Asia/Seoul' });
+  await page.clock.install({ time: new Date(`${day}T17:50:00+09:00`) });
+  const requests: string[] = [];
+  page.on('request', request => requests.push(request.url()));
+  await page.goto('/');
+  await page.getByRole('link', { name: 'Google로 로그인' }).click();
+  await expect(page.getByRole('heading', { name: '편성 검토' })).toBeVisible();
+  const listing = await (await page.request.get('/api/drafts')).json();
+  const candidate = listing.items.find((row: { id: string }) => row.id !== 'browser-pm');
+  expect(candidate).toBeDefined();
+  await page.goto(`/#/drafts/${candidate.id}`);
+  await expect(page.getByText('검증: 통과')).toBeVisible();
+  await expect(page.locator('.post-heading small')).toHaveText(/\d+ \/ 280/);
+  await expect(page.locator('.post-text')).toContainText('발표일(미국 동부)');
+  await expect(page.locator('.evidence-panel')).toContainText('BLS');
+  const approve = page.getByRole('button', { name: '편성 전체 승인' });
+  await expect(approve).toBeEnabled();
+  const approvedResponse = page.waitForResponse(response => response.url().endsWith(`/api/drafts/${candidate.id}/decision`) && response.request().method() === 'POST');
+  await approve.click();
+  expect((await approvedResponse).status()).toBe(200);
+  await expect(page.getByRole('button', { name: '승인 철회·보류' })).toBeVisible();
+  const scheduled = await (await page.request.get(`/api/drafts/${candidate.id}`)).json();
+  expect(scheduled.status).toBe('scheduled');
+  expect(scheduled.publication.posts).toMatchObject([{ state: 'reserved', x_id: null }]);
+  await page.reload();
+  await expect(page.getByRole('button', { name: '승인 철회·보류' })).toBeVisible();
+  await page.screenshot({ path: 'test-results/live-api-cpi-approved.png', fullPage: true });
+  await page.getByRole('textbox', { name: '보류 사유' }).fill('정상 승인 후 철회 시험');
+  await expect(page.getByRole('button', { name: '승인 철회·보류' })).toBeEnabled();
+  await page.getByRole('button', { name: '승인 철회·보류' }).click();
+  await expect(page.getByRole('heading', { name: '현재 보류 사유' })).toBeVisible();
+  const held = await (await page.request.get(`/api/drafts/${candidate.id}`)).json();
+  expect(held.status).toBe('held');
+  expect(held.publication.posts).toMatchObject([{ state: 'cancelled', x_id: null }]);
   expect(requests.every(url => url.startsWith(baseURL!))).toBe(true);
 });

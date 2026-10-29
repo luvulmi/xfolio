@@ -1,7 +1,7 @@
 """명시적 이용 검토를 통과한 BLS 근거의 생성·기계검사·초안 저장 경계.
 
-실제 조회·모델 client 생성·게시·예약을 수행하지 않는다. 의미/길이 검토 전 초안은
-항상 prepared이고 API에서 발행 승인할 수 없다.
+실제 조회·모델 client 생성·게시·예약을 수행하지 않는다. CPI 전용 의미/길이
+검사를 통과해도 편성 완주 전 단일 초안은 API에서 발행 승인할 수 없다.
 """
 
 import json
@@ -17,6 +17,13 @@ import sqlalchemy as sa
 from pydantic import AwareDatetime, Field
 
 from xfolio.news_contracts import Contract, EvidenceBundle, digest
+from xfolio.news_validation import (
+    PROFILE,
+    DraftValidationError,
+    claim_text_choices,
+    cpi_claim_contract,
+    validate_cpi_generation,
+)
 
 KST = ZoneInfo("Asia/Seoul")
 TEXT_SCOPE = "CPI first PRE narrative; tables excluded"
@@ -148,40 +155,12 @@ def _claim_contract(bundle):
         != {"previous_month_seasonally_adjusted", "12_months_unadjusted"}
     ):
         raise WorkflowError("UNSUPPORTED_CLAIM")
-    required = []
-    for index, claim in enumerate(bundle.event.claims):
-        if (
-            claim.certainty != "confirmed"
-            or claim.subject != "US:CPI-U:all_items"
-            or claim.unit != "percent"
-            or claim.value is None
-            or not claim.period
-            or claim.period != bundle.event.period_or_transaction
-            or not re.fullmatch(r"\d{4}-(?:0[1-9]|1[0-2])", claim.period)
-            or claim.conditions
-            or claim.action not in {"increased", "decreased"}
-            or claim.comparison_basis
-            not in {"previous_month_seasonally_adjusted", "12_months_unadjusted"}
-        ):
-            raise WorkflowError("UNSUPPORTED_CLAIM")
-        required.append(
-            {
-                "claim_id": f"claim-{index}",
-                "required_literals": [
-                    "미국 CPI-U",
-                    claim.period,
-                    claim.value + "%",
-                    "상승" if claim.action == "increased" else "하락",
-                    "전월 대비(계절조정)"
-                    if claim.comparison_basis == "previous_month_seasonally_adjusted"
-                    else "전년 동월 대비(비계절조정)",
-                ],
-                "evidence_span": claim.evidence_span,
-            }
+    try:
+        return cpi_claim_contract(
+            bundle.event.claims, bundle.event.period_or_transaction
         )
-    if not required:
-        raise WorkflowError("CLAIMS_REQUIRED")
-    return required
+    except DraftValidationError as exc:
+        raise WorkflowError(str(exc)) from None
 
 
 def _check_output(output, bundle, required):
@@ -234,8 +213,11 @@ def generate_and_store(
         {
             "source_id": bundle.source.source_id,
             "content_version": bundle.source.content_version,
-            "instruction": "한국어로 확인된 사실만 요약. 필수 표현과 정확한 근거를 보존. 외부 지식/예측/인과/도구 사용 금지.",
-            "claims": required,
+            "instruction": "각 text_ko는 해당 claim의 allowed_texts 중 하나를 그대로 반환. claim_id와 evidence_span을 보존. 외부 지식/예측/인과/도구 사용 금지.",
+            "claims": [
+                {**item, "allowed_texts": list(claim_text_choices(item))}
+                for item in required
+            ],
         },
         ensure_ascii=False,
     )
@@ -268,18 +250,21 @@ def generate_and_store(
     cost = limits.cost(response.input_tokens, response.output_tokens)
     try:
         _check_output(response.output, bundle, required)
-    except WorkflowError as exc:
+        text, weighted_length = validate_cpi_generation(
+            response.output, required, bundle.source.published_at
+        )
+    except (WorkflowError, DraftValidationError) as exc:
         store.finish(request_id, cost, bundle, review, None, now)
         store.fail(request_id, str(exc), now)
-        raise
-    text = " ".join(claim.text_ko for claim in response.output.claims)
+        raise WorkflowError(str(exc)) from None
     source = bundle.source
     draft_payload = {
         "posts": [
             {
                 "position": 1,
                 "kind": "news",
-                "text": text + " 출처: BLS " + source.source_url,
+                "text": text,
+                "weighted_length": weighted_length,
                 "evidence_ids": [
                     digest(source.source_id + ":" + source.content_version)
                 ],
@@ -293,11 +278,13 @@ def generate_and_store(
         "collection_complete": False,
         "validation": {
             "status": "pending",
-            "blocking_reasons": [
-                "SEMANTIC_REVIEW_REQUIRED",
-                "X_WEIGHTED_LENGTH_REQUIRED",
-                "EDITION_COLLECTION_REQUIRED",
-            ],
+            "blocking_reasons": ["EDITION_COLLECTION_REQUIRED"],
+        },
+        "generation_validation": {
+            "profile": PROFILE,
+            "semantic": "passed",
+            "weighted_length": weighted_length,
+            "maximum_weighted_length": 280,
         },
         "mechanical_checks": "passed",
         "human_review_required": True,
@@ -431,6 +418,8 @@ class SQLWorkflowStore:
                             )
                         ),
                         "fact_version": bundle.event.fact_version,
+                        "period": bundle.event.period_or_transaction,
+                        "collection_run_id": source.collection_run_id,
                         "claims": [
                             claim.model_dump(mode="json")
                             for claim in bundle.event.claims

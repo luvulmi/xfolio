@@ -77,6 +77,7 @@ class Post(StrictModel):
     position: int
     kind: Literal["index", "news"]
     text: str
+    weighted_length: int | None = Field(default=None, ge=0)
     evidence_ids: list[str] = []
     evidence: list[dict] = []
     event_key: str | None = None

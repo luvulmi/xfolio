@@ -93,6 +93,10 @@ uv run --extra dashboard streamlit run dashboard/app.py --server.address 127.0.0
 
 허용 근거의 생성→기계검사→PostgreSQL 검토 대기 초안 연결은 [생성 계약](tasks/verification/허용_실자료_생성_연결.md)에 둔다. `uv run python scripts/experiments/bls_workflow_probe.py`는 기본 무통신 계획이며, `--fetch`와 명시적 loopback 시험 DB를 주면 BLS 실자료 1GET→모의 생성→격리 schema 저장/정리를 시험한다. 유료 AI는 호출하지 않는다. 실제 모델 어댑터는 용도별 권한·가격·입출력 토큰 한도·현재 월 예산 확인이 준비된 호출자만 사용할 수 있다.
 
+`--fetch --assemble`은 같은 실자료를 CPI 전용 의미·280 가중 글자 검사→PM 편성→관리자 API 목록/상세까지 연결한다. 실제 현재 KST와 17:45 동결 마감을 적용하고 늦은 실행은 검증 실패 상태로 표시한다. 시험 자료의 승인 차단도 확인한 뒤 격리 schema를 정리한다. 예: `uv run python scripts/experiments/bls_workflow_probe.py --fetch --assemble --output .cache/bls_reviewed.json` (`XFOLIO_TEST_DATABASE_URL`에 loopback 시험 DB를 명시). 테스트 세션·모의 생성 사용을 결과에 표시하며 실제 Google/유료 모델 성공으로 계산하지 않는다.
+
+제품 연결 함수는 `record_bls_collection`→`generate_and_store`→`assemble_bls_pm`이다. 확인된 BLS CPI 단일 URL·두 수치의 정해진 문형만 지원한다. 출처/발표일·숫자·단위·비교 기준·NFC/길이·수집 버전·권한·동결을 검사하고 새 immutable 편성 버전을 기존 8API에 노출한다. 승인할 때도 근거와 권한을 재검사한다. 현재 Marketaux 전체 편성·AM 지수 연결·범용 의미/이모지 처리는 후속이다. [수행 결과](tasks/logs/2026-10-29_실자료_검사와_관리자_승인_연결.md)
+
 ```powershell
 uv run xfolio preview
 uv run xfolio preview --scenario zero

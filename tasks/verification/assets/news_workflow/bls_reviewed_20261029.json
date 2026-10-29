@@ -1,0 +1,53 @@
+{
+  "observed_at_utc": "2026-10-29T13:15:57.237969+00:00",
+  "source_url": "https://www.bls.gov/news.release/cpi.htm",
+  "source_id": "BLS:CPI:USDL-26-1574",
+  "content_version": "8d4a82258a3a5e9d099b857cefc598ed3aff8c4b4e4ee83d12d30fc918c2f9fd",
+  "published_at_utc": "2026-10-14T12:30:00+00:00",
+  "period": "2026-09",
+  "claims": [
+    {
+      "value": "0.6",
+      "unit": "percent",
+      "comparison_basis": "previous_month_seasonally_adjusted"
+    },
+    {
+      "value": "3.7",
+      "unit": "percent",
+      "comparison_basis": "12_months_unadjusted"
+    }
+  ],
+  "policy_reference": "https://www.bls.gov/bls/linksite.htm#copyright",
+  "permission_review_scope": "CPI first PRE narrative; tables excluded",
+  "input_is_real": true,
+  "generation_is_simulated": true,
+  "synthetic": true,
+  "http_requests": 1,
+  "ai_requests": 0,
+  "actual_ai_cost_krw": 0,
+  "simulated_ledger_amount_krw": "0.2000",
+  "postgresql_roundtrip": true,
+  "schema_cleanup": true,
+  "validation_passed": false,
+  "can_publish": false,
+  "publication_jobs": 1,
+  "target_date_kst": "2026-10-29",
+  "assembled": {
+    "api_listed": true,
+    "api_detail_http": 200,
+    "api_session_is_fixture": true,
+    "status": "prepared",
+    "validation": {
+      "status": "failed",
+      "blocking_reasons": [
+        "PM_FREEZE_DEADLINE_PASSED"
+      ]
+    },
+    "weighted_length": 170,
+    "post_text": "발표일(미국 동부) 2026-10-14. 미국 CPI-U 2026-09 0.6% 상승 전월 대비(계절조정). 미국 CPI-U 2026-09 3.7% 상승 전년 동월 대비(비계절조정). 출처: BLS https://www.bls.gov/news.release/cpi.htm",
+    "approval_http": 409,
+    "approval_block_code": "MODE_BLOCKED",
+    "mode": "dry_run",
+    "x_requests": 0
+  }
+}

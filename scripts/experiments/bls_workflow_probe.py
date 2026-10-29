@@ -1,4 +1,4 @@
-"""BLS 실자료 → 모의 생성 → 실제 격리 PostgreSQL 저장. 유료 AI 호출 없음."""
+"""BLS 실자료→모의 생성→격리 PostgreSQL/관리자 조회 시험. 유료 AI 호출 없음."""
 
 import argparse
 import json
@@ -8,15 +8,20 @@ from datetime import UTC, datetime, timedelta
 from decimal import Decimal
 from pathlib import Path
 from urllib.parse import urlsplit
+from zoneinfo import ZoneInfo
 
 import httpx
 import sqlalchemy as sa
 from alembic import command
 from alembic.config import Config
+from fastapi.testclient import TestClient
 
+from xfolio.api.app import COOKIE, create_app
+from xfolio.api.auth import Settings
 from xfolio.api.store import PostgresStore
 from xfolio.bls import RELEASE_URL, fetch_html, parse_release
 from xfolio.db.schema import content_drafts, publication_jobs, usage_ledger
+from xfolio.news_edition import assemble_bls_pm, record_bls_collection
 from xfolio.news_workflow import (
     GenerationLimits,
     PermissionReview,
@@ -50,9 +55,77 @@ class SimulatedGenerator:
         }
 
 
+def inspect_assembled_api(engine, job_id, now):
+    """격리 시험 세션만 주입한다. 실제 Google 로그인 시험을 대신하지 않는다."""
+    store = object.__new__(PostgresStore)
+    store.engine = engine
+    settings = Settings(
+        origin="https://testserver",
+        google_client_id="fixture",
+        google_client_secret="fixture",
+        allowed_emails=("probe@example.invalid",),
+        cursor_secret=secrets.token_urlsafe(32),
+        mode="dry_run",
+    )
+    token, csrf = secrets.token_urlsafe(32), secrets.token_urlsafe(32)
+    store.put_event(
+        "session",
+        token,
+        {
+            "email": "probe@example.invalid",
+            "display_name": "Isolated source probe",
+            "csrf_token": csrf,
+            "last_seen": now.isoformat(),
+        },
+        now,
+        now + timedelta(hours=1),
+    )
+    with TestClient(
+        create_app(settings=settings, store=store, clock=lambda: now),
+        base_url=settings.origin,
+    ) as api:
+        api.cookies.set(COOKIE, token, path="/api")
+        listing = api.get("/api/drafts")
+        detail = api.get(f"/api/drafts/{job_id}")
+        assert listing.status_code == detail.status_code == 200
+        draft = detail.json()
+        blocked = api.post(
+            f"/api/drafts/{job_id}/decision",
+            headers={
+                "Origin": settings.origin,
+                "X-CSRF-Token": csrf,
+                "Idempotency-Key": "probe-block-check",
+            },
+            json={
+                "action": "approve",
+                "expected_version": 1,
+                "expected_decision_revision": 0,
+            },
+        )
+        assert blocked.status_code == 409
+        return {
+            "api_listed": listing.json()["items"][0]["id"] == job_id,
+            "api_detail_http": detail.status_code,
+            "api_session_is_fixture": True,
+            "status": draft["status"],
+            "validation": draft["validation"],
+            "weighted_length": draft["posts"][0]["weighted_length"],
+            "post_text": draft["posts"][0]["text"],
+            "approval_http": blocked.status_code,
+            "approval_block_code": blocked.json()["error"]["code"],
+            "mode": "dry_run",
+            "x_requests": 0,
+        }
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--fetch", action="store_true")
+    parser.add_argument(
+        "--assemble",
+        action="store_true",
+        help="실제 현재 시각으로 PM 편성 검사·관리자 API 조회·승인 차단까지 확인",
+    )
     parser.add_argument("--output", type=Path)
     args = parser.parse_args()
     if not args.fetch:
@@ -75,7 +148,7 @@ def main():
         "::1",
     } or not address.path.strip("/"):
         parser.exit(2, "명시적인 loopback 시험 DB가 필요합니다.\n")
-    now = datetime.now(UTC)
+    started_at = datetime.now(UTC)
     with httpx.Client(timeout=20, follow_redirects=False) as client:
         bundle = parse_release(
             fetch_html(client, RELEASE_URL),
@@ -83,6 +156,7 @@ def main():
             run_id="explicit-real-input-probe",
         )
     now = datetime.now(UTC)
+    target_date = now.astimezone(ZoneInfo("Asia/Seoul")).date()
     review = PermissionReview(
         **{
             key: getattr(bundle.source, key)
@@ -117,6 +191,10 @@ def main():
         with engine.begin() as connection:
             config.attributes["connection"] = connection
             command.upgrade(config, "head")
+        if args.assemble:
+            record_bls_collection(
+                engine, bundle, started_at=started_at, finished_at=now
+            )
         limits = GenerationLimits(
             max_input_tokens=16000,
             input_krw_per_million=Decimal(200),
@@ -131,7 +209,7 @@ def main():
             store=SQLWorkflowStore(engine),
             limits=limits,
             now=now,
-            target_date=now.date(),
+            target_date=target_date,
             synthetic=True,
         )
         with engine.connect() as connection:
@@ -150,6 +228,18 @@ def main():
                 == 0
             )
             simulated_cost = connection.scalar(sa.select(usage_ledger.c.amount_krw))
+        assembled = None
+        if args.assemble:
+            job_id = assemble_bls_pm(
+                engine,
+                draft_id,
+                collection_run_id=bundle.source.collection_run_id,
+                account_id="isolated-real-source-probe",
+                target_date=target_date,
+                now=now,
+                max_publish_cost_krw="0",
+            )
+            assembled = inspect_assembled_api(engine, job_id, now)
         result = {
             "observed_at_utc": now.isoformat(),
             "source_url": bundle.source.source_url,
@@ -179,7 +269,11 @@ def main():
             "validation_passed": False,
             "can_publish": False,
             "publication_jobs": 0,
+            "target_date_kst": target_date.isoformat(),
+            "assembled": assembled,
         }
+        if assembled:
+            result["publication_jobs"] = 1
     finally:
         engine.dispose()
         with base.engine.begin() as connection:

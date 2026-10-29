@@ -31,7 +31,7 @@ export interface Evidence {
 }
 export interface Draft extends DraftSummary {
   mode: string; synthetic: boolean; frozen_at?: string; validation: { status: string; blocking_reasons: string[] };
-  posts: { position: number; kind: string; text: string; evidence_ids: string[]; evidence?: Evidence[]; weighted_length?: number; }[];
+  posts: { position: number; kind: string; text: string; evidence_ids: string[]; evidence?: Evidence[]; weighted_length?: number | null; }[];
   evidence?: Evidence[]; evidence_bundles?: Evidence[]; allowed_actions: string[];
   publication?: { job_id?: string | null; posts: { position?: number; state?: string; status?: string; x_id?: string; }[] };
 }

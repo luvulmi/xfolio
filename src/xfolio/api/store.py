@@ -144,7 +144,7 @@ class PostgresStore:
             and not row["synthetic"]
             else (
                 ["hold"]
-                if row["status"] in {"validated", "scheduled", "sending"}
+                if row["status"] in {"prepared", "validated", "scheduled", "sending"}
                 else []
             ),
             "publication": {"job_id": row["id"], "posts": []},
@@ -354,6 +354,14 @@ class PostgresStore:
                 )
                 if not secrets.compare_digest(expected_hash, content_hash):
                     raise ApiError("VALIDATION_BLOCKED")
+                if payload.get("assembly_profile") == "bls_cpi_pm_v1":
+                    from xfolio.news_edition import bls_pm_validation
+
+                    reasons, _ = bls_pm_validation(
+                        conn, payload, row["target_date"], now, row["synthetic"]
+                    )
+                    if reasons:
+                        raise ApiError("VALIDATION_BLOCKED")
                 if not payload.get("rights_verified") or not payload.get(
                     "collection_complete"
                 ):
