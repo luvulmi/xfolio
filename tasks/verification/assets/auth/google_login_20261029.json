@@ -1,0 +1,22 @@
+{
+  "checked_at_utc": "2026-10-29T12:57:17+00:00",
+  "client_name": "xfolio-streamlit",
+  "callback_uri": "https://localhost:8443/api/auth/callback",
+  "existing_streamlit_callback_preserved": true,
+  "console_save_confirmed": true,
+  "redirect_uri_mismatch_resolved": true,
+  "certificate_warning_handled_by_user": true,
+  "google_provider_mocked": false,
+  "operator_allowlist_match": true,
+  "authenticated_dashboard_visible": true,
+  "authenticated_after_reload": true,
+  "authorized_active_sessions_before_logout": 1,
+  "absolute_session_lifetime_seconds": 43200,
+  "provider_tokens_in_session_payload": 0,
+  "active_sessions_after_logout": 0,
+  "login_screen_after_logout_reload": true,
+  "post_logout_unauthenticated_me_http": 401,
+  "final_browser_state": "logged_out",
+  "mode": "dry_run",
+  "evidence_kind": "browser UI and local PostgreSQL/HTTPS observations"
+}

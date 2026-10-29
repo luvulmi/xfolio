@@ -104,6 +104,24 @@ def validate_target(target):
     return parts
 
 
+class DevHTTPSServer(ThreadingHTTPServer):
+    """유휴 브라우저 preconnect의 TLS handshake를 연결별 스레드에서 처리한다."""
+
+    def __init__(self, address, handler, tls_context):
+        self.tls_context = tls_context
+        super().__init__(address, handler)
+
+    def process_request_thread(self, request, client_address):
+        try:
+            request.settimeout(5)
+            connection = self.tls_context.wrap_socket(request, server_side=True)
+            connection.settimeout(15)
+        except OSError:
+            self.shutdown_request(request)
+            return
+        super().process_request_thread(connection, client_address)
+
+
 class DevHandler(SimpleHTTPRequestHandler):
     api_target = "http://127.0.0.1:8000"
 
@@ -194,13 +212,12 @@ def make_server(
         raise ValueError("frontend_build_required")
     cert, key = ensure_certificate(cert_dir)
     handler = type("ConfiguredDevHandler", (DevHandler,), {"api_target": api_target})
-    server = ThreadingHTTPServer(
-        ("127.0.0.1", port), partial(handler, directory=str(static_dir))
-    )
     context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
     context.minimum_version = ssl.TLSVersion.TLSv1_2
     context.load_cert_chain(cert, key)
-    server.socket = context.wrap_socket(server.socket, server_side=True)
+    server = DevHTTPSServer(
+        ("127.0.0.1", port), partial(handler, directory=str(static_dir)), context
+    )
     return server, cert
 
 

@@ -16,6 +16,7 @@
 | 기획 상세 확정 | [뉴스 선정 고정 사례](verification/뉴스_선정_고정_사례.md) · [관리자 화면·승인 API](verification/관리자_화면과_승인_API.md) · [상세화 결과](logs/2026-10-28_뉴스_선정과_승인_기획_상세화.md) |
 | 뉴스 선정·관리자 초기 구현 | [구현·검증 결과](logs/2026-10-28_뉴스_선정과_관리자_초기_구현.md) · [OpenAPI](../contracts/openapi.json) |
 | PostgreSQL·HTTPS·실자료 연결 | [통합 검증 결과](logs/2026-10-28_통합_검증과_실자료_연결.md) · [로컬 HTTPS](../scripts/dev/README.md) · [생성 계약](verification/허용_실자료_생성_연결.md) |
+| 실제 Google 로그인 | [callback 등록·세션·로그아웃 검증](verification/Google_로그인_실제_검증.md) |
 | AWS 배포 전환 | [단일 VM/Compose 계획](plans/클라우드_전환.md) · [이전 가상 클라우드 시험](logs/2026-10-25_클라우드_전환_준비.md) |
 | 지수 수집 | [계획](plans/지수_수집.md) · [종가 조회 검증](verification/지수_종가_조회.md) |
 | 여러 거래일의 오전 도착 | [검증 계획·관측 기록](verification/지수_오전_도착.md), 현재1/5 |
@@ -25,7 +26,7 @@
 | 개발 일정 | [최신 기획과 선행 구현을 반영한 주차별 일정·30시간 배분](plans/개발_일정.md) |
 | OpenAI 분석·모델/근거/비용 비교 | [계획](plans/OpenAI_분석과_비용_비교.md) · [실측·판정](verification/OpenAI_분석과_제공처_비교.md) |
 
-10/28 목표는 React·TypeScript·FastAPI·PostgreSQL·Docker/AWS, 아침과 **18시 최대 2뉴스**, 중요 장애의 **Telegram**이다. 기존 Python 수집·가상 미리보기·Neon/Streamlit 인증에 이어 뉴스 선정 정책·React/API·migration 초기 코드를 작성했다. 실제 Google/PostgreSQL·실기사 승인 통합과 X·worker·Telegram·AWS는 후속이다. [결정](discussions/2026-10-28_풀스택_MVP와_18시_뉴스_편성.md) · [초기 구현 결과](logs/2026-10-28_뉴스_선정과_관리자_초기_구현.md)
+10/28 목표는 React·TypeScript·FastAPI·PostgreSQL·Docker/AWS, 아침과 **18시 최대 2뉴스**, 중요 장애의 **Telegram**이다. 기존 Python 수집·가상 미리보기·Neon/Streamlit 인증에 이어 뉴스 선정 정책·React/API·migration 초기 코드를 작성했다. 격리 PostgreSQL 통합과 10/29 로컬 실제 Google 로그인·세션·로그아웃을 확인했다. 실기사 승인 통합과 X·worker·Telegram·AWS는 후속이다. [결정](discussions/2026-10-28_풀스택_MVP와_18시_뉴스_편성.md) · [초기 구현 결과](logs/2026-10-28_뉴스_선정과_관리자_초기_구현.md) · [실제 로그인 결과](logs/2026-10-29_Google_callback과_로그인_검증.md)
 
 ## 발표 자료
 

@@ -2,7 +2,7 @@
 
 XFolio는 미국 시장 수집→AI 생성→검토/버전 승인→정시 X 게시→장애 알림을 연결하는 풀스택 포트폴리오입니다. **2026-10-28 목표는 React·TypeScript + FastAPI + PostgreSQL + Docker + AWS**, 아침 최대 3글과 낮 감시 후 **18시 최대 2뉴스**, 중요 오류/한도의 **Telegram Bot 알림**입니다. [확정 요구사항](docs/요구사항.md) · [2주 MVP 일정](tasks/plans/개발_일정.md) · [우선순위](tasks/plans/개발_우선순위.md)
 
-기존 Python 지수/뉴스 수집·BLS 시험·가상 미리보기·Luna 가상 분석·Neon 가상 저장과 이전 Streamlit 인증에 더해, 뉴스 선정 정책과 합성 회귀 사례·React 관리자·FastAPI 인증/조회/승인 초기 코드·운영 DB migration을 작성했습니다. 실제 Google 로그인·PostgreSQL 운영 배포·실뉴스 연결·X·worker·Telegram·AWS 제품 배포의 완료와 구분합니다. [초기 구현 결과](tasks/logs/2026-10-28_뉴스_선정과_관리자_초기_구현.md)
+기존 Python 지수/뉴스 수집·BLS 시험·가상 미리보기·Luna 가상 분석·Neon 가상 저장과 이전 Streamlit 인증에 더해, 뉴스 선정 정책과 합성 회귀 사례·React 관리자·FastAPI 인증/조회/승인 초기 코드·운영 DB migration을 작성했습니다. 격리 PostgreSQL 통합과 로컬 HTTPS의 실제 Google 로그인·세션 유지·로그아웃을 검증했습니다. PostgreSQL 운영 배포·실뉴스 연결·X·worker·Telegram·AWS 제품 배포는 후속입니다. [초기 구현 결과](tasks/logs/2026-10-28_뉴스_선정과_관리자_초기_구현.md) · [실제 로그인 결과](tasks/logs/2026-10-29_Google_callback과_로그인_검증.md)
 
 생성·분석 기본 모델은 **`gpt-6-luna`**입니다. CLI의 가상 `ai-preview`도 옵션 생략 시 Luna를 사용하며, 과거 `gpt-5.4-mini` 시험은 비교 기록으로 유지합니다. [모델 선택·실측](docs/research/OpenAI_활용.md)
 
@@ -22,7 +22,7 @@ uv run --env-file .env --extra cloud python -m xfolio.cloud --run --initialize
 
 ## React·FastAPI 초기 관리자
 
-로컬 HTTPS·기존 Google 설정의 명시적 재사용은 [개발 도구](scripts/dev/README.md)를 따른다. 실제 Google 로그인은 새 callback 등록과 사용자 로그인 확인이 필요하다. 격리 FastAPI·PostgreSQL·HTTPS의 브라우저 시험은 `frontend/`의 `npm run test:integration`이며 Google 제공자만 모의한다.
+로컬 HTTPS·기존 Google 설정의 명시적 재사용은 [개발 도구](scripts/dev/README.md)를 따른다. 10/29에 로컬 callback 등록과 실제 허용 운영자의 로그인·세션·로그아웃을 확인했다. 다른 환경은 해당 HTTPS origin과 callback 등록이 필요하다. 격리 FastAPI·PostgreSQL·HTTPS의 자동 브라우저 시험은 `frontend/`의 `npm run test:integration`이며 Google 제공자만 모의한다.
 
 Python 의존성은 `uv sync`, 프론트는 Node.js 22에서 설치합니다.
 

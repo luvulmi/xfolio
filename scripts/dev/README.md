@@ -1,6 +1,8 @@
 # 로컬 HTTPS와 Google 인증 연결 준비
 
-이 도구는 개발용이다. HTTPS 프록시는 `127.0.0.1`에만 바인딩하고 빌드한 React와 `/api`를 같은 origin에서 제공한다. 인증서는 `.cache/dev_https/`에만 보관하며 OS 신뢰 저장소를 변경하지 않는다. 실제 Google 로그인·공개 배포가 검증된 결과가 아니다.
+이 도구는 개발용이다. HTTPS 프록시는 `127.0.0.1`에만 바인딩하고 빌드한 React와 `/api`를 같은 origin에서 제공한다. 인증서는 `.cache/dev_https/`에만 보관하며 OS 신뢰 저장소를 변경하지 않는다. 공개 배포는 별도 검증이 필요하다.
+
+2026-10-29에는 기존 클라이언트의 callback 등록과 실제 허용 운영자의 로그인·새로고침 세션 유지·로그아웃을 로컬에서 확인했다. [실제 검증 결과](../../tasks/logs/2026-10-29_Google_callback과_로그인_검증.md). 이 도구 설명 자체를 다른 환경의 로그인·공개 배포 합격으로 해석하지 않는다.
 
 ## 실행
 
@@ -28,6 +30,6 @@ uv run python scripts/dev/local_https.py
 
 ## 검증 범위
 
-`tests/test_dev_https.py`는 인증서 SAN/재사용·`.cache` 제한, 외부 proxy 대상 차단, 인증서 검증을 켠 로컬 TLS, SPA 제공, API 쿠키/Origin/CSRF 전달과 명시적 키 재사용만 확인한다. 로컬 TLS 시험에는 Windows asyncio/socket 정책에 따라 샌드박스 밖 실행이 필요할 수 있다. 실제 Google 인증 성공이나 실제 운영 DB 사용 성공을 뜻하지 않는다.
+`tests/test_dev_https.py`는 인증서 SAN/재사용·`.cache` 제한, 외부 proxy 대상 차단, 인증서 검증을 켠 로컬 TLS, 유휴 TCP 연결과 다른 TLS 요청의 동시 처리, SPA 제공, API 쿠키/Origin/CSRF 전달과 명시적 키 재사용을 확인한다. 로컬 TLS 시험에는 Windows asyncio/socket 정책에 따라 샌드박스 밖 실행이 필요할 수 있다. 이 자동 시험은 실제 Google 인증 성공이나 실제 운영 DB 사용 성공을 뜻하지 않는다.
 
 개인키는 인증서와 함께 Git 제외 경로에 남는다. 테스트와 브라우저는 해당 개발 인증서만 명시적으로 신뢰하도록 설정할 수 있으며, 시스템 전체 인증서 검증을 끄지 않는다. 종료는 각 터미널의 `Ctrl+C`로 수행한다.
