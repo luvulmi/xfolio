@@ -1,0 +1,262 @@
+{
+  "source_file": "observation_20261029_2.json",
+  "scope": "market_sector_sample_v1",
+  "heartbeat_received_at": "2026-10-29T07:27:53.890Z",
+  "observed_at": "2026-10-29T07:28:19+00:00",
+  "collected_at": "2026-10-29T07:28:36.005072+00:00",
+  "started_before_morning_cutoff": false,
+  "before_morning_cutoff": false,
+  "full_operating_day": false,
+  "can_publish": false,
+  "status": "partial",
+  "error": "page_budget",
+  "requests": 6,
+  "unique_uuid_count": 17,
+  "new_to_prior_recorded_samples": 0,
+  "same_day_previous_sample_file": "observation_20261029_1.json",
+  "same_day_new_uuid_count": 0,
+  "same_day_new_uuids": [],
+  "same_day_common_uuid_count": 17,
+  "same_day_no_longer_in_sample_count": 0,
+  "actual_start_interval_seconds": 406.0,
+  "page_count_estimate_total": 112,
+  "estimate_assumptions": "fixed found and limit, independent queries, current 24-hour window only; not actual full-day requests",
+  "queries": [
+    {
+      "query_id": "market",
+      "status": "partial",
+      "requests": 3,
+      "found_values": [
+        187,
+        187,
+        187
+      ],
+      "returned_rows": 9,
+      "page_count_estimate": 63
+    },
+    {
+      "query_id": "sector",
+      "status": "partial",
+      "requests": 3,
+      "found_values": [
+        146,
+        146,
+        146
+      ],
+      "returned_rows": 9,
+      "page_count_estimate": 49
+    }
+  ],
+  "http_statuses": [
+    200,
+    200,
+    200,
+    200,
+    200,
+    200
+  ],
+  "last_quota_headers": {
+    "x-usagelimit-limit": "100",
+    "x-usagelimit-remaining": "88",
+    "x-ratelimit-limit": "30",
+    "x-ratelimit-remaining": "24"
+  },
+  "publication_to_first_observation_seconds": {
+    "min": 2624.033707,
+    "median": 7899.915537,
+    "max": 23467.901253
+  },
+  "publication_to_observation_seconds": {
+    "min": 3030.109917,
+    "median": 8306.004471,
+    "max": 23873.967533
+  },
+  "uuid_first_observations": [
+    {
+      "article_id": "de5dbd38-bbe3-4063-8431-a74f27554a70",
+      "published_at": "2026-10-29T05:45:03+00:00",
+      "first_observed_at": "2026-10-29T07:21:35.580161+00:00",
+      "source_file": "observation_20261029_1.json",
+      "publication_to_first_observation_seconds": 5792.580161,
+      "observed_at_this_sample": "2026-10-29T07:28:21.575662+00:00",
+      "publication_to_observation_seconds": 6198.575662,
+      "new_to_prior_recorded_samples": false
+    },
+    {
+      "article_id": "7a69cf2f-e9dc-4c55-ab98-ab2e2842724e",
+      "published_at": "2026-10-29T05:38:17+00:00",
+      "first_observed_at": "2026-10-29T07:21:35.580161+00:00",
+      "source_file": "observation_20261029_1.json",
+      "publication_to_first_observation_seconds": 6198.580161,
+      "observed_at_this_sample": "2026-10-29T07:28:21.575662+00:00",
+      "publication_to_observation_seconds": 6604.575662,
+      "new_to_prior_recorded_samples": false
+    },
+    {
+      "article_id": "ebf9ee58-ab44-42b3-a6b3-f67ea174acab",
+      "published_at": "2026-10-29T05:20:00+00:00",
+      "first_observed_at": "2026-10-29T07:21:35.581165+00:00",
+      "source_file": "observation_20261029_1.json",
+      "publication_to_first_observation_seconds": 7295.581165,
+      "observed_at_this_sample": "2026-10-29T07:28:21.575662+00:00",
+      "publication_to_observation_seconds": 7701.575662,
+      "new_to_prior_recorded_samples": false
+    },
+    {
+      "article_id": "f7a4490a-54f3-40df-939e-51fbef7f2f38",
+      "published_at": "2026-10-29T04:36:25+00:00",
+      "first_observed_at": "2026-10-29T07:21:37.908367+00:00",
+      "source_file": "observation_20261029_1.json",
+      "publication_to_first_observation_seconds": 9912.908367,
+      "observed_at_this_sample": "2026-10-29T07:28:23.986253+00:00",
+      "publication_to_observation_seconds": 10318.986253,
+      "new_to_prior_recorded_samples": false
+    },
+    {
+      "article_id": "04f3a7a7-c482-4221-950e-08605fced3b9",
+      "published_at": "2026-10-29T03:08:18+00:00",
+      "first_observed_at": "2026-10-29T07:21:37.908367+00:00",
+      "source_file": "observation_20261029_1.json",
+      "publication_to_first_observation_seconds": 15199.908367,
+      "observed_at_this_sample": "2026-10-29T07:28:23.986253+00:00",
+      "publication_to_observation_seconds": 15605.986253,
+      "new_to_prior_recorded_samples": false
+    },
+    {
+      "article_id": "e51f915e-aec0-4852-89c9-785c34eca4f7",
+      "published_at": "2026-10-29T02:22:17+00:00",
+      "first_observed_at": "2026-10-29T07:21:37.908367+00:00",
+      "source_file": "observation_20261029_1.json",
+      "publication_to_first_observation_seconds": 17960.908367,
+      "observed_at_this_sample": "2026-10-29T07:28:23.986253+00:00",
+      "publication_to_observation_seconds": 18366.986253,
+      "new_to_prior_recorded_samples": false
+    },
+    {
+      "article_id": "95a2fa1a-00c5-4b57-9916-2e4f7a4d106a",
+      "published_at": "2026-10-29T02:07:42+00:00",
+      "first_observed_at": "2026-10-29T07:21:40.900722+00:00",
+      "source_file": "observation_20261029_1.json",
+      "publication_to_first_observation_seconds": 18838.900722,
+      "observed_at_this_sample": "2026-10-29T07:28:26.967533+00:00",
+      "publication_to_observation_seconds": 19244.967533,
+      "new_to_prior_recorded_samples": false
+    },
+    {
+      "article_id": "eca6c09d-6e55-4037-b214-0aa42e835088",
+      "published_at": "2026-10-29T01:35:00+00:00",
+      "first_observed_at": "2026-10-29T07:21:40.900722+00:00",
+      "source_file": "observation_20261029_1.json",
+      "publication_to_first_observation_seconds": 20800.900722,
+      "observed_at_this_sample": "2026-10-29T07:28:26.967533+00:00",
+      "publication_to_observation_seconds": 21206.967533,
+      "new_to_prior_recorded_samples": false
+    },
+    {
+      "article_id": "4495de44-5ea1-4a46-bf14-09da887f8072",
+      "published_at": "2026-10-29T00:50:33+00:00",
+      "first_observed_at": "2026-10-29T07:21:40.901253+00:00",
+      "source_file": "observation_20261029_1.json",
+      "publication_to_first_observation_seconds": 23467.901253,
+      "observed_at_this_sample": "2026-10-29T07:28:26.967533+00:00",
+      "publication_to_observation_seconds": 23873.967533,
+      "new_to_prior_recorded_samples": false
+    },
+    {
+      "article_id": "6413777c-e120-44c8-9005-e8443cf3cfc0",
+      "published_at": "2026-10-29T06:38:00+00:00",
+      "first_observed_at": "2026-10-29T07:21:44.033707+00:00",
+      "source_file": "observation_20261029_1.json",
+      "publication_to_first_observation_seconds": 2624.033707,
+      "observed_at_this_sample": "2026-10-29T07:28:30.109917+00:00",
+      "publication_to_observation_seconds": 3030.109917,
+      "new_to_prior_recorded_samples": false
+    },
+    {
+      "article_id": "526717f7-048a-4c53-821a-f45da65075bb",
+      "published_at": "2026-10-29T06:16:00+00:00",
+      "first_observed_at": "2026-10-29T07:21:44.033707+00:00",
+      "source_file": "observation_20261029_1.json",
+      "publication_to_first_observation_seconds": 3944.033707,
+      "observed_at_this_sample": "2026-10-29T07:28:30.109917+00:00",
+      "publication_to_observation_seconds": 4350.109917,
+      "new_to_prior_recorded_samples": false
+    },
+    {
+      "article_id": "d7bf0b40-e478-45be-a83f-186992553b9a",
+      "published_at": "2026-10-29T05:45:51+00:00",
+      "first_observed_at": "2026-10-29T07:21:44.033707+00:00",
+      "source_file": "observation_20261029_1.json",
+      "publication_to_first_observation_seconds": 5753.033707,
+      "observed_at_this_sample": "2026-10-29T07:28:30.109917+00:00",
+      "publication_to_observation_seconds": 6159.109917,
+      "new_to_prior_recorded_samples": false
+    },
+    {
+      "article_id": "dba9c007-f5fb-4ccb-a782-5b5e126f96bf",
+      "published_at": "2026-10-29T05:31:51+00:00",
+      "first_observed_at": "2026-10-29T07:21:46.911578+00:00",
+      "source_file": "observation_20261029_1.json",
+      "publication_to_first_observation_seconds": 6595.911578,
+      "observed_at_this_sample": "2026-10-29T07:28:32.973857+00:00",
+      "publication_to_observation_seconds": 7001.973857,
+      "new_to_prior_recorded_samples": false
+    },
+    {
+      "article_id": "b66cedde-fe27-44ea-bcce-b7d738eba7c8",
+      "published_at": "2026-10-29T05:13:51+00:00",
+      "first_observed_at": "2026-10-29T07:21:46.912126+00:00",
+      "source_file": "observation_20261029_1.json",
+      "publication_to_first_observation_seconds": 7675.912126,
+      "observed_at_this_sample": "2026-10-29T07:28:32.973857+00:00",
+      "publication_to_observation_seconds": 8081.973857,
+      "new_to_prior_recorded_samples": false
+    },
+    {
+      "article_id": "fe5781b8-37cc-47e8-9b35-56b0fd9df65a",
+      "published_at": "2026-10-29T05:10:10+00:00",
+      "first_observed_at": "2026-10-29T07:21:49.915537+00:00",
+      "source_file": "observation_20261029_1.json",
+      "publication_to_first_observation_seconds": 7899.915537,
+      "observed_at_this_sample": "2026-10-29T07:28:36.004471+00:00",
+      "publication_to_observation_seconds": 8306.004471,
+      "new_to_prior_recorded_samples": false
+    },
+    {
+      "article_id": "cd88a7de-712f-4ef8-abe4-f51aa09476fc",
+      "published_at": "2026-10-29T05:00:00+00:00",
+      "first_observed_at": "2026-10-29T07:21:49.915537+00:00",
+      "source_file": "observation_20261029_1.json",
+      "publication_to_first_observation_seconds": 8509.915537,
+      "observed_at_this_sample": "2026-10-29T07:28:36.005072+00:00",
+      "publication_to_observation_seconds": 8916.005072,
+      "new_to_prior_recorded_samples": false
+    },
+    {
+      "article_id": "d31b9f75-c603-4374-a8c8-3fba19c4f1ec",
+      "published_at": "2026-10-29T04:40:57+00:00",
+      "first_observed_at": "2026-10-29T07:21:49.915537+00:00",
+      "source_file": "observation_20261029_1.json",
+      "publication_to_first_observation_seconds": 9652.915537,
+      "observed_at_this_sample": "2026-10-29T07:28:36.005072+00:00",
+      "publication_to_observation_seconds": 10059.005072,
+      "new_to_prior_recorded_samples": false
+    }
+  ],
+  "daily_totals": {
+    "observation_files": 2,
+    "bls_requests": 4,
+    "marketaux_requests": 12,
+    "unique_uuids": 17,
+    "timely_observations": 0,
+    "partial_observations": 2,
+    "full_operating_day": false
+  },
+  "limitations": [
+    "Both samples executed late; not morning success",
+    "Partial samples, not full-day collection",
+    "Publication-to-observation interval is not provider indexing latency",
+    "Zero new sampled UUIDs does not prove no new market news",
+    "Quota headers are an account response snapshot; plan rights are unverified"
+  ]
+}

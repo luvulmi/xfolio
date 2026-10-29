@@ -1,0 +1,36 @@
+{
+  "as_of": "2026-10-28T22:51:10.168442Z",
+  "trade_date": "2026-10-28",
+  "indices": [
+    {
+      "index_id": "sp500",
+      "symbol": "^GSPC",
+      "name": "S&P 500",
+      "trade_date": "2026-10-28",
+      "previous_trade_date": "2026-10-27",
+      "close": "7743.97998046875",
+      "previous_close": "7722.60009765625",
+      "change_pct": "0.28",
+      "provider": "Yahoo Finance",
+      "collector": "yfinance",
+      "source_url": "https://finance.yahoo.com/quote/%5EGSPC/",
+      "retrieved_at": "2026-10-28T22:51:13.778440Z",
+      "market_closed_at": "2026-10-28T20:00:00Z"
+    },
+    {
+      "index_id": "nasdaq100",
+      "symbol": "^NDX",
+      "name": "Nasdaq-100",
+      "trade_date": "2026-10-28",
+      "previous_trade_date": "2026-10-27",
+      "close": "29813.15625",
+      "previous_close": "29651.439453125",
+      "change_pct": "0.55",
+      "provider": "Yahoo Finance",
+      "collector": "yfinance",
+      "source_url": "https://finance.yahoo.com/quote/%5ENDX/",
+      "retrieved_at": "2026-10-28T22:51:14.075888Z",
+      "market_closed_at": "2026-10-28T20:00:00Z"
+    }
+  ]
+}

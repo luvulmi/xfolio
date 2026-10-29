@@ -1,0 +1,466 @@
+{
+  "mode": "run",
+  "observed_at": "2026-10-29T07:21:33+00:00",
+  "scope": "market_sector_sample_v1",
+  "max_marketaux_requests": 6,
+  "full_operating_day": false,
+  "can_publish": false,
+  "started_before_morning_cutoff": false,
+  "bls": {
+    "run_id": "74a826b4-c707-4a79-badf-ab8d6f7da61c",
+    "observed_at": "2026-10-29T07:21:34.020649+00:00",
+    "requests": 2,
+    "state": "snapshot_parsed",
+    "published_at": "2026-10-14T12:30:00+00:00",
+    "period": "2026-09",
+    "content_version": "8d4a82258a3a5e9d099b857cefc598ed3aff8c4b4e4ee83d12d30fc918c2f9fd",
+    "claims": [
+      {
+        "source_id": "BLS:CPI:USDL-26-1574",
+        "content_version": "8d4a82258a3a5e9d099b857cefc598ed3aff8c4b4e4ee83d12d30fc918c2f9fd",
+        "subject": "US:CPI-U:all_items",
+        "event_type": "cpi_release",
+        "action": "increased",
+        "certainty": "confirmed",
+        "period": "2026-09",
+        "event_time": null,
+        "value": "0.6",
+        "unit": "percent",
+        "comparison_basis": "previous_month_seasonally_adjusted",
+        "conditions": null
+      },
+      {
+        "source_id": "BLS:CPI:USDL-26-1574",
+        "content_version": "8d4a82258a3a5e9d099b857cefc598ed3aff8c4b4e4ee83d12d30fc918c2f9fd",
+        "subject": "US:CPI-U:all_items",
+        "event_type": "cpi_release",
+        "action": "increased",
+        "certainty": "confirmed",
+        "period": "2026-09",
+        "event_time": null,
+        "value": "3.7",
+        "unit": "percent",
+        "comparison_basis": "12_months_unadjusted",
+        "conditions": null
+      }
+    ],
+    "schedule": [
+      {
+        "period": "2026-10",
+        "scheduled_at": "2026-11-10T13:30:00Z"
+      },
+      {
+        "period": "2026-11",
+        "scheduled_at": "2026-12-10T13:30:00Z"
+      },
+      {
+        "period": "2026-12",
+        "scheduled_at": "2027-01-13T13:30:00Z"
+      },
+      {
+        "period": "2027-01",
+        "scheduled_at": "2027-02-11T13:30:00Z"
+      },
+      {
+        "period": "2027-02",
+        "scheduled_at": "2027-03-10T13:30:00Z"
+      },
+      {
+        "period": "2027-03",
+        "scheduled_at": "2027-04-13T12:30:00Z"
+      },
+      {
+        "period": "2027-04",
+        "scheduled_at": "2027-05-12T12:30:00Z"
+      },
+      {
+        "period": "2027-05",
+        "scheduled_at": "2027-06-10T12:30:00Z"
+      },
+      {
+        "period": "2027-06",
+        "scheduled_at": "2027-07-14T12:30:00Z"
+      },
+      {
+        "period": "2027-07",
+        "scheduled_at": "2027-08-11T12:30:00Z"
+      },
+      {
+        "period": "2027-08",
+        "scheduled_at": "2027-09-14T12:30:00Z"
+      },
+      {
+        "period": "2027-09",
+        "scheduled_at": "2027-10-14T12:30:00Z"
+      },
+      {
+        "period": "2027-10",
+        "scheduled_at": "2027-11-10T13:30:00Z"
+      },
+      {
+        "period": "2027-11",
+        "scheduled_at": "2027-12-10T13:30:00Z"
+      }
+    ],
+    "cursor_advanced": false,
+    "can_publish": false,
+    "storage_result": "same_source_version"
+  },
+  "marketaux": {
+    "provider": "Marketaux",
+    "status": "partial",
+    "window_start": "2026-10-28T07:21:33+00:00",
+    "window_end": "2026-10-29T07:21:33+00:00",
+    "collected_at": "2026-10-29T07:21:49.915537+00:00",
+    "requests": 6,
+    "checkpoint_eligible": false,
+    "error": "page_budget",
+    "min_request_interval_seconds": 3.0,
+    "max_retries": 0,
+    "query_reports": [
+      {
+        "query_id": "market",
+        "search": "(\"S&P 500\"|Nasdaq)+(stocks|market)",
+        "domains": [],
+        "symbols": [],
+        "group_similar": false,
+        "status": "partial",
+        "requests": 3,
+        "error": "page_budget",
+        "pages": [
+          {
+            "found": 187,
+            "returned": 3,
+            "page": 1,
+            "limit": 3
+          },
+          {
+            "found": 187,
+            "returned": 3,
+            "page": 2,
+            "limit": 3
+          },
+          {
+            "found": 187,
+            "returned": 3,
+            "page": 3,
+            "limit": 3
+          }
+        ],
+        "responses": [
+          {
+            "status_code": 200,
+            "limit_headers": {
+              "x-usagelimit-limit": "100",
+              "x-usagelimit-remaining": "99",
+              "x-ratelimit-limit": "30",
+              "x-ratelimit-remaining": "29"
+            }
+          },
+          {
+            "status_code": 200,
+            "limit_headers": {
+              "x-usagelimit-limit": "100",
+              "x-usagelimit-remaining": "98",
+              "x-ratelimit-limit": "30",
+              "x-ratelimit-remaining": "28"
+            }
+          },
+          {
+            "status_code": 200,
+            "limit_headers": {
+              "x-usagelimit-limit": "100",
+              "x-usagelimit-remaining": "97",
+              "x-ratelimit-limit": "30",
+              "x-ratelimit-remaining": "27"
+            }
+          }
+        ]
+      },
+      {
+        "query_id": "sector",
+        "search": "(semiconductor|energy|banking)+(industry|sector)+(rose|fell|demand|supply)",
+        "domains": [],
+        "symbols": [],
+        "group_similar": false,
+        "status": "partial",
+        "requests": 3,
+        "error": "page_budget",
+        "pages": [
+          {
+            "found": 146,
+            "returned": 3,
+            "page": 1,
+            "limit": 3
+          },
+          {
+            "found": 146,
+            "returned": 3,
+            "page": 2,
+            "limit": 3
+          },
+          {
+            "found": 146,
+            "returned": 3,
+            "page": 3,
+            "limit": 3
+          }
+        ],
+        "responses": [
+          {
+            "status_code": 200,
+            "limit_headers": {
+              "x-usagelimit-limit": "100",
+              "x-usagelimit-remaining": "96",
+              "x-ratelimit-limit": "30",
+              "x-ratelimit-remaining": "26"
+            }
+          },
+          {
+            "status_code": 200,
+            "limit_headers": {
+              "x-usagelimit-limit": "100",
+              "x-usagelimit-remaining": "95",
+              "x-ratelimit-limit": "30",
+              "x-ratelimit-remaining": "25"
+            }
+          },
+          {
+            "status_code": 200,
+            "limit_headers": {
+              "x-usagelimit-limit": "100",
+              "x-usagelimit-remaining": "94",
+              "x-ratelimit-limit": "30",
+              "x-ratelimit-remaining": "24"
+            }
+          }
+        ]
+      }
+    ],
+    "articles": [
+      {
+        "provider": "Marketaux",
+        "article_id": "de5dbd38-bbe3-4063-8431-a74f27554a70",
+        "source": "rttnews.com",
+        "url": "https://www.rttnews.com/story.aspx?Id=3704800",
+        "published_at": "2026-10-29T05:45:03+00:00",
+        "retrieved_at": "2026-10-29T07:21:35.580161+00:00",
+        "field_lengths": {
+          "title": 56,
+          "description": 213,
+          "snippet": 163
+        }
+      },
+      {
+        "provider": "Marketaux",
+        "article_id": "7a69cf2f-e9dc-4c55-ab98-ab2e2842724e",
+        "source": "thestockmarketwatch.com",
+        "url": "https://www2.stockmarketwatch.com/stock-market-news/global-markets-digest-tech-earnings-fuel-ai-anxiety-as-geopolitical-tensions-escalate/73794/",
+        "published_at": "2026-10-29T05:38:17+00:00",
+        "retrieved_at": "2026-10-29T07:21:35.580161+00:00",
+        "field_lengths": {
+          "title": 86,
+          "description": 144,
+          "snippet": 163
+        }
+      },
+      {
+        "provider": "Marketaux",
+        "article_id": "ebf9ee58-ab44-42b3-a6b3-f67ea174acab",
+        "source": "en.globes.co.il",
+        "url": "https://en.globes.co.il/en/article-ibi-investment-manager-pessimistic-on-multiples-not-politics-1001561235",
+        "published_at": "2026-10-29T05:20:00+00:00",
+        "retrieved_at": "2026-10-29T07:21:35.581165+00:00",
+        "field_lengths": {
+          "title": 60,
+          "description": 132,
+          "snippet": 159
+        }
+      },
+      {
+        "provider": "Marketaux",
+        "article_id": "f7a4490a-54f3-40df-939e-51fbef7f2f38",
+        "source": "business-standard.com",
+        "url": "https://www.business-standard.com/markets/news/asian-shares-fall-as-alphabet-earnings-miss-drags-wall-st-futures-lower-126102900097_1.html",
+        "published_at": "2026-10-29T04:36:25+00:00",
+        "retrieved_at": "2026-10-29T07:21:37.908367+00:00",
+        "field_lengths": {
+          "title": 71,
+          "description": 178,
+          "snippet": 163
+        }
+      },
+      {
+        "provider": "Marketaux",
+        "article_id": "04f3a7a7-c482-4221-950e-08605fced3b9",
+        "source": "thestockmarketwatch.com",
+        "url": "https://www2.stockmarketwatch.com/stock-market-news/tech-giants-battle-for-short-drama-market-share-as-global-markets-face-volatility/73789/",
+        "published_at": "2026-10-29T03:08:18+00:00",
+        "retrieved_at": "2026-10-29T07:21:37.908367+00:00",
+        "field_lengths": {
+          "title": 81,
+          "description": 141,
+          "snippet": 163
+        }
+      },
+      {
+        "provider": "Marketaux",
+        "article_id": "e51f915e-aec0-4852-89c9-785c34eca4f7",
+        "source": "business-standard.com",
+        "url": "https://www.business-standard.com/markets/news/stocks-to-watch-october-29-jio-platforms-meesho-hero-motocorp-pnb-housing-ola-126102900092_1.html",
+        "published_at": "2026-10-29T02:22:17+00:00",
+        "retrieved_at": "2026-10-29T07:21:37.908367+00:00",
+        "field_lengths": {
+          "title": 72,
+          "description": 187,
+          "snippet": 163
+        }
+      },
+      {
+        "provider": "Marketaux",
+        "article_id": "95a2fa1a-00c5-4b57-9916-2e4f7a4d106a",
+        "source": "economictimes.indiatimes.com",
+        "url": "https://economictimes.indiatimes.com/markets/us-stocks/news/the-bond-market-swings-but-us-stocks-remain-steady-after-the-fed-says-it-wont-raise-interest-rates/articleshow/135286393.cms",
+        "published_at": "2026-10-29T02:07:42+00:00",
+        "retrieved_at": "2026-10-29T07:21:40.900722+00:00",
+        "field_lengths": {
+          "title": 100,
+          "description": 467,
+          "snippet": 163
+        }
+      },
+      {
+        "provider": "Marketaux",
+        "article_id": "eca6c09d-6e55-4037-b214-0aa42e835088",
+        "source": "seekingalpha.com",
+        "url": "https://seekingalpha.com/article/4959006-madison-covered-call-and-equity-income-fund-q3-2026-investment-strategy-letter",
+        "published_at": "2026-10-29T01:35:00+00:00",
+        "retrieved_at": "2026-10-29T07:21:40.900722+00:00",
+        "field_lengths": {
+          "title": 84,
+          "description": 129,
+          "snippet": 163
+        }
+      },
+      {
+        "provider": "Marketaux",
+        "article_id": "4495de44-5ea1-4a46-bf14-09da887f8072",
+        "source": "manilatimes.net",
+        "url": "https://www.manilatimes.net/2026/10/29/tmt-newswire/globenewswire/bhav-acquisition-corp-ii-announces-pricing-of-100-million-initial-public-offering/2456792",
+        "published_at": "2026-10-29T00:50:33+00:00",
+        "retrieved_at": "2026-10-29T07:21:40.901253+00:00",
+        "field_lengths": {
+          "title": 82,
+          "description": 769,
+          "snippet": 159
+        }
+      },
+      {
+        "provider": "Marketaux",
+        "article_id": "6413777c-e120-44c8-9005-e8443cf3cfc0",
+        "source": "prnewswire.com",
+        "url": "https://www.prnewswire.com/apac/news-releases/cnn-and-ngk-launch-global-campaign-showcasing-cutting-edge-solutions-for-a-smarter-society-302923223.html",
+        "published_at": "2026-10-29T06:38:00+00:00",
+        "retrieved_at": "2026-10-29T07:21:44.033707+00:00",
+        "field_lengths": {
+          "title": 90,
+          "description": 162,
+          "snippet": 163
+        }
+      },
+      {
+        "provider": "Marketaux",
+        "article_id": "526717f7-048a-4c53-821a-f45da65075bb",
+        "source": "prnewswire.com",
+        "url": "https://www.prnewswire.com/apac/news-releases/unionpay-and-payments-nz-explore-digital-payments-innovation-302923186.html",
+        "published_at": "2026-10-29T06:16:00+00:00",
+        "retrieved_at": "2026-10-29T07:21:44.033707+00:00",
+        "field_lengths": {
+          "title": 60,
+          "description": 158,
+          "snippet": 163
+        }
+      },
+      {
+        "provider": "Marketaux",
+        "article_id": "d7bf0b40-e478-45be-a83f-186992553b9a",
+        "source": "business-standard.com",
+        "url": "https://www.business-standard.com/world-news/samsung-sees-ai-memory-demand-outstripping-supply-raising-cost-concerns-126102900471_1.html",
+        "published_at": "2026-10-29T05:45:51+00:00",
+        "retrieved_at": "2026-10-29T07:21:44.033707+00:00",
+        "field_lengths": {
+          "title": 72,
+          "description": 173,
+          "snippet": 163
+        }
+      },
+      {
+        "provider": "Marketaux",
+        "article_id": "dba9c007-f5fb-4ccb-a782-5b5e126f96bf",
+        "source": "manilatimes.net",
+        "url": "https://www.manilatimes.net/2026/10/29/tmt-newswire/globenewswire/societe-generale-third-quarter-2026-earnings/2456857",
+        "published_at": "2026-10-29T05:31:51+00:00",
+        "retrieved_at": "2026-10-29T07:21:46.911578+00:00",
+        "field_lengths": {
+          "title": 45,
+          "description": 13,
+          "snippet": 163
+        }
+      },
+      {
+        "provider": "Marketaux",
+        "article_id": "b66cedde-fe27-44ea-bcce-b7d738eba7c8",
+        "source": "insurancejournal.com",
+        "url": "https://www.insurancejournal.com/news/national/2026/10/29/890656.htm",
+        "published_at": "2026-10-29T05:13:51+00:00",
+        "retrieved_at": "2026-10-29T07:21:46.912126+00:00",
+        "field_lengths": {
+          "title": 65,
+          "description": 146,
+          "snippet": 161
+        }
+      },
+      {
+        "provider": "Marketaux",
+        "article_id": "fe5781b8-37cc-47e8-9b35-56b0fd9df65a",
+        "source": "financialpost.com",
+        "url": "https://financialpost.com/pmn/business-wire-news-releases-pmn/eig-and-acwa-announce-plenum-power-a-strategic-partnership-to-invest-in-u-s-power-infrastructure",
+        "published_at": "2026-10-29T05:10:10+00:00",
+        "retrieved_at": "2026-10-29T07:21:49.915537+00:00",
+        "field_lengths": {
+          "title": 98,
+          "description": 165,
+          "snippet": 159
+        }
+      },
+      {
+        "provider": "Marketaux",
+        "article_id": "cd88a7de-712f-4ef8-abe4-f51aa09476fc",
+        "source": "fortune.com",
+        "url": "https://fortune.com/2026/10/29/southeast-asia-semiconductor-supply-chain/",
+        "published_at": "2026-10-29T05:00:00+00:00",
+        "retrieved_at": "2026-10-29T07:21:49.915537+00:00",
+        "field_lengths": {
+          "title": 60,
+          "description": 101,
+          "snippet": 161
+        }
+      },
+      {
+        "provider": "Marketaux",
+        "article_id": "d31b9f75-c603-4374-a8c8-3fba19c4f1ec",
+        "source": "wallstreetmojo.com",
+        "url": "https://www.wallstreetmojo.com/best-ai-appointment-setting-platforms-2026/",
+        "published_at": "2026-10-29T04:40:57+00:00",
+        "retrieved_at": "2026-10-29T07:21:49.915537+00:00",
+        "field_lengths": {
+          "title": 48,
+          "description": 148,
+          "snippet": 163
+        }
+      }
+    ]
+  },
+  "before_morning_cutoff": false,
+  "state": "observed"
+}
