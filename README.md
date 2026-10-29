@@ -1,10 +1,18 @@
 # XFolio
 
-XFolio는 미국 시장 수집→AI 생성→검토/버전 승인→정시 X 게시→장애 알림을 연결하는 풀스택 포트폴리오입니다. **2026-10-28 목표는 React·TypeScript + FastAPI + PostgreSQL + Docker + AWS**, 아침 최대 3글과 낮 감시 후 **18시 최대 2뉴스**, 중요 오류/한도의 **Telegram Bot 알림**입니다. [확정 요구사항](docs/요구사항.md) · [2주 MVP 일정](tasks/plans/개발_일정.md) · [우선순위](tasks/plans/개발_우선순위.md)
+XFolio는 미국 시장 수집→AI 생성→검토/버전 승인→정시 X 게시→장애 알림을 연결하는 풀스택 포트폴리오입니다. **2026-10-28 목표는 React·TypeScript + FastAPI + PostgreSQL + Docker + AWS**, 아침 최대 3글과 낮 감시 후 **18시 최대 2뉴스**, 중요 오류/한도의 **Telegram Bot 알림**입니다. [확정 요구사항](docs/요구사항.md) · [8주차까지 개발 일정](tasks/plans/개발_일정.md) · [우선순위](tasks/plans/개발_우선순위.md)
 
 기존 Python 지수/뉴스 수집·BLS 시험·가상 미리보기·Luna 가상 분석·Neon 가상 저장과 이전 Streamlit 인증에 더해, 뉴스 선정 정책과 합성 회귀 사례·React 관리자·FastAPI 인증/조회/승인 초기 코드·운영 DB migration을 작성했습니다. 격리 PostgreSQL 통합과 로컬 HTTPS의 실제 Google 로그인·세션 유지·로그아웃을 검증했습니다. PostgreSQL 운영 배포·실뉴스 연결·X·worker·Telegram·AWS 제품 배포는 후속입니다. [초기 구현 결과](tasks/logs/2026-10-28_뉴스_선정과_관리자_초기_구현.md) · [실제 로그인 결과](tasks/logs/2026-10-29_Google_callback과_로그인_검증.md)
 
 생성·분석 기본 모델은 **`gpt-6-luna`**입니다. CLI의 가상 `ai-preview`도 옵션 생략 시 Luna를 사용하며, 과거 `gpt-5.4-mini` 시험은 비교 기록으로 유지합니다. [모델 선택·실측](docs/research/OpenAI_활용.md)
+
+## 폴더 안내
+
+[프로젝트 구조](docs/프로젝트_구조.md) · [기준 문서](docs/README.md) · [현재 작업](tasks/README.md) · [Python 모듈](src/xfolio/README.md) · [개발/실험 도구](scripts/README.md)
+
+## 2026-10-30 현재 개발 기준
+
+지수는 S&P500·Nasdaq-100·다우, 자료는 Fed/BLS/BEA와 SEC 주요 기업10개(20개 확장), 요약은 실적·M&A·정책·주요지표로 확정했습니다. 실제 기업 명단은 미정입니다. [공식 수집 설계](docs/specifications/공식_발표와_공시_수집_설계.md) · [시스템/시퀀스](docs/specifications/시스템_구성과_주요_시퀀스.md). 현재 두 지수·BLS CPI·Marketaux CLI는 기존 구현이고 새 목표의 구현 완료가 아닙니다. 아래 과거 실행 예시는 그대로 보존합니다.
 
 ## 기존 가상 클라우드 시험 · 2026-10-25
 
@@ -56,7 +64,7 @@ uv run python -m xfolio.api.export_openapi
 
 `--sql`은 DB에 접속하지 않지만 `XFOLIO_MIGRATION_DATABASE_URL`은 필요합니다. 오프라인 검토만 할 때는 `postgresql+psycopg://offline@localhost/offline` 같은 시험용 URL을 현재 셸에 지정할 수 있습니다. 이 URL로 실제 `upgrade head`를 실행하지 않습니다.
 
-OpenAPI 산출물은 [contracts/openapi.json](contracts/openapi.json), 동작 계약은 [관리자 화면·승인 API](tasks/verification/관리자_화면과_승인_API.md)입니다. 합성 뉴스는 `synthetic=true`·발행 불가를 유지합니다. 조회·승인 API가 X에 전송하지 않으며 worker·실기사 입력/생성·CLI 수정·실제 게시 연결은 후속입니다.
+OpenAPI 산출물은 [contracts/openapi.json](contracts/openapi.json), 동작 계약은 [관리자 화면·승인 API](tasks/verification/admin/관리자_화면과_승인_API.md)입니다. 합성 뉴스는 `synthetic=true`·발행 불가를 유지합니다. 조회·승인 API가 X에 전송하지 않으며 worker·실기사 입력/생성·CLI 수정·실제 게시 연결은 후속입니다.
 
 뉴스 정책 회귀 시험은 `uv run pytest tests/test_news_selection.py`로 실행합니다. 중요성/관련성/새 사실 판단은 근거를 검토한 입력을 요구하며 이 구현이 원문에서 의미를 자동 추출한 결과라고 보지 않습니다. PostgreSQL 시험에는 일회용 DB의 `XFOLIO_TEST_DATABASE_URL`을 별도로 명시합니다. 미설정 시 관련 통합 시험은 건너뛰고 메모리 시험과 구분합니다.
 
@@ -66,7 +74,7 @@ OpenAPI 산출물은 [contracts/openapi.json](contracts/openapi.json), 동작 �
 
 운영 설계는 [지수 수집과 게시 모드](docs/운영_정책.md)를 따릅니다. 관리자 승인은 개발·테스트 기간에 적용하고 안정화 후 자동 검증·게시로 전환할 계획입니다. 공개 게시 조건과 오전 자료 도착은 후속 검증입니다.
 
-현재 월 **50,000원** 상한과 **Marketaux 한 곳**에서 두 지수 관련 후보를 찾는 범위를 유지합니다. 아침 08시 최대 3글, 낮 감시 후보는 18시 최대 2글로 발행하고 적격 뉴스가 없으면 생략합니다. 2주 목표는 React 2화면·FastAPI 8API·단일 AWS worker의 reviewed MVP입니다. Marketaux의 충분한 근거·Free 완주·공개/AI 권한과 실제 게시 인증은 검증 전이며, auto는 최소 5거래일·장애 시험 후 활성화합니다. [운영 정책](docs/운영_정책.md) · [새 비용 조건](docs/research/월_비용.md)
+현재 월 **50,000원** 상한을 유지하며 공식 자료4기관을 채택했습니다. 기존 Marketaux 코드는 실험 자산이며 새 제품 수집 경로가 아닙니다. 전체 제품은 아침 08시 최대 3글·18시 최대 2글이며 적격 뉴스가 없으면 생략합니다. **5~6주차30시간은 중간 개발 목표**입니다. 7주차에도 추가 개발·통합 검증하고 8주차 초까지 기능 마무리를 계획합니다. 공식4기관·다우 추가로 전체 기준79시간이며 가용60시간 가정과 차이가 있습니다. 추가 가용 시간·단계 조정과11/24 기능 동결은 계획 가정입니다. [필수/후속 범위](docs/planning/개발_범위와_단계.md) · [WBS](docs/planning/작업_분해_WBS.md) · [IA·와이어프레임](docs/specifications/관리자_화면_구조.md). 제공처 이용 조건과 실제 연동 합격은 별도이며 auto는 최소 5거래일·장애 시험 후 판단합니다. [운영 정책](docs/운영_정책.md) · [비용 조건](docs/research/월_비용.md)
 
 - Python 3.12
 - `uv`로 의존성 설치 및 명령 실행
@@ -91,11 +99,11 @@ uv run --extra dashboard streamlit run dashboard/app.py --server.address 127.0.0
 
 ## 뉴스 수집과 아침 미리보기
 
-허용 근거의 생성→기계검사→PostgreSQL 검토 대기 초안 연결은 [생성 계약](tasks/verification/허용_실자료_생성_연결.md)에 둔다. `uv run python scripts/experiments/bls_workflow_probe.py`는 기본 무통신 계획이며, `--fetch`와 명시적 loopback 시험 DB를 주면 BLS 실자료 1GET→모의 생성→격리 schema 저장/정리를 시험한다. 유료 AI는 호출하지 않는다. 실제 모델 어댑터는 용도별 권한·가격·입출력 토큰 한도·현재 월 예산 확인이 준비된 호출자만 사용할 수 있다.
+허용 근거의 생성→기계검사→PostgreSQL 검토 대기 초안 연결은 [생성 계약](tasks/verification/news/허용_실자료_생성_연결.md)에 둔다. `uv run python scripts/experiments/bls_workflow_probe.py`는 기본 무통신 계획이며, `--fetch`와 명시적 loopback 시험 DB를 주면 BLS 실자료 1GET→모의 생성→격리 schema 저장/정리를 시험한다. 유료 AI는 호출하지 않는다. 실제 모델 어댑터는 용도별 권한·가격·입출력 토큰 한도·현재 월 예산 확인이 준비된 호출자만 사용할 수 있다.
 
 `--fetch --assemble`은 같은 실자료를 CPI 전용 의미·280 가중 글자 검사→PM 편성→관리자 API 목록/상세까지 연결한다. 실제 현재 KST와 17:45 동결 마감을 적용하고 늦은 실행은 검증 실패 상태로 표시한다. 시험 자료의 승인 차단도 확인한 뒤 격리 schema를 정리한다. 예: `uv run python scripts/experiments/bls_workflow_probe.py --fetch --assemble --output .cache/bls_reviewed.json` (`XFOLIO_TEST_DATABASE_URL`에 loopback 시험 DB를 명시). 테스트 세션·모의 생성 사용을 결과에 표시하며 실제 Google/유료 모델 성공으로 계산하지 않는다.
 
-제품 연결 함수는 `record_bls_collection`→`generate_and_store`→`assemble_bls_pm`이다. 확인된 BLS CPI 단일 URL·두 수치의 정해진 문형만 지원한다. 출처/발표일·숫자·단위·비교 기준·NFC/길이·수집 버전·권한·동결을 검사하고 새 immutable 편성 버전을 기존 8API에 노출한다. 승인할 때도 근거와 권한을 재검사한다. 현재 Marketaux 전체 편성·AM 지수 연결·범용 의미/이모지 처리는 후속이다. [수행 결과](tasks/logs/2026-10-29_실자료_검사와_관리자_승인_연결.md)
+제품 연결 함수는 `record_bls_collection`→`generate_and_store`→`assemble_bls_pm`이다. 확인된 BLS CPI 단일 URL·두 수치의 정해진 문형만 지원한다. 출처/발표일·숫자·단위·비교 기준·NFC/길이·수집 버전·권한·동결을 검사하고 새 immutable 편성 버전을 기존 8API에 노출한다. 승인할 때도 근거와 권한을 재검사한다. 공식 4기관의 공통 입력·AM 세 지수 연결·유형별 의미 검사는 후속이다. Marketaux 전체 편성은 새 제품 목표에서 제외했다. [수행 결과](tasks/logs/2026-10-29_실자료_검사와_관리자_승인_연결.md)
 
 ```powershell
 uv run xfolio preview
@@ -114,13 +122,13 @@ uv run xfolio news-check --start 2026-10-22T22:29:00Z --end 2026-10-23T22:30:00Z
 
 실제로 조회하려면 키를 설정하고 `uv run --env-file .env xfolio news-check ... --run`을 사용합니다. `...` 대신 위 날짜 옵션을 그대로 넣거나 시간대가 있는 최근7일 안 구간으로 바꿉니다. 기본최대12GET·질의최대5페이지·요청최소3초 간격·재시도0입니다. 실제 기사 텍스트는 메모리에서만 사용하고 CLI는 최소 메타데이터만 출력합니다. 부분/실패는종료1·커서전진불가이며, 이 명령은 AI·SQLite·X 게시로 실기사를 넘기지 않습니다.
 
-좁힌 질의도 현재 표본의 요약 근거를 충분히 확보하지 못했습니다. 실제 운영용 선정 기준·입력 범위·이용 조건을 통과한 제공처라고 표시하지 않습니다. [실제 결과와 구현 계약](tasks/verification/뉴스_수집과_아침_미리보기.md)
+좁힌 질의도 현재 표본의 요약 근거를 충분히 확보하지 못했습니다. 실제 운영용 선정 기준·입력 범위·이용 조건을 통과한 제공처라고 표시하지 않습니다. [실제 결과와 구현 계약](tasks/verification/news/뉴스_수집과_아침_미리보기.md)
 
 ## 자동화 실행 방식
 
 현재 운영 목표는 **AWS Lightsail의 Docker Compose에서 별도 Python worker 한 개가 고정 워크플로를 실행**하는 구성입니다. 뉴스 수집 → 규칙 필터 → 제한된 AI 선정/요약 → 원자료·시각·중복·길이·한도 검사 → 모드별 게시 판단 → 결과 저장 순서입니다. AI가 예약·예산·승인을 변경하거나 직접 임의 행동을 결정하지 않습니다. 기존 OpenAI SDK를 쓰며 별도 에이전트 프레임워크는 추가하지 않습니다. Cloud Scheduler/Cloud Run과 Windows 작업 스케줄러는 이전 검토·시험 이력이며 새 worker는 아직 연결 전입니다.
 
-제품 시간표는 아침 07:00 준비·07:30 기준·08:00 목표·09:00 마감, 낮 09:00~17:00 매시간+17:30 최종 확인·17:45 동결·18:00 발행·18:10 전송 마감입니다. 개발은 dry_run→reviewed, 연속5거래일과 장애/중복 검증 뒤 auto입니다. 현재 새 worker·게시·Telegram은 미구현입니다. [운영 정책](docs/운영_정책.md) · [구현 계약](tasks/verification/2주_MVP_구현_계약.md)
+제품 시간표는 아침 07:00 준비·07:30 기준·08:00 목표·09:00 마감, 낮 09:00~17:00 매시간+17:30 최종 확인·17:45 동결·18:00 발행·18:10 전송 마감입니다. 개발은 dry_run→reviewed, 연속5거래일과 장애/중복 검증 뒤 auto입니다. 현재 새 worker·게시·Telegram은 미구현입니다. [운영 정책](docs/운영_정책.md) · [구현 계약](tasks/verification/integration/2주_MVP_구현_계약.md)
 
 ## 뉴스·한국어 요약 사전 시험
 
@@ -142,7 +150,7 @@ MarketNewsAPI의 초기 관찰 기업(NVDA·AAPL·MSFT) 보도자료/일반 기�
 
 ```powershell
 uv run --env-file .env python scripts/experiments/marketnewsapi_sample_probe.py
-uv run --env-file .env python scripts/experiments/marketnewsapi_sample_probe.py --run --limit 3 --days 90 --output tasks/verification/assets/marketnewsapi_sample_20261025.json
+uv run --env-file .env python scripts/experiments/marketnewsapi_sample_probe.py --run --limit 3 --days 90 --output tasks/verification/assets/news_samples/marketnewsapi_sample_20261025.json
 ```
 
 ```powershell
@@ -152,20 +160,20 @@ uv run --env-file .env python scripts/experiments/news_summary_probe.py --run
 
 키를 채팅·코드·문서·Git에 기록하지 마세요. Marketaux는 기본4회·최대8회 GET과 최소 메타데이터 출력, OpenAI는 가상 자료만 최대6회 호출하고 실제 usage를 기록합니다. API/통신 오류가 발생하면 첫 실패에서 모델 배치를 중단하고 미실행 건수를 표시합니다. OpenAI 실행은 토큰 요금이 발생하며 키 발급 외에 해당 API 프로젝트의 사용 가능한 잔액·할당량이 필요합니다. Marketaux 실제 기사의 AI 전달·공개 게시 권한은 별도 확인합니다.
 
-`ai-preview --run`은 **직접 작성한 가상 뉴스 1건**에만 공통 OpenAI 분석 함수를 적용해 2개 글의 검토용 초안을 만듭니다. 기본 모델은 Luna이며 `--model gpt-5.4-mini`는 과거 비교를 재현할 때만 명시합니다. `--run` 없이 실행하면 무통신 계획만 표시합니다. 같은 6건의 모델 비교 스크립트는 `--run`에서 최대 12회 OpenAI를 호출하고, 공식 거시 비교 스크립트는 BLS 원문 HTTP GET과 BLS 도메인 Web search 1회 응답을 시험합니다. 실행 결과와 비용 판단은 [공통 분석·제공처 비교](tasks/verification/OpenAI_분석과_제공처_비교.md)에 기록했습니다. 실제 기사 분석·X 게시와 연결되지 않습니다.
+`ai-preview --run`은 **직접 작성한 가상 뉴스 1건**에만 공통 OpenAI 분석 함수를 적용해 2개 글의 검토용 초안을 만듭니다. 기본 모델은 Luna이며 `--model gpt-5.4-mini`는 과거 비교를 재현할 때만 명시합니다. `--run` 없이 실행하면 무통신 계획만 표시합니다. 같은 6건의 모델 비교 스크립트는 `--run`에서 최대 12회 OpenAI를 호출하고, 공식 거시 비교 스크립트는 BLS 원문 HTTP GET과 BLS 도메인 Web search 1회 응답을 시험합니다. 실행 결과와 비용 판단은 [공통 분석·제공처 비교](tasks/verification/ai/OpenAI_분석과_제공처_비교.md)에 기록했습니다. 실제 기사 분석·X 게시와 연결되지 않습니다.
 
-`news_event_compare.py`는 고정된10/18~10/24 창의 알려진 사건 비교입니다. 기본무통신, `--run`에서만 Marketaux11검색을 최소3초 간격으로 수행합니다. `--official --run`은 키 없이 공식12주소의GET 접근성만 확인하고 본문 파싱은 하지 않습니다. 고정 창이 실행일의최근7일 밖이면 Marketaux 재실행을 거부하므로 새 평가에는 사건 목록과 창을 함께 갱신해야 합니다. [결정표·실제 표본·제약](tasks/verification/뉴스_기술_결정과_동일_사건_비교.md)
+`news_event_compare.py`는 고정된10/18~10/24 창의 알려진 사건 비교입니다. 기본무통신, `--run`에서만 Marketaux11검색을 최소3초 간격으로 수행합니다. `--official --run`은 키 없이 공식12주소의GET 접근성만 확인하고 본문 파싱은 하지 않습니다. 고정 창이 실행일의최근7일 밖이면 Marketaux 재실행을 거부하므로 새 평가에는 사건 목록과 창을 함께 갱신해야 합니다. [결정표·실제 표본·제약](tasks/verification/news/뉴스_기술_결정과_동일_사건_비교.md)
 
-API 시험 실패·키 없음과 정상0건, 모의 usage와 실측을 구분합니다. [표본 평가·판정 기준](tasks/verification/뉴스_샘플과_요약_시험.md) · [작업 결과](tasks/logs/2026-10-24_뉴스_샘플_검토.md)
+API 시험 실패·키 없음과 정상0건, 모의 usage와 실측을 구분합니다. [표본 평가·판정 기준](tasks/verification/news/뉴스_샘플과_요약_시험.md) · [작업 결과](tasks/logs/2026-10-24_뉴스_샘플_검토.md)
 
-SEC의 과거 실적 공시에서 직접 대조한 사실 카드 3건의 별도 미리보기 실험은 아래처럼 기본 무통신으로 실행합니다. `--run`에서만 OpenAI에 최대 3회 요청하며 초안과 사용량을 지정 파일에 저장합니다. 회사 공시 전문을 모델에 보내지 않고 X에도 게시하지 않습니다. 이 실험은 현재 CLI·관리자 승인 파이프라인과 연결되어 있지 않습니다. [검증 결과](tasks/verification/SEC_기업_공시_발견과_요약_시험.md)
+SEC의 과거 실적 공시에서 직접 대조한 사실 카드 3건의 별도 미리보기 실험은 아래처럼 기본 무통신으로 실행합니다. `--run`에서만 OpenAI에 최대 3회 요청하며 초안과 사용량을 지정 파일에 저장합니다. 회사 공시 전문을 모델에 보내지 않고 X에도 게시하지 않습니다. 이 실험은 현재 CLI·관리자 승인 파이프라인과 연결되어 있지 않습니다. [검증 결과](tasks/verification/news/SEC_기업_공시_발견과_요약_시험.md)
 
 ```powershell
 uv run python scripts/experiments/sec_fact_card_preview.py
-uv run --env-file .env python scripts/experiments/sec_fact_card_preview.py --run --output tasks/verification/assets/sec_fact_card_preview_20261025.json
+uv run --env-file .env python scripts/experiments/sec_fact_card_preview.py --run --output tasks/verification/assets/news_cases/sec_fact_card_preview_20261025.json
 ```
 
-2026-10-24 실제 시험 후 Marketaux를 단일 뉴스 어댑터 개발 대상으로 정했습니다. 다만 넓은24시간 거시 검색은138페이지 추산으로 무료100회/일을 넘었으며, 근거 충분성·이용 범위 확인 뒤 공개 운영을 판단합니다. Mini 가상6건·교정2건의 실제 usage 합계는 $0.00677325입니다. 실험 성공과 뉴스·AI 앱 구현을 구분합니다.
+2026-10-24에는 Marketaux를 단일 뉴스 어댑터 개발 대상으로 선택했지만 10/30 공식 4기관 범위로 대체했습니다. 당시 넓은 24시간 거시 검색은 138페이지 추산으로 무료 100회/일을 넘었으며, 해당 한계와 이용 검토는 이전 실험 기록으로 보존합니다. Mini 가상6건·교정2건의 실제 usage 합계는 $0.00677325입니다. 실험 성공과 뉴스·AI 앱 구현을 구분합니다.
 
 증분 실험은 아래처럼 기본 무통신으로 계획을 확인합니다. `--run`에서만 요청하며 실제 서비스 커서는 쓰지 않습니다. 과거 평일 재생은 당시 예약 실행을 재현한 것이 아니라 고정 발행 시각 창을 현재 API에서 검색하는 시험입니다.
 
@@ -185,7 +193,7 @@ uv run xfolio market-close --json
 
 기본 출력은 두 지수의 완료 거래일 종가·등락률·출처·수집 시각입니다. `--json`은 원본 종가 정밀도, 직전 종가, 미국 거래일, 달력상 마감 시각과 실제 수집 UTC 시각을 포함합니다. JSON의 소수는 문자열로 보존합니다. 종가 화면 표시는 소수 둘째 자리 `HALF_UP` 반올림입니다.
 
-기대한 거래일의 종가가 없거나 한 지수라도 실패하면 종료 코드1과 오류를 표시하고 전체 결과를 보류합니다. 낡은 데이터로 대체하지 않습니다. 조회만 수행하며 X에 게시하거나 예약 작업을 등록하지 않습니다. 상세 계약·검증 범위는 [종가 조회 검증](tasks/verification/지수_종가_조회.md), 오전 도착 시험은 [검증 계획·기록](tasks/verification/지수_오전_도착.md)을 참고하세요.
+기대한 거래일의 종가가 없거나 한 지수라도 실패하면 종료 코드1과 오류를 표시하고 전체 결과를 보류합니다. 낡은 데이터로 대체하지 않습니다. 조회만 수행하며 X에 게시하거나 예약 작업을 등록하지 않습니다. 상세 계약·검증 범위는 [종가 조회 검증](tasks/verification/market/지수_종가_조회.md), 오전 도착 시험은 [검증 계획·기록](tasks/verification/market/지수_오전_도착.md)을 참고하세요.
 
 ## BLS 공식 근거와 뉴스 수집 기록
 
@@ -199,7 +207,7 @@ uv run python scripts/experiments/provider_observation.py
 
 기존 `news-check --start ... --end ... --run`에 `--save-run`을 추가하면 본문 없이 수집 기록과 완료 커서를 저장합니다. `--db`로 로컬 시험 DB를 지정할 수 있습니다. 모든 필수 질의 완료 때만 커서가 전진하며 부분/실패·공백·동시 실행 충돌은 별도 기록됩니다. 아직 다음 조회 창을 자동 생성하지 않습니다. 이 뉴스 저장소는 로컬 SQLite이며 클라우드 preview 저장소와 별도입니다.
 
-`provider_observation.py --run`은 환경변수 또는 로컬 `.env`의 `MARKETAUX_API_TOKEN`을 읽어 제한된 시장/업종 표본을 기록합니다. 회당 최대 6API 요청, 일별 최대 2슬롯입니다. API 본문은 파일에 보관하지 않습니다. 상세 범위·채택 조건은 [BLS 및 제공처 검증](tasks/verification/BLS_파서와_제공처_채택.md)을 따릅니다.
+`provider_observation.py --run`은 환경변수 또는 로컬 `.env`의 `MARKETAUX_API_TOKEN`을 읽어 제한된 시장/업종 표본을 기록합니다. 회당 최대 6API 요청, 일별 최대 2슬롯입니다. API 본문은 파일에 보관하지 않습니다. 상세 범위·채택 조건은 [BLS 및 제공처 검증](tasks/verification/news/BLS_파서와_제공처_채택.md)을 따릅니다.
 
 ## 환경 변수 설정
 
