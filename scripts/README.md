@@ -4,7 +4,7 @@
 
 | 위치 | 용도 |
 | --- | --- |
-| [dev/](dev/README.md) | 로컬 FastAPI 실행·HTTPS 프록시·개발 인증 연결 |
+| [dev/](dev/README.md) | 로컬 FastAPI 실행·HTTPS 프록시·개발 인증·Telegram 수신 대상 준비 |
 | [experiments/](experiments/README.md) | 뉴스 제공처·공식 자료·AI·저장 방식의 제한 표본 조사 |
 | `run_dashboard.ps1` | 기존 로컬 Streamlit 가상 미리보기 실행 |
 

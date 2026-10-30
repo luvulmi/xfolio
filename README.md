@@ -12,7 +12,7 @@ XFolio는 미국 시장 수집→AI 생성→검토/버전 승인→정시 X 게
 
 ## 2026-10-30 현재 개발 기준
 
-지수는 S&P500·Nasdaq-100·다우, 자료는 Fed/BLS/BEA와 SEC 주요 기업10개(20개 확장), 요약은 실적·M&A·정책·주요지표로 확정했습니다. 실제 기업 명단은 미정입니다. [공식 수집 설계](docs/specifications/공식_발표와_공시_수집_설계.md) · [시스템/시퀀스](docs/specifications/시스템_구성과_주요_시퀀스.md). 현재 두 지수·BLS CPI·Marketaux CLI는 기존 구현이고 새 목표의 구현 완료가 아닙니다. 아래 과거 실행 예시는 그대로 보존합니다.
+지수는 S&P500·Nasdaq-100·다우, 자료는 Fed·BLS·BEA와 SEC 주요 기업 10개, 요약은 실적·M&A·정책·주요지표로 확정했습니다. 기업 구성은 확정했으며 공식 법인명·CIK·감시 시작일은 검증 대기입니다. [공식 수집 설계](docs/specifications/공식_발표와_공시_수집_설계.md) · [시스템/시퀀스](docs/specifications/시스템_구성과_주요_시퀀스.md). 현재 두 지수·BLS CPI·Marketaux CLI는 기존 구현이고 새 목표의 구현 완료가 아닙니다. 아래 과거 실행 예시는 그대로 보존합니다.
 
 ## 기존 가상 클라우드 시험 · 2026-10-25
 
@@ -68,13 +68,55 @@ OpenAPI 산출물은 [contracts/openapi.json](contracts/openapi.json), 동작 �
 
 뉴스 정책 회귀 시험은 `uv run pytest tests/test_news_selection.py`로 실행합니다. 중요성/관련성/새 사실 판단은 근거를 검토한 입력을 요구하며 이 구현이 원문에서 의미를 자동 추출한 결과라고 보지 않습니다. PostgreSQL 시험에는 일회용 DB의 `XFOLIO_TEST_DATABASE_URL`을 별도로 명시합니다. 미설정 시 관련 통합 시험은 건너뛰고 메모리 시험과 구분합니다.
 
+## X 인증 환경 설정 준비
+
+게시 계정은 `@ringXFolioBot`입니다. OAuth 1.0a 소비자 키와 사용자 토큰을 루트 `.env`에 아래 이름으로 저장합니다. 기존 `.env`를 `.env.example`로 덮어쓰지 말고, 같은 이름이 이미 있으면 해당 줄을 수정합니다. 실제 값은 채팅·Git·프론트엔드에 넣지 않습니다.
+
+```dotenv
+X_API_KEY=소비자_키
+X_API_KEY_SECRET=소비자_키_시크릿
+X_ACCESS_TOKEN=액세스_토큰
+X_ACCESS_TOKEN_SECRET=액세스_토큰_시크릿
+```
+
+위 오른쪽은 설명용 자리표시자이므로 실제 보관한 값으로 바꿉니다. `XFOLIO_MODE=dry_run`은 유지합니다. `.env`는 Git 제외 대상이며, 환경 변수는 프로세스를 시작할 때 전달됩니다. 변경 후 기존 실행 프로세스를 재시작해야 합니다.
+
+값을 출력하지 않고 4개 환경 변수의 비어 있지 않음만 확인합니다. 자리표시자·유효성·권한·계정 일치·API 인증 성공은 검사하지 않으며 외부 요청은 없습니다.
+
+```powershell
+uv run --env-file .env python -c "import os; names=('X_API_KEY','X_API_KEY_SECRET','X_ACCESS_TOKEN','X_ACCESS_TOKEN_SECRET'); missing=[n for n in names if not os.environ.get(n,'').strip()]; print('MISSING: '+', '.join(missing) if missing else 'X_ENV_READY (presence only)'); raise SystemExit(bool(missing))"
+```
+
+기존 FastAPI 실행에 환경 파일을 명시하는 예시는 아래와 같습니다. 로컬 HTTPS 개발 도구를 사용하는 경우 기존 실행 흐름을 유지하고 서버 프로세스가 동일한 환경을 받도록 합니다.
+
+```powershell
+uv run --env-file .env uvicorn xfolio.api.app:app --host 127.0.0.1 --port 8000
+```
+
+현재 X 전송 어댑터와 worker는 미구현입니다. 위 명령은 서버 환경에 값을 전달할 뿐, 실제 X 인증·게시를 실행하지 않습니다. AWS 서버에 배포한 상태도 아닙니다. [콘솔 설정·요금 가이드](docs/research/X_게시_API.md)
+
+## Telegram 알림 환경 설정 준비
+
+알림용 봇은 `@ringXFolioNotifyBot`입니다. 본인의 Telegram에서 봇과 개인 대화를 시작하고 `/start xfolio_setup`을 보낸 뒤 30분 안에 아래 명령을 실행합니다. 토큰은 기존 루트 `.env`에 `TELEGRAM_BOT_TOKEN=실제_토큰`으로 직접 저장합니다. 토큰·수신 ID를 채팅·Git·브라우저 주소창에 넣지 않습니다.
+
+```powershell
+# 무통신 계획 확인
+uv run python scripts/dev/setup_telegram.py
+# 공식 Telegram API 조회와 수신 ID 저장 (메시지 발송 없음)
+uv run --env-file .env python scripts/dev/setup_telegram.py --run --save-chat
+```
+
+도구는 `getMe`로 봇 username을 대조하고 `getWebhookInfo`·`getUpdates`로 최근 설정 메시지를 확인합니다. webhook이 연결돼 있거나 개인 대화 후보가 여러 개이면 중단합니다. `getUpdates`에 offset을 보내지 않아 업데이트를 확인 처리하지 않으며 다른 수신 프로그램이 실행 중이면 먼저 중지합니다. 토큰·응답 원문·수신 ID는 출력하지 않습니다. 성공 시 `.env`에 `TELEGRAM_CHAT_ID`를 저장하며, 기존 다른 수신 ID는 덮어쓰지 않습니다. `SETUP_MESSAGE_MISSING_OR_OLD`이면 설정 메시지를 다시 보냅니다.
+
+서버/worker 실행 시 `uv run --env-file .env ...`로 두 환경변수를 전달합니다. 이미 실행 중인 프로세스는 재시작해야 합니다. 현재 도구는 계정·수신 대상 준비용이며 자동 알림 worker나 실제 발송 기능이 연결된 것은 아닙니다.
+
 ## 개발 환경
 
 2026-10-24 [yfinance](docs/research/지수_데이터.md) 지수 조회를 구현하고 실제 응답을 확인했습니다. S&P 500은 `^GSPC`, Nasdaq-100은 `^NDX`로 조회하고 종가로 등락률을 계산합니다. 일반 가격 조회용 API 키는 필요하지 않습니다. 휴장·서머타임·조기 마감 판정에는 `pandas-market-calendars`의 NYSE·NASDAQ 달력을 사용합니다.
 
 운영 설계는 [지수 수집과 게시 모드](docs/운영_정책.md)를 따릅니다. 관리자 승인은 개발·테스트 기간에 적용하고 안정화 후 자동 검증·게시로 전환할 계획입니다. 공개 게시 조건과 오전 자료 도착은 후속 검증입니다.
 
-현재 월 **50,000원** 상한을 유지하며 공식 자료4기관을 채택했습니다. 기존 Marketaux 코드는 실험 자산이며 새 제품 수집 경로가 아닙니다. 전체 제품은 아침 08시 최대 3글·18시 최대 2글이며 적격 뉴스가 없으면 생략합니다. **5~6주차30시간은 중간 개발 목표**입니다. 7주차에도 추가 개발·통합 검증하고 8주차 초까지 기능 마무리를 계획합니다. 공식4기관·다우 추가로 전체 기준79시간이며 가용60시간 가정과 차이가 있습니다. 추가 가용 시간·단계 조정과11/24 기능 동결은 계획 가정입니다. [필수/후속 범위](docs/planning/개발_범위와_단계.md) · [WBS](docs/planning/작업_분해_WBS.md) · [IA·와이어프레임](docs/specifications/관리자_화면_구조.md). 제공처 이용 조건과 실제 연동 합격은 별도이며 auto는 최소 5거래일·장애 시험 후 판단합니다. [운영 정책](docs/운영_정책.md) · [비용 조건](docs/research/월_비용.md)
+현재 월 **50,000원** 상한을 유지하며 공식 자료 수집은 Fed·BLS·BEA·SEC 10기업으로 제한합니다. 기존 Marketaux 코드는 실험 자산이며 새 제품 수집 경로가 아닙니다. 전체 제품은 아침 08시 최대 3글·18시 최대 2글이며 적격 뉴스가 없으면 생략합니다. **5~6주차 30시간은 중간 개발 목표**입니다. 7주차에도 추가 개발·통합 검증하고 8주차 초까지 기능 마무리를 계획합니다. 전체 기준은 78시간이며 가용 60시간 가정에는 핵심 58시간과 추가 여유 2시간을 배치합니다. 추가 가용 시간·단계 조정과 11/24 기능 동결은 계획 가정입니다. [필수/후속 범위](docs/planning/개발_범위와_단계.md) · [WBS](docs/planning/작업_분해_WBS.md) · [IA·와이어프레임](docs/specifications/관리자_화면_구조.md). 제공처 이용 조건과 실제 연동 합격은 별도이며 auto는 최소 5거래일·장애 시험 후 판단합니다. [운영 정책](docs/운영_정책.md) · [비용 조건](docs/research/월_비용.md)
 
 - Python 3.12
 - `uv`로 의존성 설치 및 명령 실행
@@ -103,7 +145,7 @@ uv run --extra dashboard streamlit run dashboard/app.py --server.address 127.0.0
 
 `--fetch --assemble`은 같은 실자료를 CPI 전용 의미·280 가중 글자 검사→PM 편성→관리자 API 목록/상세까지 연결한다. 실제 현재 KST와 17:45 동결 마감을 적용하고 늦은 실행은 검증 실패 상태로 표시한다. 시험 자료의 승인 차단도 확인한 뒤 격리 schema를 정리한다. 예: `uv run python scripts/experiments/bls_workflow_probe.py --fetch --assemble --output .cache/bls_reviewed.json` (`XFOLIO_TEST_DATABASE_URL`에 loopback 시험 DB를 명시). 테스트 세션·모의 생성 사용을 결과에 표시하며 실제 Google/유료 모델 성공으로 계산하지 않는다.
 
-제품 연결 함수는 `record_bls_collection`→`generate_and_store`→`assemble_bls_pm`이다. 확인된 BLS CPI 단일 URL·두 수치의 정해진 문형만 지원한다. 출처/발표일·숫자·단위·비교 기준·NFC/길이·수집 버전·권한·동결을 검사하고 새 immutable 편성 버전을 기존 8API에 노출한다. 승인할 때도 근거와 권한을 재검사한다. 공식 4기관의 공통 입력·AM 세 지수 연결·유형별 의미 검사는 후속이다. Marketaux 전체 편성은 새 제품 목표에서 제외했다. [수행 결과](tasks/logs/2026-10-29_실자료_검사와_관리자_승인_연결.md)
+제품 연결 함수는 `record_bls_collection`→`generate_and_store`→`assemble_bls_pm`이다. 확인된 BLS CPI 단일 URL·두 수치의 정해진 문형만 지원한다. 출처/발표일·숫자·단위·비교 기준·NFC/길이·수집 버전·권한·동결을 검사하고 새 immutable 편성 버전을 기존 8API에 노출한다. 승인할 때도 근거와 권한을 재검사한다. Fed·BLS·BEA·SEC의 공통 입력·AM 세 지수 연결·유형별 의미 검사는 후속이다. Marketaux 전체 편성은 새 제품 목표에서 제외했다. [수행 결과](tasks/logs/2026-10-29_실자료_검사와_관리자_승인_연결.md)
 
 ```powershell
 uv run xfolio preview
@@ -173,7 +215,7 @@ uv run python scripts/experiments/sec_fact_card_preview.py
 uv run --env-file .env python scripts/experiments/sec_fact_card_preview.py --run --output tasks/verification/assets/news_cases/sec_fact_card_preview_20261025.json
 ```
 
-2026-10-24에는 Marketaux를 단일 뉴스 어댑터 개발 대상으로 선택했지만 10/30 공식 4기관 범위로 대체했습니다. 당시 넓은 24시간 거시 검색은 138페이지 추산으로 무료 100회/일을 넘었으며, 해당 한계와 이용 검토는 이전 실험 기록으로 보존합니다. Mini 가상6건·교정2건의 실제 usage 합계는 $0.00677325입니다. 실험 성공과 뉴스·AI 앱 구현을 구분합니다.
+2026-10-24에는 Marketaux를 단일 뉴스 어댑터 개발 대상으로 선택했지만 10/30 Fed·BLS·BEA·SEC 범위로 대체했습니다. 당시 넓은 24시간 거시 검색은 138페이지 추산으로 무료 100회/일을 넘었으며, 해당 한계와 이용 검토는 이전 실험 기록으로 보존합니다. Mini 가상6건·교정2건의 실제 usage 합계는 $0.00677325입니다. 실험 성공과 뉴스·AI 앱 구현을 구분합니다.
 
 증분 실험은 아래처럼 기본 무통신으로 계획을 확인합니다. `--run`에서만 요청하며 실제 서비스 커서는 쓰지 않습니다. 과거 평일 재생은 당시 예약 실행을 재현한 것이 아니라 고정 발행 시각 창을 현재 API에서 검색하는 시험입니다.
 

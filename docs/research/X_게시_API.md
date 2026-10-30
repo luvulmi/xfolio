@@ -1,97 +1,126 @@
-# X 게시 API 조사
+# X 게시 API와 개발자 설정 가이드
 
-- 확인일: 2026-10-22, Asia/Seoul
-- 계획 항목: R5
-- 검증 수준: 공식 공개 문서 확인. 계정 로그인·앱 생성·유료 충전·실제 API 호출·게시 시험은 하지 않았다.
-- 현재 편성은 [두 지수 관련 뉴스 단일 흐름](../../tasks/discussions/2026-10-25_두_지수_뉴스_단일_흐름.md)의 아침 지수1글·뉴스 최대2글·이후 추가 최대2글이다. 아래 2026-10-24 편성과 9개 글·기업1건 등은 당시 계산 이력이며 최신 견적은 [월 비용](월_비용.md)을 따른다.
+- 갱신: 2026-10-30, Asia/Seoul · 준비 마감: **2026-11-01(일)**
+- 확인 범위: X 공식 등록·앱·콘솔·게시·요금 문서. 계정 로그인·앱 생성·키 발급·충전·실제 API 호출은 하지 않았다.
+- 사용자 확인: **게시 계정 `@ringXFolioBot` 확정, 콘솔에 본인 계정용 읽기 및 쓰기 토큰 표시, OAuth 1.0a 키·토큰 4개 별도 보관 완료**. 실제 API 인증·서버 연결은 미검증이다.
+- 현재 기준: [운영 정책](../운영_정책.md) · [월 비용](월_비용.md) · [X 게시 작업](../../tasks/plans/X_게시.md)
 
-## 조사 결과
+## 먼저 준비할 것
 
-텍스트와 답글로 스레드를 만드는 기능은 공식 API에 있다. 다만 출처 URL이 있는 글의 요금이 일반 글보다 높아 월 3만 원 예산의 주요 제약이다. 서비스 이용 가능 여부와 최종 단가는 해당 계정 Developer Console에서 재확인해야 한다.
+**게시할 X 계정으로 콘솔 가입 → 앱 생성 → 쓰기 권한 설정 → 사용자 토큰 보관 → 이용 요금 확인** 순서로 진행한다. 키 발급과 실제 게시 검증은 별개다.
 
-## 접근·인증 후보
+단일 본인 계정의 초기 준비에는 **OAuth 1.0a 사용자 인증을 추천**한다. 공식 콘솔에서 앱 소유자의 Access Token/Secret을 직접 발급받을 수 있어 별도 사용자 동의 화면 구현 없이 시작하기 쉽다. 설정 추천이며 제품의 인증 방식 확정이나 연동 완료는 아니다.
 
-| 후보 | 지원·준비 | 난이도 | 추천 판단 |
+## 이름과 아이디 후보
+
+| 우선순위 | 표시 이름 | 아이디 후보 | 특징 |
 | --- | --- | --- | --- |
-| OAuth 2.0 PKCE | 사용자 동의, 앱 인증 설정, Client ID, 필요 시 Client Secret. `tweet.read`, `tweet.write`, `users.read`, 예약 실행용 `offline.access` 검토 | 동의 콜백과 토큰 갱신 필요 | 장기 운영 우선 후보 |
-| OAuth 1.0a 사용자 인증 | API Key/Secret와 게시 계정 Access Token/Secret으로 요청 서명 | 단일 자기 계정에서 초기 설정 단순 | 첫 연동 시험의 대안 |
-| App-only Bearer | 공개 자료 읽기용 앱 토큰 | 낮음 | 사용자 게시 인증을 대신할 수 없어 게시 후보 제외 |
+| **1** | **XFolio \| 미국시장 브리핑** | **@XFolioBrief** | 프로젝트명과 제공 정보가 명확함 |
+| 2 | XFolio \| 미국증시 노트 | @XFolioKR | 짧고 한국어 서비스임을 드러냄 |
+| 3 | XFolio \| 오늘의 미국시장 | @XFolioDaily | 정기 브리핑 이미지 |
 
-공식 접근 안내는 개발자 계정 등록 → 이용 약관 동의·용도 작성 → 앱 생성 → 인증정보 보관 순서를 설명한다. 사용자 인증이 필요한 게시와 앱 전용 읽기를 구분한다. [Getting Access](https://docs.x.com/x-api/getting-started/getting-access)
+사용 가능 여부는 확인하지 않았다. 이미 사용 중이면 @XFolioBriefKR를 대안으로 검토한다. 이름·아이디는 제안이며 계정에 적용하지 않았다.
 
-OAuth 2.0의 기본 액세스 토큰 유효기간은 2시간이며, `offline.access`로 refresh token을 발급받아 갱신할 수 있다. 실제 허용 scope와 콜백 URL은 앱 설정에서 확인한다. [OAuth 2.0 PKCE](https://docs.x.com/fundamentals/authentication/oauth-2-0/authorization-code)
+프로필 소개 예시:
 
-## 게시와 결과 확인
+> 미국 3대 지수와 Fed·BLS·BEA·SEC 공식 자료를 한국어로 정리합니다. 출처와 기준 시각을 담은 시장 브리핑을 준비 중입니다.
 
-- `POST https://api.x.com/2/tweets`에 `text`를 전달한다. 성공 응답의 `data.id`와 승인 버전·발행 단위·글 순번을 함께 저장한다. 성공 코드는 201이다. [Create Posts](https://docs.x.com/x-api/posts/create-post)
-- 다음 글의 `reply.in_reply_to_tweet_id`에 직전 글 ID를 넣어 이어 쓴다. 스레드 전체를 한 번에 성공시키는 기능으로 가정하지 않는다. [Integration guide](https://docs.x.com/x-api/posts/manage-tweets/integrate)
-- 정상 생성 응답에서 ID를 확보하면 매번 별도 조회할 필요는 없다. 재확인이 필요하면 `GET /2/tweets/:id`, ID를 받지 못한 불명 상태는 자기 타임라인과 로컬 전송 기록을 대조할 수 있는지 시험한다. API 조회만으로 불명 결과를 반드시 자동 확정할 수 있다고 보장하지 않는다.
-- 설계대로 부분 게시·응답 유실 시 자동으로 전체 스레드를 다시 보내지 않는다. 이후 복구는 운영자 확인을 거친다.
+## 개발자 콘솔 설정 순서
 
-## 한국어 길이
+공식 문서 기준 절차다. 실제 계정의 콘솔 화면과 메뉴 명칭은 다를 수 있다.
 
-기본 글 길이는 가중치 합계 280이며 한글은 보통 2, URL은 길이와 관계없이 23으로 계산한다. 따라서 Python `len()` 280 이하는 적합한 검사가 아니다. NFC 정규화·복합 이모지·링크 인식을 포함해 공식 `twitter-text` 규칙을 따른다. Python 포트의 유지 상태·일치 시험은 구현 때 확인한다. [Counting Characters](https://docs.x.com/fundamentals/counting-characters)
+### 1. 게시할 계정으로 개발자 등록
 
-## 요금과 호출 제한
+1. [X Developer Console](https://console.x.com/)에 접속한다.
+2. **XFolio 글을 게시할 X 계정**으로 로그인했는지 확인한다. 콘솔에서 직접 발급하는 본인용 토큰은 앱 소유자 계정을 나타낸다.
+3. 개발자 약관·정책을 읽고 사용 목적과 필요한 프로필 정보를 사실대로 작성한다.
 
-공식 가격표는 구독료 없이 선불 크레딧을 쓰는 사용량 과금이다. 일반 생성 $0.015/요청, **URL 포함 생성 $0.200/요청**, 일반 Post 읽기 $0.005/리소스다. 자기 앱 소유자 본인 타임라인 등 지정 endpoint는 조건을 충족하면 Owned Read $0.001/리소스다. 모든 자기 글 조회가 할인 대상인 것은 아니다. 재조회 중복 과금 방지는 UTC 하루 기준이며 완전 보장은 아니다. 초기 무료 프로모션은 지속 운영 비용에서 차감하지 않는다. [Pricing](https://docs.x.com/x-api/getting-started/pricing)
+사용 목적 영문 초안은 아래와 같다. 실제 운영 계획과 폼의 질문에 맞춰 수정한다.
 
-| endpoint | 공식 표의 제한 | XFolio 영향 |
+> I am building XFolio, a personal project that publishes Korean-language briefings about US market indices and official releases from the Fed, BLS, BEA, and SEC. These source materials are collected outside X. I plan to use the X API to publish up to five original posts per day to my own account after human review and approval, and to check the status of my own published posts when needed. I do not plan to collect other users' posts or send unsolicited replies or direct messages. X content will not be used to train AI models.
+
+### 2. XFolio 앱 생성
+
+- 대시보드의 **New App / Create App**에서 앱을 만든다.
+- 앱 이름 추천: **XFolio**. 이미 사용 중이면 **XFolio Brief KR** 등으로 구분한다.
+- 설명 예시: **Human-reviewed Korean briefings on US markets and official economic releases.**
+- Website URL을 요구하면 실제 공개 프로젝트 소개 페이지 또는 공개 GitHub repository 주소를 사용한다. 앱 이름은 X의 표시 이름·아이디와 별개다.
+
+### 3. 사용자 인증과 쓰기 권한 설정
+
+앱의 인증·권한 설정에서 **OAuth 1.0a의 Read and write**를 선택한다. Read only로는 게시할 수 없다. 현재 기능에는 DM 권한이 필요하지 않다.
+
+권한을 먼저 저장한 뒤 본인용 Access Token/Secret을 발급한다. **읽기 전용 상태에서 토큰을 먼저 만들었다면 권한 변경 후 새 권한의 토큰을 다시 발급**한다. 기존 토큰이 자동으로 쓰기 권한을 얻는다고 가정하지 않는다.
+
+OAuth 2.0의 앱 유형·callback 설정 화면까지 진행한다면 아래 인증 비교를 참고한다. 현재 XFolio에는 X용 callback이 구현되어 있지 않다. 콘솔이 필수 callback을 요구하는 경우 X 인증 경로를 먼저 정하고, 기존 Google 로그인 callback이나 임의의 서비스 주소를 재사용하지 않는다.
+
+### 4. 키·사용자 토큰 4개 보관
+
+앱의 키·토큰 관리 화면에서 다음을 발급하고 비밀번호 관리자 등 안전한 곳에 보관한다. 공식 문서는 발급 시 한 번만 표시되며 재발급하면 기존 값이 무효화된다고 안내한다.
+
+| 자격 정보 | 역할 |
+| --- | --- |
+| API Key | 앱 식별·OAuth 1.0a 요청 서명 |
+| API Key Secret | 앱 비밀 값·요청 서명 |
+| Access Token | 본인 게시 계정의 사용자 인증 |
+| Access Token Secret | 사용자 인증 요청 서명 |
+
+**API Key만으로 게시할 수 없다.** 콘솔의 App-only Bearer Token은 위 사용자 인증을 대신하지 않는다. OAuth 2.0에서 동의 후 얻는 사용자 Access Token과도 구분한다.
+
+키 값은 채팅·발표 자료·GitHub·React 코드에 넣지 않는다. 루트 `.env`에 `X_API_KEY`, `X_API_KEY_SECRET`, `X_ACCESS_TOKEN`, `X_ACCESS_TOKEN_SECRET`을 설정하고 `uv run --env-file .env ...`로 서버 프로세스에 전달한다. [입력·무통신 확인 명령](../../README.md#x-인증-환경-설정-준비)을 따른다. `.env.example`에는 빈 항목만 두었다. X 전송 어댑터는 아직 미구현이며 환경 전달만으로 게시가 동작하는 것은 아니다.
+
+### 5. 요금·잔액·지출 상한 확인
+
+현재 공식 안내는 **선불 크레딧을 충전해 쓰는 사용량 과금**이다. 최종 적용 단가와 충전 조건은 자신의 콘솔에서 확인한다.
+
+| 항목 | 2026-10-30 공식 공개 단가 |
+| --- | ---: |
+| 일반 글 생성 | $0.015 / 요청 |
+| URL 포함 글 생성 | **$0.200 / 요청** |
+| 일반 Post 읽기 | $0.005 / 리소스 |
+
+XFolio는 출처 링크를 포함하므로 URL 글 단가를 기준으로 계산한다. 하루 최대 5글·월 22일 가정의 X 비용은 조회까지 포함해 **$18.48**이며 상세 산식은 [월 비용](월_비용.md)을 따른다. 전체 서비스 예산은 월 50,000원이다. 실제 사용량·세금·환율·시험 비용은 별도 확인한다.
+
+초기 시험은 **자동 충전을 끄고 작은 지출 상한을 설정하는 안을 추천**한다. 예를 들어 콘솔이 허용하면 시험용 $2 상한을 검토할 수 있지만, 이는 최소 충전액이나 승인된 결제 금액이 아니다. 준비 단계에서 단가·잔액·상한 설정 여부를 기록하고 충전 완료와 구분한다.
+
+### 6. 11/1 준비 완료 여부 기록
+
+- [x] X 계정 보유·아이디 `@ringXFolioBot` 확정 — 사용자 확인.
+- [x] 개발자 콘솔의 기존 기본 앱 사용 — 사용자 제공 설정 화면 기준.
+- [x] Read and write와 본인 게시 계정 확인 — 사용자 제공 화면 기준.
+- [x] API Key/Secret + Access Token/Secret 보관 — 사용자 완료 보고.
+- [x] X 환경 변수 4개 로딩 확인. `--env-file .env`의 새 프로세스에서 `X_ENV_READY (presence only)`를 확인했다. 실제 API 인증·게시 성공은 미검증이다.
+- [x] 실제 콘솔 잔액·지출 상한·자동 충전 상태 확인 — 10/30 잔액·지출 US$0.00, 한도 무제한, 결제 수단 없어 자동 충전 불가. [진행 기록](../../tasks/logs/2026-10-30_11월_1일_서비스_준비.md). 개별 endpoint 단가의 콘솔 대조는 후속.
+
+확인 기록에는 계정 아이디·앱 이름·권한·발급 완료 여부만 남기고 비밀 값은 남기지 않는다. **이 목록은 설정 준비 기준이다.** 실제 인증 성공과 게시 성공은 후속 연동 시험에서 별도로 검증한다.
+
+## 인증 방식 비교
+
+| 방식 | 준비·구현 | 현재 판단 |
 | --- | --- | --- |
-| `POST /2/tweets` | 앱당 10,000/24시간, 사용자당 100/15분 | 기획의 하루 최대 9개 글은 이 수치보다 작음 |
-| `GET /2/tweets/:id` | 앱당 450/15분, 사용자당 900/15분 | 필요할 때만 조회 |
+| OAuth 1.0a 사용자 인증 | 위 4개 자격 정보와 요청 서명 | 본인 1계정의 초기 설정 추천 |
+| OAuth 2.0 Authorization Code + PKCE | Client ID, 서버 유형이면 Client Secret, 동의·callback·갱신. tweet.read, tweet.write, users.read, 예약 운영용 offline.access 검토 | 세분화된 권한이 필요할 때 검토. 구현 방식 미확정 |
+| App-only Bearer | 공개 데이터 읽기용 앱 토큰 | 사용자 게시 인증으로 사용 불가 |
 
-호출 제한은 무료 제공량이나 게시 권한 보장이 아니다. 응답의 `x-rate-limit-*` 헤더와 실제 콘솔을 확인한다. Integration guide에는 POST 200/15분이라는 다른 수치도 남아 있어, 위 표는 전용 Rate Limits 문서를 우선 인용했다. [Rate Limits](https://docs.x.com/x-api/fundamentals/rate-limits)
+공식 Apps 문서는 새 프로젝트에 OAuth 2.0을 권장하며, 게시 API와 Integration guide는 사용자 인증으로 OAuth 1.0a도 안내한다. XFolio의 초기 추천은 본인용 토큰 발급의 단순함을 기준으로 했다.
 
-## 월 비용 예시
+OAuth 2.0을 택하면 서버에서 비밀을 보관하는 **Automated App / Bot 또는 Web App** 유형을 검토한다. callback은 등록값과 실제 구현이 정확히 일치해야 하며 운영은 HTTPS, 로컬은 공식 안내의 http://127.0.0.1을 기준으로 한다. X callback·동의·갱신 코드는 후속 구현 대상이다.
 
-아래는 시장 전망이나 실제 게시 횟수가 아닌 **월 운영일 22일의 계산 시나리오**다. 실제 아침·기업 편성 운영일은 각각 계산한다. URL 과금은 링크가 들어간 글 수로 계산하며 링크 개수와 구분한다.
+## 실제 연동 때 검증할 것
 
-| 시나리오 | 하루 링크 글 / 일반 글 | 월 생성 비용 산식 | USD |
-| --- | --- | --- | --- |
-| 적은 게시 | 1 / 1 | `22 × (1 × 0.200 + 1 × 0.015)` | 4.73 |
-| 편성 예시 | 5 / 4 | 아침 3개 뉴스 링크 + 기업 2개 링크, 나머지 4개 글: `22 × (5 × 0.200 + 4 × 0.015)` | 23.32 |
-| 전부 링크 | 9 / 0 | `22 × 9 × 0.200` | 39.60 |
+- 게시 endpoint는 **POST https://api.x.com/2/tweets**다. 성공 **201**과 **data.id**를 승인 버전·본문·시각·시도 기록에 연결한다. 정상 응답에서 ID를 받았다면 추가 GET 없이 저장할 수 있다.
+- 기본 가중 글자 수는 280이다. 한글·URL 계산은 Python len() 대신 공식 twitter-text 규칙과 대조한다. 기존 길이 계산은 [이전 조사](../archive/X_게시_API_조사_이력.md)에 보존했으며 실제 게시 성공 근거가 아니다.
+- **2026-10-30 Integration guide는 셀프서비스 API 답글에 원문 작성자의 멘션/인용 조건, 글당 cashtag 1개 제한을 명시한다.** 본인 글에 이어 쓰는 스레드의 적용·예외는 이번에 확정하지 않았다. 답글 연결은 콘솔 조건과 후속 시험으로 확인하며 무조건 가능하다고 가정하지 않는다.
+- 호출 제한은 무료 사용량과 다르다. [전용 제한 문서](https://docs.x.com/x-api/fundamentals/rate-limits)와 실제 응답 헤더를 확인한다.
+- 모의 전송으로 승인·한도·중복·타임아웃·부분 성공·불명 결과를 먼저 검증한다. 불명 결과에서 자동 재전송하지 않는다. 자기 타임라인 대조도 과금될 수 있고 검색 실패만으로 미게시를 확정할 수 없다.
+- 실제 공개 시험은 대상 계정·게시문·비용을 정하고 사용자의 명시적 게시 승인 후 진행한다. 이번 안내에서 실제 게시나 유료 호출은 하지 않았다.
 
-일반 읽기로 198개 글을 각각 한 번 확인하면 `198 × 0.005 = $0.99`를 더 잡는다. Owned Read를 실제 충족하면 해당 타임라인 리소스 단가로 다시 계산한다. 세금·환율·충전 잔액·시험·재시도는 별도다. 편성 예시는 환산 전부터 $23.32이므로 다른 항목을 더한 전체 예산 충족을 장담할 수 없다. 출처 링크를 삭제해 절약하는 결정을 자동으로 내리지 않는다.
+## 공식 근거와 조사 이력
 
-## 추천 및 남은 확인
-
-현재 의존성 `httpx`와 인증 라이브러리를 활용한 공식 HTTP API 연동을 우선 검토한다. X SDK를 새로 넣을지는 인증 서명·유지 상태를 비교해 결정한다. 게시 단위 전체 승인과 개별 글 전송 상태는 저장소에서 관리한다.
-
-1. 계정·앱 사용 가능 여부, 필요한 쓰기 권한, 실제 콘솔 단가를 확인한다.
-2. URL 포함 글 요금과 예상 편성을 월 예산표에 반영한다.
-3. 유료 시험은 별도 명시적 승인 후 작은 스레드로 ID·답글 연결·길이를 확인한다.
-4. 타임아웃·부분 게시·재시작·만료 토큰·429는 외부 게시 없는 시험부터 검증한다.
-
-공식 문서의 비용·제한은 조회일의 공개 정보이며 실제 계정 연동을 완료했다는 뜻이 아니다.
-
-## 후속 조사: 출처 통합 글의 길이와 비용
-
-확인일은 동일하게 2026-10-22다. 아래는 **내용·URL 모두 가상인 형식 시험**이며 실제 기사 요약이나 게시 결과가 아니다. 아침 뉴스 본문에 `[1]`처럼 대응 번호를 붙이고 마지막 글에 출처를 모으는 대안이다. 출처·관련성 검증과 운영자 승인은 그대로 필요하다.
-
-```text
-핵심: 확인된 발표와 시장 변화를 중심으로 정리했습니다.
-출처 1 https://example.com/news/1
-출처 2 https://example.com/news/2
-출처 3 https://example.com/news/3
-```
-
-공식 [twitter-text v3 설정](https://github.com/twitter/twitter-text/blob/master/config/v3.json)의 기본 가중치 2·예외 범위 가중치 1·URL 23을 적용해 로컬에서 계산했다. URL을 제외한 한글 등 29자 × 2, ASCII·공백·개행 등 20자 × 1, URL 3개 × 23으로 **147/280**이다. 한 줄의 소스 URL이 길어져도 유효 URL로 인식되면 23이며, 출처 하나를 한 줄 더 붙이면 `출처 4 `와 개행·URL 때문에 31이 추가되어 **178/280**이다. 이 시험은 단순 한글·ASCII·HTTPS URL만 대상으로 한 규칙 검산이며 공식 라이브러리 실행·실제 X 수신 검증은 아니다.
-
-현재 가격표는 URL 포함 **요청당** 요금이므로 링크 3개를 한 글에 넣으면 URL 글 1개로 계산한다. 이 절은 아침 최대5개 글·독립 출처글을 검토한 당시 길이 시험이다. **2026-10-24 확정 편성은 아침2개 글·기업 최대2건**이며 X 가정은 월 $13.97이다. AI·환산을 포함한 최신 산식은 [월 비용](월_비용.md)에 모았다. 단순 길이 시험을 실제 게시 검증으로 취급하지 않는다.
-
-따라서 현재 구성의 마지막 출처 글은 위 간단한 한국어 문장과 링크 3개 또는 4개를 담을 공간이 있음을 확인했다. 실제 기사별 출처명·조건·핵심 정리가 길어지면 승인할 완성본을 다시 계산해야 하며, 이 예시만으로 모든 게시문이 길이 제한을 통과한다고 보장하지 않는다.
-
-## 후속 조사: 인증 전후 확인 경계와 불명 결과
-
-GET이라는 이유로 무료가 되지 않는다. Post lookup은 위 일반 읽기 단가 대상이고, 본인 타임라인의 Owned Read 조건은 앱 소유자·인증 사용자·조회 대상 ID가 일치해야 한다. 생성 성공의 `data.id`는 추가 GET 없이 로컬 기록에 저장할 수 있다. [Get Posts by ID](https://docs.x.com/x-api/posts/get-post-by-id), [Pricing](https://docs.x.com/x-api/getting-started/pricing)
-
-외부 계정 접근 전 할 수 있는 일은 스코프·endpoint·예상 과금·글 길이·모의 응답 처리를 확인하는 것이다. 다음은 콘솔과 사용자 인증이 있어야 완료된다.
-
-1. 개발자 계정과 앱 상태, 게시 계정 일치 여부를 확인한다.
-2. 사용 인증 방식과 읽기·쓰기 권한을 설정하고 사용자 동의를 받는다.
-3. 실제 적용 단가·잔액·지출 상한·자동 충전 여부를 확인한다. 충전 금액과 월 소비액을 구분한다.
-4. 별도 게시 승인 후 글 한 개와 답글 한 개의 `201`·`data.id`·부모 ID·실제 화면을 대조한다.
-
-불명 결과의 복구 절차 제안은 다음과 같다. 전송 전 승인 버전·본문·발행 단위·순번·부모 ID·시각을 저장하고, 정상 응답이면 ID를 확정한다. 타임아웃이면 불명 상태와 한도 예약을 유지하고 자동 재전송을 멈춘다. ID가 있으면 해당 ID를 조회하고, ID가 없으면 본인 타임라인에서 좁은 시각 구간의 텍스트·답글 연결을 대조한다. 정확히 대응하는 글을 운영자가 확인한 때만 ID를 연결한다. 검색에 없다는 사실 하나로 미게시를 확정하지 않으며, 확인되지 않으면 불명 상태를 유지한다. 서버의 자동 멱등 처리 기능을 확인했다는 주장은 하지 않는다.
+- [Getting Access](https://docs.x.com/x-api/getting-started/getting-access): 콘솔 가입·앱 생성·본인용 토큰·보관.
+- [Apps](https://docs.x.com/fundamentals/developer-apps): Read and write·권한 변경 후 토큰·앱 유형·callback.
+- [Developer Console](https://docs.x.com/fundamentals/developer-portal): 앱·키·사용량·크레딧 관리.
+- [Create Post](https://docs.x.com/x-api/posts/create-post) · [Integration guide](https://docs.x.com/x-api/posts/manage-tweets/integrate): 게시 endpoint·사용자 인증·생성 제한.
+- [Pricing](https://docs.x.com/x-api/getting-started/pricing): 선불 사용량 과금·URL 단가·자동 충전·지출 상한.
+- [OAuth 2.0 PKCE](https://docs.x.com/fundamentals/authentication/oauth-2-0/authorization-code) · [Counting Characters](https://docs.x.com/fundamentals/counting-characters): 구현 참고. 세부 기존 조사는 10/22 기준이며 이번에는 두 문서 전문을 재확인하지 않았다.
+- [2026-10-22 조사 보존본](../archive/X_게시_API_조사_이력.md): 이전 9글 편성·월 3만 원 예산·출처 통합 길이 계산. 현재 운영 기준으로 사용하지 않는다.

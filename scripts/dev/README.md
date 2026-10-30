@@ -1,4 +1,10 @@
-# 로컬 HTTPS와 Google 인증 연결 준비
+# 로컬 개발과 서비스 설정 도구
+
+## Telegram 수신 대상 준비
+
+`setup_telegram.py`는 [루트 설정 안내](../../README.md#telegram-알림-환경-설정-준비)에 따라 `@ringXFolioNotifyBot`을 검증하고 개인 대화의 수신 ID를 `.env`에 저장합니다. 기본은 무통신이며 `--run --save-chat`에서만 공식 Bot API 3회 조회와 로컬 저장을 수행합니다. 메시지 발송·webhook 변경·업데이트 확인 처리는 하지 않습니다. `tests/test_telegram_setup.py`에서 개인 대화 선택, 기존 설정 보호, 오류의 토큰 비노출을 외부 API 없이 검증합니다.
+
+## 로컬 HTTPS와 Google 인증 연결 준비
 
 이 도구는 개발용이다. HTTPS 프록시는 `127.0.0.1`에만 바인딩하고 빌드한 React와 `/api`를 같은 origin에서 제공한다. 인증서는 `.cache/dev_https/`에만 보관하며 OS 신뢰 저장소를 변경하지 않는다. 공개 배포는 별도 검증이 필요하다.
 
