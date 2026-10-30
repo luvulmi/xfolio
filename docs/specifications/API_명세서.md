@@ -10,7 +10,7 @@
 
 ## 확정 범위와 구현 차이
 
-뉴스 목표는 **Fed·BLS·BEA 공식 발표와 SEC 주요 기업 공시**, 사건 유형은 실적·M&A·정책·경제지표다. SEC 관찰 기업은 10개로 시작해 20개까지 확장하며, 실제 종목 목록과 추가 기준은 버전 관리한다. 지수 목표는 S&P 500(`^GSPC`)·나스닥100(`^NDX`)·다우(`^DJI`) 세 개다. 현행 코드는 두 지수와 기존 Marketaux/BLS 시험 경로이므로 이 변경을 실제 수집 완료로 표시하지 않는다. 수집 계약의 기준은 [공식 발표와 공시 수집 설계](공식_발표와_공시_수집_설계.md)다.
+뉴스 목표는 **Fed·BLS·BEA 공식 발표와 SEC 주요 기업 공시**, 사건 유형은 실적·M&A·정책·경제지표다. SEC 관찰 기업은 10개로 제한하며, 실제 기업 목록과 교체 기준은 버전 관리한다. 지수 목표는 S&P 500(`^GSPC`)·나스닥100(`^NDX`)·다우(`^DJI`) 세 개다. 현행 코드는 두 지수와 기존 Marketaux/BLS 시험 경로이므로 이 변경을 실제 수집 완료로 표시하지 않는다. 수집 계약의 기준은 [공식 발표와 공시 수집 설계](공식_발표와_공시_수집_설계.md)다.
 
 이 문서의 **현행 8경로**, **1단계 목표 10경로**, **B01 조회 확장 목표 13경로**를 구분한다. OpenAPI snapshot·DB schema·프론트 구현은 이번 명세 변경으로 바뀌지 않는다.
 
@@ -139,7 +139,7 @@
 
 편성 cutoff는 `available_at <= cutoff_at`인 버전만 사용한다. cutoff 이전 발표/접수라도 이후 확보한 버전은 소급 편성하지 않는다. `published_at=null`을 `accepted_at`이나 자정으로 채우지 않고 원천 날짜·시간 정밀도는 별도 수집 메타데이터로 보존한다. 출처 정정은 새 버전과 재검토로 처리한다.
 
-published_at과 accepted_at 모두 신뢰할 수 없으면 후보를 보류한다. 초기 지원 대상은 Fed FOMC 성명, BLS CPI, BEA PCE, SEC8-K의2.02·1.01·2.01과 관련9.01 첨부를 통한 실적/M&A다. EX-99.1이나 item 번호만으로 사건과 주장을 확정하지 않는다. BLS 고용(Employment Situation)·BEA GDP·6-K/외국기업은 후속 확장 범위다.
+published_at과 accepted_at 모두 신뢰할 수 없으면 후보를 보류한다. 확정한 초기 지원은 Fed FOMC 성명, BLS CPI, BEA PCE, SEC8-K의2.02·1.01·2.01과 관련9.01 첨부를 통한 실적/M&A다. EX-99.1이나 item 번호만으로 사건과 주장을 확정하지 않는다. 고용·GDP·6-K/외국기업은 후속 범위다.
 
 ## 전체 결정 · POST /api/drafts/{id}/decision
 
@@ -236,7 +236,7 @@ published_at과 accepted_at 모두 신뢰할 수 없으면 후보를 보류한�
 
 collection 목록은 `started_at DESC, id ASC`로 정렬하고 1시간 서명 cursor를 전체 필터와 결합한다. 상세의 근거 목록도 기본20/최대50·서명 cursor로 페이지 처리하며 실행 정보는 반복 반환한다. 수집 공급자의 원시 cursor·응답·인증 값은 브라우저에 노출하지 않고, API용 안전한 진도 요약으로 투영한다. 외부 rate limit이나 일시 장애를 정상0건으로 반환하지 않는다.
 
-`settings.watchlist`는 `version, effective_at, company_count, companies[{cik,tickers,name,enabled}], max_companies=20`의 읽기 전용 객체다. 초기 목표는10개이며20개 확장은 새 버전으로 기록한다. 실제10개 명단이 미확정이면 설정 완료로 표시하지 않는다. ticker는 변경 가능하므로 기업 식별의 기준은 CIK다. 과거 수집에는 당시 watchlist_version과 대상 CIK 집합을 보존한다. 브라우저의 임의 목록 변경 endpoint는 없다.
+`settings.watchlist`는 `version, effective_at, company_count, companies[{cik,tickers,name,enabled}], max_companies=10`의 읽기 전용 객체다. 목표는 10개이며 명단 교체는 새 버전으로 기록한다. 공식 법인명·CIK·감시 시작일이 미검증이면 설정 완료로 표시하지 않는다. ticker는 변경 가능하므로 기업 식별의 기준은 CIK다. 과거 수집에는 당시 watchlist_version과 대상 CIK 집합을 보존한다. 브라우저의 임의 목록 변경 endpoint는 없다.
 
 모든 신규 조회는 기존 세션·no-store 규칙을 따르고 401/403/404/422/503 오류 계약을 재사용한다. 이 3경로는 현재 OpenAPI에 없으며 신규 시험과 구현 후에만 이용할 수 있다.
 
@@ -302,4 +302,4 @@ mock의 state가 published여도 UI는 “모의 전송 완료”로 표시한�
 | A04 | 일반 AM/뉴스 profile·검사 재호출·승인 감사 저장, 미등록 profile 차단 |
 | A05/A06 | 원자적 점유·전송 전 시도 기록·결과/비용·mode 표기와 이력 |
 
-이번 산출물은 명세다. 현재 8API·OpenAPI 파일과 제품 코드는 수정하지 않았다. 공식4기관·세 지수·SEC10기업/20확장·source evidence·기관별 완주·B01 조회는 구현 대상이다. 모든 실패 계약의 시험 방법은 [기존 관리자 검증](../../tasks/verification/admin/관리자_화면과_승인_API.md)과 구현 작업에서 관리한다.
+이번 산출물은 명세다. 현재 8API·OpenAPI 파일과 제품 코드는 수정하지 않았다. Fed·BLS·BEA·SEC·세 지수·SEC 10기업·source evidence·기관별 완주·B01 조회는 구현 대상이다. 모든 실패 계약의 시험 방법은 [기존 관리자 검증](../../tasks/verification/admin/관리자_화면과_승인_API.md)과 구현 작업에서 관리한다.

@@ -10,7 +10,7 @@
 
 ## 목표 입력 경계
 
-2026-10-30 확정 목표는 **S&P 500·나스닥100·다우 세 지수**, **Fed·BLS·BEA 공식 발표와 SEC 주요 기업 공시**다. 실적·M&A·정책·경제지표 사건을 다루고 SEC 관찰 기업은10개로 시작해20개까지 확장한다. 현재 두 지수 코드와8개 테이블이 이 목표를 이미 지원한다는 뜻은 아니다. [공식 발표와 공시 수집 설계](공식_발표와_공시_수집_설계.md)를 기준으로 물리 schema와 목표 JSON 계약을 구분한다.
+2026-10-30 확정 목표는 **S&P 500·나스닥100·다우 세 지수**, **Fed·BLS·BEA 공식 발표와 SEC 주요 기업 공시**다. 실적·M&A·정책·경제지표 사건을 다루고 SEC 관찰 기업은 10개로 제한한다. 현재 두 지수 코드와8개 테이블이 이 목표를 이미 지원한다는 뜻은 아니다. [공식 발표와 공시 수집 설계](공식_발표와_공시_수집_설계.md)를 기준으로 물리 schema와 목표 JSON 계약을 구분한다.
 
 ## 현행 물리 ERD · 8개 테이블
 
@@ -153,7 +153,7 @@ flowchart LR
 
 ## 1단계 payload 계약 · 목표
 
-**첫 통합에서는 8개 테이블을 유지하고 타입을 가진 payload 계약을 추가**한다. 아래 신규 키는 미구현이다. 4기관의 수집·근거·사건은 기존 runs/evidence/edition 경계에 대응하므로 기관별 테이블4개를 바로 추가할 필요는 없다. 테이블 수가 영구 제한은 아니며 후속 필요 시 분리할 수 있다. 구조화되지 않은 dict를 임의 저장하는 방식으로 목표 계약을 대체하지 않는다.
+**첫 통합에서는 8개 테이블을 유지하고 타입을 가진 payload 계약을 추가**한다. 아래 신규 키는 미구현이다. Fed·BLS·BEA·SEC의 수집·근거·사건은 기존 runs/evidence/edition 경계에 대응하므로 기관별 테이블을 바로 추가할 필요는 없다. 테이블 수가 영구 제한은 아니며 후속 필요 시 분리할 수 있다. 구조화되지 않은 dict를 임의 저장하는 방식으로 목표 계약을 대체하지 않는다.
 
 | 저장 위치 | 현행 주요 내용 | 1단계 추가/정리 |
 | --- | --- | --- |
@@ -184,7 +184,7 @@ flowchart LR
 | target_period | 주장 대상 기간. 기간이 없는 정책/M&A는 null이며 발행일과 구분 |
 | evidence_refs | evidence_id·claim_id·표/문단/첨부 locator·source_revision의 배열 |
 | rights_status | `permitted|pending_review|restricted|expired`, 검토 근거·시각·범위를 permission_review에 연결 |
-| watchlist_version | SEC 대상10~20기업 집합의 불변 버전. run과 draft에서 당시 버전·대상CIK를 참조 |
+| watchlist_version | SEC 대상 10기업 집합의 불변 버전. run과 draft에서 당시 버전·대상CIK를 참조 |
 
 현행 `UNIQUE(evidence_bundles.source_id,content_version)`에서 source_id를 단순히 `sec`로 바꾸면 서로 다른 공시가 같은 내용일 때 충돌할 수 있다. **목표 물리 source_id는 `기관:source_record_id` 합성키**, payload.source_id는 기관 enum으로 저장한다. content_version은 해당 근거 content_hash와 대응시키고 그 매핑을 저장/조회 adapter에서 검증한다. 기존 저장 자료는 legacy 버전으로 읽으며 이름만 바꿔 의미를 소급 변경하지 않는다.
 
@@ -192,11 +192,11 @@ flowchart LR
 
 event_key는 기관 레코드 ID가 아니라 동일 사건의 식별자다. 동일 실적의8-K 본문과 EX-99.1은 서로 다른 source_record_id일 수 있으나 한 event_key에 연결한다. source_revision은 문서 버전, fact_version은 검토된 사실 묶음 버전이다. 수정공시·정정발표는 원본을 덮어쓰지 않고 새 근거 버전으로 기록하고 재검토한다.
 
-`news_cursors.provider`에는 기관 이름공간을, `scope`에는 고정된 feed/dataset·CIK(해당 시)·watchlist_version·adapter_version을 넣는다. 회차별 window_start/window_end는 collection_run의 조회 범위이며 커서의 고정 scope 키에 포함하지 않는다. 한 기관의 커서 성공이 다른 기관이나 다른 10/20기업 집합의 성공을 의미하지 않는다. 완주한 범위에서만 completed_until/revision을 원자적으로 진행시키고 partial/failed는 끝까지 수집했다고 커서를 앞당기지 않는다. 원시 페이지 token 등 복구 정보는 typed run payload에 보관하되 비밀 값과 혼합하지 않는다.
+`news_cursors.provider`에는 기관 이름공간을, `scope`에는 고정된 feed/dataset·CIK(해당 시)·watchlist_version·adapter_version을 넣는다. 회차별 window_start/window_end는 collection_run의 조회 범위이며 커서의 고정 scope 키에 포함하지 않는다. 한 기관의 커서 성공이 다른 기관이나 다른 기업 목록 버전의 성공을 의미하지 않는다. 완주한 범위에서만 completed_until/revision을 원자적으로 진행시키고 partial/failed는 끝까지 수집했다고 커서를 앞당기지 않는다. 원시 페이지 token 등 복구 정보는 typed run payload에 보관하되 비밀 값과 혼합하지 않는다.
 
 `collection_runs.status` 목표는 `running|complete|partial|failed`다. `no_updates`는 `status=complete && new_version_count=0`에서 계산하는 조회 boolean이며 별도 저장 상태가 아니다. 지정 기관·범위·페이지/기업을 모두 확인했지만 새 버전이 없는 실행으로 선정0건과 다르다. 권한·근거 부족으로 게시할 수 없는 자료는 별도 `eligibility`와 사유에 남기고 수집 실패로 바꾸지 않는다. 기관 미연결/미실행은 실행 행을 성공으로 조작하지 않고 API summary의 not_connected/not_observed로 표현한다. 현행 collection_runs는 완료 행의 status CHECK와 finished_at NOT NULL을 갖고 있으므로 running 행 저장을 도입할 때 완료시각 null 허용·상태별 제약의 별도 migration이 필요하다. 이번에 적용한 변경은 아니다.
 
-초기 지원 범위는 Fed FOMC 성명, BLS CPI, BEA PCE, SEC8-K의2.02·1.01·2.01과 관련9.01 첨부를 통한 실적/M&A 검토다. item/form만으로 실적/M&A를 확정하지 않으며 EX-99.1도 실제 내용을 확인한다. BLS 고용(Employment Situation)·BEA GDP·6-K/외국기업은 후속 확장 범위이며 현재 지원 완료가 아니다.
+확정한 초기 지원은 Fed FOMC 성명, BLS CPI, BEA PCE, SEC8-K의2.02·1.01·2.01과 관련9.01 첨부를 통한 실적/M&A 검토다. item/form만으로 실적/M&A를 확정하지 않으며 EX-99.1도 실제 내용을 확인한다. 고용·GDP·6-K/외국기업은 후속 범위이며 현재 지원 완료가 아니다.
 
 관찰 목록 변경 이력은 우선 `operations_events(kind=watchlist_revision, scope=sec_watchlist, unique_key=version)`의 typed payload에 `version, effective_at, companies[{cik,name,tickers,issuer_type,selection_reason,reference_url,verified_at,enabled}]`를 append-only로 기록할 수 있다. run/draft의 watchlist_version은 이 version을 참조한다. 이는 목표 설계이며 현재 이벤트 저장 코드에 해당 종류가 구현된 것은 아니다. 원천자료별 관계 검색·다중 운영자 편집·대규모 공시 검색이 필요해지면 `source_records/events/watchlists` 정규화 테이블과 인덱스를 별도 migration으로 검토한다. 이번 범위에서는 기존 JSON 연결의 검증 책임을 감수하는 최소 설계를 택하며 DB FK가 있다고 표현하지 않는다.
 
