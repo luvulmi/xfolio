@@ -1,16 +1,20 @@
 # 관리자 API 명세서
 
 > 입력·편성의 단일 기준은 [현재 요구사항](../요구사항.md)이다. 현재 목표는 AM 최대 4글이며 기존 코드·OpenAPI·PM 이력/시험과 구분한다.
-- 기준: 2026-10-30, Asia/Seoul
+- 기준: 2026-10-31, Asia/Seoul
 - 상태: **현행 0.1.0 대조 + 1단계 목표 계약**. 신규 경로/필드는 설계이며 아직 호출할 수 없다.
 - 현행 기준: [app.py](../../src/xfolio/api/app.py) · [models.py](../../src/xfolio/api/models.py) · [store.py](../../src/xfolio/api/store.py) · [OpenAPI](../../contracts/openapi.json)
 - 연결: [입력·검증 책임](뉴스_입력과_검증_책임.md) · [ERD](데이터_모델_ERD.md) · [IA](관리자_화면_구조.md)
+
+## 읽는 순서와 상태
+
+현행은 app/models/store와 OpenAPI snapshot이 기준이다. 아래 표와 본문의 `현행` 열만 현재 호출 계약이다. `목표 추가/강화`·`신규`는 초기 제품 설계, B01·SEC 등은 후속이며 공통 프로필·Exa 세부 필드는 미결정이다. [미결정 계약과 완료 조건](뉴스_입력과_검증_책임.md#미결정-계약과-결정-조건)을 먼저 확인한다. 관련 요구사항: FR-02~08,FR-10,NFR-01~04.
 
 ## 확정 범위와 구현 차이
 
 뉴스 핵심은 **Exa+BLS CPI**, 가격 입력은 ETF `SPY/QQQ/DIA`다. 기존 10기업 우선+목록 밖 중요 사건을 검토한다. Fed·BEA·SEC 자동 수집과 CIK 필터는 후속이다. Exa 개발 채택·실측과 제품 어댑터/API 구현은 구분한다. [현재 요구사항](../요구사항.md)
 
-**계약 확장 대기:** 아래 official 프로필·SEC 필드는 공식 자료용 목표 설계를 보존한 것이다. Exa에는 그대로 적용하지 않는다. N02/N08/N09에서 원매체·검색 조건·시각 정밀도·본문 절단·기사/보도자료·요청 비용·순위 상위 결과의 범위를 추가하고 프로필 식별자를 확정한다. 미등록 프로필은 계속 차단한다.
+**계약 확장 대기:** 아래 official 프로필·SEC 필드는 공식 자료용 목표 설계를 보존한 것이다. Exa에는 그대로 적용하지 않는다. N02/N08/N09에서 원매체·검색 조건·시각 정밀도·본문 절단·기사/보도자료·요청 비용·순위 상위 결과의 범위를 추가하고 프로필 식별자를 확정한다. 목표에서는 미등록 프로필을 차단하며 현행 전 경로 보장은 구현 인수에서 확인한다.
 
 이 문서의 **현행 8경로**, **1단계 목표 10경로**, **B01 조회 확장 목표 13경로**를 구분한다. OpenAPI snapshot·DB schema·프론트 구현은 이번 명세 변경으로 바뀌지 않는다.
 
@@ -88,7 +92,7 @@
 
 공식 발표/공시 목표에서는 `source_ids: SourceId[]`, `event_types: EventType[]`, `watchlist_version: string|null`도 요약에 추가한다. 목표 query `source_id`, `event_type`, `cik`는 편성에 해당 근거/사건이 하나 이상 있으면 일치한다. `cik`는 SEC의 10자리 숫자 문자열로 정규화하고 숫자형으로 직렬화하지 않는다. 새 필터는 서명 cursor에 결합하고 현행 API 지원으로 표시하지 않는다. 공급자 자료를 직접 브라우저에서 조회하지 않는다.
 
-`Status = prepared|validated|approved|scheduled|sending|published|held|failed|partial|unknown|expired`. `no_content/not_operating`은 실행 결과이며 이 편성 상태 열거에 넣지 않는다. 현재 AM은 뉴스 0건이어도 ETF job이 있고 비운영일에는 job을 만들지 않는다. PM 상태는 기존 이력 해석에만 사용한다.
+`Status = prepared|validated|approved|scheduled|sending|published|held|failed|partial|unknown|expired`. `no_content/not_operating`은 실행 결과이며 이 편성 상태 열거에 넣지 않는다. 목표 AM은 뉴스 0건이어도 ETF job이 있고 비운영일에는 job을 만들지 않는다. PM 상태는 목표에서 기존 이력 해석에만 사용하며 현행 신규 PM 처리 차단은 아직 구현 전이다.
 
 ## 검토 상세 · GET /api/drafts/{id}
 
@@ -110,7 +114,7 @@
 1단계 목표 추가/강화:
 
 - `data_origin: permitted_fixture|synthetic_fixture|live_capture`, `transport_mode: mock|live`, `generation_mode: mock|live`를 별도 표시한다.
-- `validation.profile=official_news_reviewed_v1`, `assembly_profile=am_official_reviewed_v1`, `validation.checks[{code,status,message}]`, `validation.human_review_required=true`를 목표로 추가하고 기계 검사와 의미 검토를 구분한다. 이전 reviewed_news_v1/am_reviewed_v1 설계 이름을 새 공식 자료 profile의 구현 완료로 간주하지 않는다.
+- 공식 자료 전용 보존안 `validation.profile=official_news_reviewed_v1`, `assembly_profile=am_official_reviewed_v1`은 Exa 공통 목표의 확정 식별자가 아니다. 공통 프로필 식별자는 [미결정 계약](뉴스_입력과_검증_책임.md#미결정-계약과-결정-조건)에서 결정하며, `validation.checks[{code,status,message}]`, `validation.human_review_required=true`를 목표로 추가하고 기계 검사와 의미 검토를 구분한다. 이전 reviewed_news_v1/am_reviewed_v1 설계 이름을 새 공식 자료 profile의 구현 완료로 간주하지 않는다.
 - `review_requirements: [evidence_support,conditions_preserved,relevance_and_novelty]`; `human_review: {status:pending|approved, operator:string|null, reviewed_at:datetime|null, version:int|null}`는 현재 유효 결정으로 계산한다.
 - 각 post에 `claim_links[{claim_id,text_ko,evidence_id,evidence_position}]`, `selection_reason`, `index_relation`을 추가한다. 읽기 전용이며 서버의 검토된 입력으로 작성한다.
 - 기존 `index_relation`을 ETF 가격과 혼용하지 않는다. 뉴스의 미국 시장·업종 관련성 필드와 ETF snapshot(SPY/QQQ/DIA, USD, 같은 완료 거래일)의 계약을 M01/N02에서 확정한다. 현재 두 지수 데이터로 ETF 완주를 표시하지 않는다.
@@ -120,7 +124,7 @@
 
 ### SourceEvidence · 목표 공통 계약
 
-`SourceId = fed|bls|bea|sec`, `EventType = earnings|merger_acquisition|policy|economic_indicator`다. 아래 필드는 원천 근거 버전의 메타데이터다. 편성의 `content_hash`와 source evidence의 `content_hash`는 서로 다른 대상을 해시하므로 응답에서 각각의 객체 내부에 둔다.
+`SourceId = exa|bls|fed|bea|sec` (핵심 exa/bls, 후속 fed/bea/sec), `EventType = earnings|merger_acquisition|policy|economic_indicator`다. 아래 필드는 원천 근거 버전의 메타데이터다. 편성의 `content_hash`와 source evidence의 `content_hash`는 서로 다른 대상을 해시하므로 응답에서 각각의 객체 내부에 둔다.
 
 | 필드 | 목표 규칙 |
 | --- | --- |
@@ -215,12 +219,12 @@ published_at과 accepted_at 모두 신뢰할 수 없으면 후보를 보류한�
 | publications | 대상일 집계로 전환, observed_at 명시 |
 | usage | 기존 월 원장 합계·month·기준/관측시각, 실청구액이 아님 |
 | alerts | 1단계 not_implemented 유지; 실제로 연결한 뒤 값 제공 |
-| collection.sources[] | fed/bls/bea/sec별 scope·watchlist_version·완료 구간·마지막 성공 시각·실행 ID·상태. 연결 전은 not_connected, 실행 전은 not_observed |
+| collection.sources[] | 핵심 exa/bls, 후속 fed/bea/sec별 scope·마지막 성공 시각·실행 ID·상태. Exa는 설정 질의/조회창/결과 상한/필수 요청·본문 확보 결과, 공식 자료는 해당 페이지/기업 완료 구간·watchlist_version을 투영. 연결 전은 not_connected, 실행 전은 not_observed |
 | collection.market | required_symbols=`["SPY","QQQ","DIA"]`, completed_symbols, market_trade_date, status. 하나라도 빠지면 세 ETF 완료 아님 |
 
 PM은 새 운영 요약에서 활성/연결 대기로 반환하지 않는다. API·프론트를 함께 갱신하고 기존 PM 이력 조회와 신규 승인/송신 차단을 별도로 검증한다.
 
-기관별 수집 상태는 `running|complete|partial|failed`이며 summary에서만 미연결/미실행을 `not_connected|not_observed`로 구분한다. `no_updates: boolean`은 `status=complete && new_version_count=0`일 때만 true인 파생 필드다. 별도 저장 status가 아니며 요청한 범위·페이지를 모두 확인했으나 새 자료가 없다는 뜻이다. 뉴스 선정0건과는 다르다. 페이지 미완료·관찰 기업 누락·제한에 걸린 수집은 partial이다. 마지막 한 기관의 성공으로 모든 기관 완주를 덮어쓰지 않는다.
+제공처별 수집 상태는 `running|complete|partial|failed`이며 summary에서만 미연결/미실행을 `not_connected|not_observed`로 구분한다. `no_updates: boolean`은 `status=complete && new_version_count=0`일 때만 true인 파생 필드다. 별도 저장 status가 아니며 설정된 필수 요청 범위를 완료했으나 새 버전이 없다는 뜻이다. Exa는 질의·기간·상한과 필수 본문 요청의 완료이며 시장 전체 포괄이나 기관별 페이지/기업 완주를 뜻하지 않는다. 뉴스 선정0건과는 다르다. 페이지 미완료·관찰 기업 누락·제한에 걸린 수집은 partial이다. 마지막 한 기관의 성공으로 모든 기관 완주를 덮어쓰지 않는다.
 
 후보의 게시 적격 여부는 별도 `eligibility: eligible|held|excluded`와 `eligibility_reasons`로 제공한다. rights_status가 pending_review/restricted/expired인 후보는 게시 적격이 아니지만 수집 실행 자체가 성공했다면 그 run을 failed로 바꾸지 않는다.
 
@@ -302,8 +306,8 @@ mock의 state가 published여도 UI는 “모의 전송 완료”로 표시한�
 | A04 | 일반 AM/뉴스 profile·검사 재호출·승인 감사 저장, 미등록 profile 차단 |
 | A05/A06 | 원자적 점유·전송 전 시도 기록·결과/비용·mode 표기와 이력 |
 
-이번 산출물은 명세다. 현재 8API·OpenAPI 파일과 제품 코드는 수정하지 않았다. Fed·BLS·BEA·SEC·세 ETF·SEC 10기업·source evidence·기관별 완주·B01 조회는 구현 대상이다. 모든 실패 계약의 시험 방법은 [기존 관리자 검증](../../tasks/verification/admin/관리자_화면과_승인_API.md)과 구현 작업에서 관리한다.
+이번 산출물은 명세다. 현재 8API·OpenAPI 파일과 제품 코드는 수정하지 않았다. 핵심 Exa/BLS·세 ETF·공통 source evidence는 초기 확장 대상이며 Fed·BEA·SEC 자동 수집과 B01 조회는 후속이다. 기존 BLS 전용 구현과 공통 AM 확장을 구분한다. 모든 실패 계약의 시험 방법은 [기존 관리자 검증](../../tasks/verification/admin/관리자_화면과_승인_API.md)과 구현 작업에서 관리한다.
 
 ## 아침 최대 4글 전환 계약
 
-현행 store는 AM 글 수 1~3, DB reserved_count는 0~3이다. 목표는 ETF 첫 글+뉴스 0~3으로 전체 1~4글이며 5글·중복 사건·필수 ETF 누락을 거절한다. 신규 migration·API/편성/worker의 글 수·한도 검사를 함께 변경한다. PM은 조회만 허용하고 생성·승인·예약·송신을 차단한다. 과거 PM reservation은 전송 없이 보류하며 감사 이력을 남긴다. 이 문서 작업에서는 코드를 변경하지 않았다.
+현행 store는 AM 글 수 1~3, DB reserved_count는 0~3, publication_posts.position은 1~3이다. 목표는 ETF 첫 글+뉴스 0~3으로 전체 1~4글이며 5글·중복 사건·필수 ETF 누락을 거절한다. reserved_count 0~4·position 1~4의 신규 migration과 API/편성/worker의 글 수·한도 검사를 함께 변경한다. PM은 조회만 허용하고 생성·승인·예약·송신을 차단한다. 과거 PM reservation은 전송 없이 보류하며 감사 이력을 남긴다. 이 문서 작업에서는 코드를 변경하지 않았다.
