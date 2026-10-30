@@ -11,19 +11,11 @@
 
 단일 본인 계정의 초기 준비에는 **OAuth 1.0a 사용자 인증을 추천**한다. 공식 콘솔에서 앱 소유자의 Access Token/Secret을 직접 발급받을 수 있어 별도 사용자 동의 화면 구현 없이 시작하기 쉽다. 설정 추천이며 제품의 인증 방식 확정이나 연동 완료는 아니다.
 
-## 이름과 아이디 후보
+## 게시 계정
 
-| 우선순위 | 표시 이름 | 아이디 후보 | 특징 |
-| --- | --- | --- | --- |
-| **1** | **XFolio \| 미국시장 브리핑** | **@XFolioBrief** | 프로젝트명과 제공 정보가 명확함 |
-| 2 | XFolio \| 미국증시 노트 | @XFolioKR | 짧고 한국어 서비스임을 드러냄 |
-| 3 | XFolio \| 오늘의 미국시장 | @XFolioDaily | 정기 브리핑 이미지 |
+사용 계정은 **@ringXFolioBot**으로 확정했다. 프로필 소개의 수정 예시는 다음과 같으며 실제 계정에는 적용하지 않았다.
 
-사용 가능 여부는 확인하지 않았다. 이미 사용 중이면 @XFolioBriefKR를 대안으로 검토한다. 이름·아이디는 제안이며 계정에 적용하지 않았다.
-
-프로필 소개 예시:
-
-> 미국 3대 지수와 Fed·BLS·BEA·SEC 공식 자료를 한국어로 정리합니다. 출처와 기준 시각을 담은 시장 브리핑을 준비 중입니다.
+> SPY·QQQ·DIA ETF 종가와 미국 시장 주요 뉴스를 한국어로 정리합니다. 출처와 기준 시각을 담는 비상업 정보 공유 프로젝트입니다.
 
 ## 개발자 콘솔 설정 순서
 
@@ -37,7 +29,7 @@
 
 사용 목적 영문 초안은 아래와 같다. 실제 운영 계획과 폼의 질문에 맞춰 수정한다.
 
-> I am building XFolio, a personal project that publishes Korean-language briefings about US market indices and official releases from the Fed, BLS, BEA, and SEC. These source materials are collected outside X. I plan to use the X API to publish up to five original posts per day to my own account after human review and approval, and to check the status of my own published posts when needed. I do not plan to collect other users' posts or send unsolicited replies or direct messages. X content will not be used to train AI models.
+> I am building XFolio, a personal project that publishes Korean-language briefings about SPY, QQQ, and DIA ETF closing prices, major US market news, and BLS CPI releases. These source materials are collected outside X. I plan to use the X API to publish up to four original posts once each morning to my own account after human review and approval, and to check the status of my own published posts when needed. I do not plan to collect other users' posts or send unsolicited replies or direct messages. X content will not be used to train AI models.
 
 ### 2. XFolio 앱 생성
 
@@ -79,7 +71,7 @@ OAuth 2.0의 앱 유형·callback 설정 화면까지 진행한다면 아래 인
 | URL 포함 글 생성 | **$0.200 / 요청** |
 | 일반 Post 읽기 | $0.005 / 리소스 |
 
-XFolio는 출처 링크를 포함하므로 URL 글 단가를 기준으로 계산한다. 하루 최대 5글·월 22일 가정의 X 비용은 조회까지 포함해 **$18.48**이며 상세 산식은 [월 비용](월_비용.md)을 따른다. 전체 서비스 예산은 월 50,000원이다. 실제 사용량·세금·환율·시험 비용은 별도 확인한다.
+뉴스는 원문 URL을 포함하므로 링크 글 단가를 적용한다. 하루 ETF 1글+뉴스 최대 3글의 산식·출처 URL 유무별 비용과 월 50,000원 상한 차이는 [월 비용](월_비용.md)에서 관리한다.
 
 초기 시험은 **자동 충전을 끄고 작은 지출 상한을 설정하는 안을 추천**한다. 예를 들어 콘솔이 허용하면 시험용 $2 상한을 검토할 수 있지만, 이는 최소 충전액이나 승인된 결제 금액이 아니다. 준비 단계에서 단가·잔액·상한 설정 여부를 기록하고 충전 완료와 구분한다.
 

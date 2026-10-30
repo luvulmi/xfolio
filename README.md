@@ -1,6 +1,6 @@
 # XFolio
 
-XFolio는 미국 시장 수집→AI 생성→검토/버전 승인→정시 X 게시→장애 알림을 연결하는 풀스택 포트폴리오입니다. **2026-10-28 목표는 React·TypeScript + FastAPI + PostgreSQL + Docker + AWS**, 아침 최대 3글과 낮 감시 후 **18시 최대 2뉴스**, 중요 오류/한도의 **Telegram Bot 알림**입니다. [확정 요구사항](docs/요구사항.md) · [8주차까지 개발 일정](tasks/plans/개발_일정.md) · [우선순위](tasks/plans/개발_우선순위.md)
+XFolio는 미국 시장 수집→AI 생성→검토·버전 승인→정시 X 게시→장애 알림을 연결하는 풀스택 포트폴리오입니다. **08:00(KST)에 SPY·QQQ·DIA ETF 종가·등락률 1글+주요 뉴스 최대 3글**, 하루 최대 4글을 게시하는 비상업 정보 공유 프로젝트입니다. [요구사항](docs/요구사항.md) · [개발 일정](docs/planning/작업_분해_WBS.md)
 
 기존 Python 지수/뉴스 수집·BLS 시험·가상 미리보기·Luna 가상 분석·Neon 가상 저장과 이전 Streamlit 인증에 더해, 뉴스 선정 정책과 합성 회귀 사례·React 관리자·FastAPI 인증/조회/승인 초기 코드·운영 DB migration을 작성했습니다. 격리 PostgreSQL 통합과 로컬 HTTPS의 실제 Google 로그인·세션 유지·로그아웃을 검증했습니다. PostgreSQL 운영 배포·실뉴스 연결·X·worker·Telegram·AWS 제품 배포는 후속입니다. [초기 구현 결과](tasks/logs/2026-10-28_뉴스_선정과_관리자_초기_구현.md) · [실제 로그인 결과](tasks/logs/2026-10-29_Google_callback과_로그인_검증.md)
 
@@ -12,7 +12,9 @@ XFolio는 미국 시장 수집→AI 생성→검토/버전 승인→정시 X 게
 
 ## 2026-10-30 현재 개발 기준
 
-지수는 S&P500·Nasdaq-100·다우, 자료는 Fed·BLS·BEA와 SEC 주요 기업 10개, 요약은 실적·M&A·정책·주요지표로 확정했습니다. 기업 구성은 확정했으며 공식 법인명·CIK·감시 시작일은 검증 대기입니다. [공식 수집 설계](docs/specifications/공식_발표와_공시_수집_설계.md) · [시스템/시퀀스](docs/specifications/시스템_구성과_주요_시퀀스.md). 현재 두 지수·BLS CPI·Marketaux CLI는 기존 구현이고 새 목표의 구현 완료가 아닙니다. 아래 과거 실행 예시는 그대로 보존합니다.
+가격 입력 목표는 **yfinance SPY·QQQ·DIA ETF**, 뉴스 입력은 **Exa + 기존 BLS CPI**입니다. 현재 코드는 두 지수이며 ETF 전환은 미구현입니다. 기존 10기업 우선+시장·업종 중요 사건을 검토하고 Fed·BEA·SEC 자동 수집은 후속입니다. 공개 X 운영은 Yahoo/Exa·원매체 이용 조건 확인 후 시작합니다. [ETF 조사](docs/research/ETF_가격_데이터.md) · [뉴스 조사](docs/research/뉴스_수집.md)
+
+Exa 시험에는 서버 `.env`의 `EXA_API_KEY`를 사용했습니다. 키를 브라우저·Git·발표에 넣지 않습니다. API 실측 성공과 제품 어댑터·정기 수집 구현은 별개이며 기존 Marketaux CLI 예시는 실험 이력입니다.
 
 ## 기존 가상 클라우드 시험 · 2026-10-25
 
@@ -112,11 +114,11 @@ uv run --env-file .env python scripts/dev/setup_telegram.py --run --save-chat
 
 ## 개발 환경
 
-2026-10-24 [yfinance](docs/research/지수_데이터.md) 지수 조회를 구현하고 실제 응답을 확인했습니다. S&P 500은 `^GSPC`, Nasdaq-100은 `^NDX`로 조회하고 종가로 등락률을 계산합니다. 일반 가격 조회용 API 키는 필요하지 않습니다. 휴장·서머타임·조기 마감 판정에는 `pandas-market-calendars`의 NYSE·NASDAQ 달력을 사용합니다.
+2026-10-24 [yfinance](docs/research/ETF_가격_데이터.md) 지수 조회를 구현하고 실제 응답을 확인했습니다. S&P 500은 `^GSPC`, Nasdaq-100은 `^NDX`로 조회하고 종가로 등락률을 계산합니다. 일반 가격 조회용 API 키는 필요하지 않습니다. 휴장·서머타임·조기 마감 판정에는 `pandas-market-calendars`의 NYSE·NASDAQ 달력을 사용합니다.
 
 운영 설계는 [지수 수집과 게시 모드](docs/운영_정책.md)를 따릅니다. 관리자 승인은 개발·테스트 기간에 적용하고 안정화 후 자동 검증·게시로 전환할 계획입니다. 공개 게시 조건과 오전 자료 도착은 후속 검증입니다.
 
-현재 월 **50,000원** 상한을 유지하며 공식 자료 수집은 Fed·BLS·BEA·SEC 10기업으로 제한합니다. 기존 Marketaux 코드는 실험 자산이며 새 제품 수집 경로가 아닙니다. 전체 제품은 아침 08시 최대 3글·18시 최대 2글이며 적격 뉴스가 없으면 생략합니다. **5~6주차 30시간은 중간 개발 목표**입니다. 7주차에도 추가 개발·통합 검증하고 8주차 초까지 기능 마무리를 계획합니다. 전체 기준은 78시간이며 가용 60시간 가정에는 핵심 58시간과 추가 여유 2시간을 배치합니다. 추가 가용 시간·단계 조정과 11/24 기능 동결은 계획 가정입니다. [필수/후속 범위](docs/planning/개발_범위와_단계.md) · [WBS](docs/planning/작업_분해_WBS.md) · [IA·와이어프레임](docs/specifications/관리자_화면_구조.md). 제공처 이용 조건과 실제 연동 합격은 별도이며 auto는 최소 5거래일·장애 시험 후 판단합니다. [운영 정책](docs/운영_정책.md) · [비용 조건](docs/research/월_비용.md)
+월 **50,000원 상한**, 월 22게시일·1GB 서버의 부분 견적은 **45,860원**입니다. 아침 편성의 핵심 56h+여유 4h=60h를 계획하며 7~8주차 시간은 가정입니다. [WBS](docs/planning/작업_분해_WBS.md) · [운영](docs/운영_정책.md) · [비용](docs/research/월_비용.md). 현재 AM 승인 3글 제한·ETF·Exa·worker 전환은 구현 전입니다.
 
 - Python 3.12
 - `uv`로 의존성 설치 및 명령 실행
@@ -143,9 +145,9 @@ uv run --extra dashboard streamlit run dashboard/app.py --server.address 127.0.0
 
 허용 근거의 생성→기계검사→PostgreSQL 검토 대기 초안 연결은 [생성 계약](tasks/verification/news/허용_실자료_생성_연결.md)에 둔다. `uv run python scripts/experiments/bls_workflow_probe.py`는 기본 무통신 계획이며, `--fetch`와 명시적 loopback 시험 DB를 주면 BLS 실자료 1GET→모의 생성→격리 schema 저장/정리를 시험한다. 유료 AI는 호출하지 않는다. 실제 모델 어댑터는 용도별 권한·가격·입출력 토큰 한도·현재 월 예산 확인이 준비된 호출자만 사용할 수 있다.
 
-`--fetch --assemble`은 같은 실자료를 CPI 전용 의미·280 가중 글자 검사→PM 편성→관리자 API 목록/상세까지 연결한다. 실제 현재 KST와 17:45 동결 마감을 적용하고 늦은 실행은 검증 실패 상태로 표시한다. 시험 자료의 승인 차단도 확인한 뒤 격리 schema를 정리한다. 예: `uv run python scripts/experiments/bls_workflow_probe.py --fetch --assemble --output .cache/bls_reviewed.json` (`XFOLIO_TEST_DATABASE_URL`에 loopback 시험 DB를 명시). 테스트 세션·모의 생성 사용을 결과에 표시하며 실제 Google/유료 모델 성공으로 계산하지 않는다.
+`--fetch --assemble`은 **이전 PM 편성의 실험 경로**다. 같은 실자료를 CPI 전용 의미·280 가중 글자 검사→PM 편성→관리자 API 목록/상세까지 연결한다. 기존 시험 규칙대로 실제 현재 KST와 17:45 동결 마감을 적용하고 늦은 실행은 검증 실패 상태로 표시한다. 시험 자료의 승인 차단도 확인한 뒤 격리 schema를 정리한다. 예: `uv run python scripts/experiments/bls_workflow_probe.py --fetch --assemble --output .cache/bls_reviewed.json` (`XFOLIO_TEST_DATABASE_URL`에 loopback 시험 DB를 명시). 테스트 세션·모의 생성 사용을 결과에 표시하며 실제 Google/유료 모델 성공이나 새 아침 편성의 인수로 계산하지 않는다.
 
-제품 연결 함수는 `record_bls_collection`→`generate_and_store`→`assemble_bls_pm`이다. 확인된 BLS CPI 단일 URL·두 수치의 정해진 문형만 지원한다. 출처/발표일·숫자·단위·비교 기준·NFC/길이·수집 버전·권한·동결을 검사하고 새 immutable 편성 버전을 기존 8API에 노출한다. 승인할 때도 근거와 권한을 재검사한다. Fed·BLS·BEA·SEC의 공통 입력·AM 세 지수 연결·유형별 의미 검사는 후속이다. Marketaux 전체 편성은 새 제품 목표에서 제외했다. [수행 결과](tasks/logs/2026-10-29_실자료_검사와_관리자_승인_연결.md)
+제품 연결 함수는 `record_bls_collection`→`generate_and_store`→`assemble_bls_pm`이다. 확인된 BLS CPI 단일 URL·두 수치의 정해진 문형만 지원한다. 출처/발표일·숫자·단위·비교 기준·NFC/길이·수집 버전·권한·동결을 검사하고 새 immutable 편성 버전을 기존 8API에 노출한다. 승인할 때도 근거와 권한을 재검사한다. Fed·BLS·BEA·SEC의 공통 입력·ETF 아침 편성 연결·유형별 의미 검사는 후속이다. Marketaux 전체 편성은 새 제품 목표에서 제외했다. [수행 결과](tasks/logs/2026-10-29_실자료_검사와_관리자_승인_연결.md)
 
 ```powershell
 uv run xfolio preview
@@ -170,7 +172,7 @@ uv run xfolio news-check --start 2026-10-22T22:29:00Z --end 2026-10-23T22:30:00Z
 
 현재 운영 목표는 **AWS Lightsail의 Docker Compose에서 별도 Python worker 한 개가 고정 워크플로를 실행**하는 구성입니다. 뉴스 수집 → 규칙 필터 → 제한된 AI 선정/요약 → 원자료·시각·중복·길이·한도 검사 → 모드별 게시 판단 → 결과 저장 순서입니다. AI가 예약·예산·승인을 변경하거나 직접 임의 행동을 결정하지 않습니다. 기존 OpenAI SDK를 쓰며 별도 에이전트 프레임워크는 추가하지 않습니다. Cloud Scheduler/Cloud Run과 Windows 작업 스케줄러는 이전 검토·시험 이력이며 새 worker는 아직 연결 전입니다.
 
-제품 시간표는 아침 07:00 준비·07:30 기준·08:00 목표·09:00 마감, 낮 09:00~17:00 매시간+17:30 최종 확인·17:45 동결·18:00 발행·18:10 전송 마감입니다. 개발은 dry_run→reviewed, 연속5거래일과 장애/중복 검증 뒤 auto입니다. 현재 새 worker·게시·Telegram은 미구현입니다. [운영 정책](docs/운영_정책.md) · [구현 계약](tasks/verification/integration/2주_MVP_구현_계약.md)
+제품 시간표는 아침 07:00 준비·07:30 정보 기준·07:45 검토 준비·07:55 승인 목표·08:00 전송·09:00 마감입니다. ETF 1글+뉴스 최대 3글을 하루 한 번 편성합니다. 개발은 dry_run→reviewed, 별도 5거래일·장애 시험 뒤 auto를 판단합니다. 기존 PM 시험은 과거 자산이며 현재 제품은 새 PM 생성·승인·전송을 차단하는 변경이 필요합니다. [운영 정책](docs/운영_정책.md) · [구현 계약](tasks/verification/integration/2주_MVP_구현_계약.md)
 
 ## 뉴스·한국어 요약 사전 시험
 
@@ -215,7 +217,7 @@ uv run python scripts/experiments/sec_fact_card_preview.py
 uv run --env-file .env python scripts/experiments/sec_fact_card_preview.py --run --output tasks/verification/assets/news_cases/sec_fact_card_preview_20261025.json
 ```
 
-2026-10-24에는 Marketaux를 단일 뉴스 어댑터 개발 대상으로 선택했지만 10/30 Fed·BLS·BEA·SEC 범위로 대체했습니다. 당시 넓은 24시간 거시 검색은 138페이지 추산으로 무료 100회/일을 넘었으며, 해당 한계와 이용 검토는 이전 실험 기록으로 보존합니다. Mini 가상6건·교정2건의 실제 usage 합계는 $0.00677325입니다. 실험 성공과 뉴스·AI 앱 구현을 구분합니다.
+2026-10-24에는 Marketaux를 단일 뉴스 어댑터 개발 대상으로 선택했지만 10/30 공식 자료 단독안을 거쳐 Exa+BLS 핵심 범위로 다시 조정했습니다. 당시 넓은 24시간 거시 검색은 138페이지 추산으로 무료 100회/일을 넘었으며, 해당 한계와 이용 검토는 이전 실험 기록으로 보존합니다. Mini 가상6건·교정2건의 실제 usage 합계는 $0.00677325입니다. 실험 성공과 뉴스·AI 앱 구현을 구분합니다.
 
 증분 실험은 아래처럼 기본 무통신으로 계획을 확인합니다. `--run`에서만 요청하며 실제 서비스 커서는 쓰지 않습니다. 과거 평일 재생은 당시 예약 실행을 재현한 것이 아니라 고정 발행 시각 창을 현재 API에서 검색하는 시험입니다.
 

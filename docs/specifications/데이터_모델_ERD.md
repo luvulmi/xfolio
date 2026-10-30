@@ -1,8 +1,6 @@
 # 데이터 모델과 ERD
 
-> 2026-10-29 일정 정정: 5~6주차30시간은 중간 개발 목표이며 7주차 추가 개발·통합 검증, 8주차 초 기능 마무리를 계획한다. 단계는 기능 범위이고 달력상 2주 마감과 동일하지 않다. 시간·의존성은 [개발 범위·단계](../planning/개발_범위와_단계.md)와 [WBS](../planning/작업_분해_WBS.md)가 기준이다.
-
-
+> 입력·편성의 단일 기준은 [현재 요구사항](../요구사항.md)이다. 현재 목표는 AM 최대 4글이며 기존 코드·OpenAPI·PM 이력/시험과 구분한다.
 - 기준: 2026-10-30, Asia/Seoul
 - 상태: **현행 물리 모델 대조 + 1단계 논리 계약**. 운영 DB에 migration을 적용한 결과가 아니다.
 - 기준 소스: [schema.py](../../src/xfolio/db/schema.py) · [0001 migration](../../migrations/versions/0001_operational_schema.py) · [API store](../../src/xfolio/api/store.py)
@@ -10,7 +8,9 @@
 
 ## 목표 입력 경계
 
-2026-10-30 확정 목표는 **S&P 500·나스닥100·다우 세 지수**, **Fed·BLS·BEA 공식 발표와 SEC 주요 기업 공시**다. 실적·M&A·정책·경제지표 사건을 다루고 SEC 관찰 기업은 10개로 제한한다. 현재 두 지수 코드와8개 테이블이 이 목표를 이미 지원한다는 뜻은 아니다. [공식 발표와 공시 수집 설계](공식_발표와_공시_수집_설계.md)를 기준으로 물리 schema와 목표 JSON 계약을 구분한다.
+2026-10-30 핵심은 **Exa 뉴스+BLS CPI+세 ETF**다.10기업 우선+목록 밖 중요 사건을 허용하며 Fed·BEA·SEC 자동 수집은 후속이다. 아래 실제8테이블은 변경하지 않았다. Exa 검색 조건·시각 정밀도·절단·원매체·비용 필드와 뉴스/BLS 공통 프로필은 N02/N08/N09에서 typed payload 계약으로 확정한다.
+
+아래 `official_news_reviewed_v1`·`am_official_reviewed_v1`과 SEC 전용 필드는 공식 자료의 목표 설계를 보존한 것이다. Exa에 이름만 바꿔 적용하지 않는다. [입력 책임](뉴스_입력과_검증_책임.md) · [요구사항](../요구사항.md)
 
 ## 현행 물리 ERD · 8개 테이블
 
@@ -121,7 +121,7 @@ erDiagram
 | usage_ledger | job_id | amount_krw NUMERIC(14,4)≥0, state estimated/reserved/confirmed/released |
 | operations_events | scope,unique_key,expires_at | UNIQUE(kind,scope,unique_key). NULL 조합은 이 제약만으로 중복 억제를 보장하지 않음 |
 
-모든 테이블에 `id` PK가 있다. 추가 부분 유일 인덱스 `uq_active_event_claim(account_id,event_key,fact_version) WHERE active_claim IS TRUE`는 예약·송신·불명 사건의 중복 claim을 막는 기반이다. 실제 active_claim 전이는 애플리케이션이 관리한다. DB CHECK만으로 게시 상태 전이·PM2글 제한·근거 완주를 보장하지 않는다.
+모든 테이블에 `id` PK가 있다. 추가 부분 유일 인덱스 `uq_active_event_claim(account_id,event_key,fact_version) WHERE active_claim IS TRUE`는 예약·송신·불명 사건의 중복 claim을 막는 기반이다. 실제 active_claim 전이는 애플리케이션이 관리한다. DB CHECK만으로 게시 상태 전이·아침 4글/뉴스 3건 정책·근거 완주를 보장하지 않는다. 아래 현행 reserved_count 0~3은 목표와 달라 신규 migration이 필요하다.
 
 0001 migration은 content_drafts의 **UPDATE를 거절하는 trigger**를 만든다. DELETE까지 차단하는 trigger는 현재 없다. API/worker 역할에서 삭제 권한을 주지 않고 과거 버전을 보존하는 것이 목표이며 운영 DB 역할 분리는 아직 별도 검증 대상이다. FK의 ON DELETE CASCADE는 설정돼 있지 않다.
 
@@ -149,7 +149,7 @@ flowchart LR
     G[usage_ledger] -. "generation request_id" .-> D
 ```
 
-점선은 탐색 방향이며 FK 방향을 뜻하지 않는다. current/target JSON 키의 차이는 아래 표를 따른다. 단일 run과 여러 run의 연결을 혼용하지 않고 1단계 AM 목표에서는 지수·뉴스 run을 함께 참조한다.
+점선은 탐색 방향이며 FK 방향을 뜻하지 않는다. current/target JSON 키의 차이는 아래 표를 따른다. 단일 run과 여러 run의 연결을 혼용하지 않고 1단계 AM 목표에서는 ETF·뉴스 run을 함께 참조한다.
 
 ## 1단계 payload 계약 · 목표
 
@@ -159,7 +159,7 @@ flowchart LR
 | --- | --- | --- |
 | collection_runs.payload | 제공처별 수집 상세, BLS 단일 조회 기록 | schema_version, source_id, query_version/scope, required/completed queries·페이지/기업 완료, cursor_before/after, watchlist_version·대상CIK 집합, data_origin, fixture 범위. status와 완료 근거 일치 |
 | evidence_bundles.payload | source/url/text_scope/permitted_excerpt/claims/fact_version/period/collection_run_id/permission_review | 아래 공통 source/event 필드, evidence_text와 보존 기한, input_review·index_relation·event identity, claim_id/position, data_origin |
-| content_drafts.payload | posts, rights_verified/collection_complete, validation, generation, assembly_profile, max_cost_krw 등 | schema_version, `assembly_profile=am_official_reviewed_v1`, `validation.profile=official_news_reviewed_v1`, 기관별 collection_run_ids, `^GSPC/^NDX/^DJI` 동일 완료 거래일 snapshot, watchlist_version, 선정 결과/이유, claim_links, source 버전 참조, generation_mode |
+| content_drafts.payload | posts, rights_verified/collection_complete, validation, generation, assembly_profile, max_cost_krw 등 | schema_version, `assembly_profile=am_official_reviewed_v1`, `validation.profile=official_news_reviewed_v1`, 기관별 collection_run_ids, `SPY/QQQ/DIA` 동일 완료 거래일 snapshot, watchlist_version, 선정 결과/이유, claim_links, source 버전 참조, generation_mode |
 | publication_jobs.payload | hold_reason, assembly_profile | transport_mode, 최신 결정 event_id, 검증기 버전, lease_token/lease_until(점유). 송신 시작 후 transport_mode/내용 참조 교체 금지 |
 | publication_posts.payload | version | kind, latest_attempt_id, updated_at, safe_error_code, 결과 대조 메타데이터. 전체 외부 응답은 저장하지 않음 |
 | usage_ledger.payload | purpose/model/price_basis·decision_key 등 | request_id/attempt_id, 단가 기준·상한·generation_mode/transport_mode. 송신 실패를 임의 무과금으로 단정하지 않음 |
@@ -173,7 +173,7 @@ flowchart LR
 
 | 논리 필드 | 저장·검증 규칙 |
 | --- | --- |
-| source_id | payload/API에서 `fed|bls|bea|sec`. 현행 evidence_bundles.source_id 물리 컬럼과 의미를 구분 |
+| source_id | 목표 payload/API에서 핵심 `exa|bls`, 후속 `fed|bea|sec`. 현행 evidence_bundles.source_id 물리 컬럼과 의미를 구분 |
 | source_record_id | 기관 내 안정 레코드 ID. SEC는 accession과 문서/첨부 식별자를 함께 써서 한 공시의 복수 문서를 구분 |
 | published_at / accepted_at | 원천 발행 / SEC 접수의 nullable UTC 시각. 서로 대체하지 않음. 확인되지 않은 시각을 날짜 자정 등으로 생성하지 않음 |
 | retrieved_at / available_at | 해당 근거 버전의 최초 조회 완료 / 사용 가능 확보의 최초 UTC 시각. 둘은 같은 버전 재확인으로 덮어쓰지 않으며 available_at은 최초 retrieved_at보다 이르지 않음 |
@@ -196,7 +196,7 @@ event_key는 기관 레코드 ID가 아니라 동일 사건의 식별자다. 동
 
 `collection_runs.status` 목표는 `running|complete|partial|failed`다. `no_updates`는 `status=complete && new_version_count=0`에서 계산하는 조회 boolean이며 별도 저장 상태가 아니다. 지정 기관·범위·페이지/기업을 모두 확인했지만 새 버전이 없는 실행으로 선정0건과 다르다. 권한·근거 부족으로 게시할 수 없는 자료는 별도 `eligibility`와 사유에 남기고 수집 실패로 바꾸지 않는다. 기관 미연결/미실행은 실행 행을 성공으로 조작하지 않고 API summary의 not_connected/not_observed로 표현한다. 현행 collection_runs는 완료 행의 status CHECK와 finished_at NOT NULL을 갖고 있으므로 running 행 저장을 도입할 때 완료시각 null 허용·상태별 제약의 별도 migration이 필요하다. 이번에 적용한 변경은 아니다.
 
-확정한 초기 지원은 Fed FOMC 성명, BLS CPI, BEA PCE, SEC8-K의2.02·1.01·2.01과 관련9.01 첨부를 통한 실적/M&A 검토다. item/form만으로 실적/M&A를 확정하지 않으며 EX-99.1도 실제 내용을 확인한다. 고용·GDP·6-K/외국기업은 후속 범위이며 현재 지원 완료가 아니다.
+공식 자료의 지원 설계는 핵심 BLS CPI와 후속 Fed FOMC·BEA PCE·SEC8-K의2.02·1.01·2.01과 관련9.01 첨부를 통한 실적/M&A 검토다. item/form만으로 실적/M&A를 확정하지 않으며 EX-99.1도 실제 내용을 확인한다. 고용·GDP·6-K/외국기업은 후속 범위이며 현재 지원 완료가 아니다.
 
 관찰 목록 변경 이력은 우선 `operations_events(kind=watchlist_revision, scope=sec_watchlist, unique_key=version)`의 typed payload에 `version, effective_at, companies[{cik,name,tickers,issuer_type,selection_reason,reference_url,verified_at,enabled}]`를 append-only로 기록할 수 있다. run/draft의 watchlist_version은 이 version을 참조한다. 이는 목표 설계이며 현재 이벤트 저장 코드에 해당 종류가 구현된 것은 아니다. 원천자료별 관계 검색·다중 운영자 편집·대규모 공시 검색이 필요해지면 `source_records/events/watchlists` 정규화 테이블과 인덱스를 별도 migration으로 검토한다. 이번 범위에서는 기존 JSON 연결의 검증 책임을 감수하는 최소 설계를 택하며 DB FK가 있다고 표현하지 않는다.
 
@@ -219,7 +219,7 @@ event_key는 기관 레코드 ID가 아니라 동일 사건의 식별자다. 동
 
 ## 트랜잭션 경계와 상태
 
-1. **편성 생성:** 세 지수와 기관별 뉴스 수집 참조·허용 근거·선정 결과·기계 검사·불변 초안과 job을 같은 트랜잭션으로 저장한다. 뉴스0건이라도 AM 세 지수 글이 있고 필수 기관별 범위가 complete로 완주돼야 한다(no_updates=true인 완료 포함). partial/failed를 정상0건으로 대체하지 않는다.
+1. **편성 생성:** 세 ETF와 기관별 뉴스 수집 참조·허용 근거·선정 결과·기계 검사·불변 초안과 job을 같은 트랜잭션으로 저장한다. 뉴스0건이라도 AM 세 ETF 글이 있고 필수 기관별 범위가 complete로 완주돼야 한다(no_updates=true인 완료 포함). partial/failed를 정상0건으로 대체하지 않는다.
 2. **승인:** 현행 잠금 규칙 아래 현재 버전·profile·권한·근거·사람 확인·시간을 대조한다. job scheduled, posts reserved/active claim, 비용 reserved, 결정 이벤트를 함께 커밋한다. 외부 X 호출은 이 트랜잭션 안에서 하지 않는다.
 3. **전송 전 점유:** worker가 job/posts 잠금으로 승인 철회·다른 worker와 경쟁한다. 첫 시도 시각·sending·유일 attempt_started를 커밋한 뒤 호출한다. 모든 글마다 기한/중단/근거 유효성을 다시 확인한다.
 4. **결과 저장:** 같은 attempt_id 결과·글 상태·집계 job 상태·예약/실비를 원자적으로 기록한다. timeout/DB 기록 실패는 자동 재송신이 아니라 불명 대조 대상이다.
@@ -244,7 +244,7 @@ stateDiagram-v2
 
 도식은 목표 요약이다. 현행 approve는 approved 상태에 머물지 않고 같은 트랜잭션에서 scheduled가 된다. DB status TEXT에는 모든 상태를 제한하는 CHECK가 없으므로 서버 전이 검사가 필요하다. 같은 held 버전 재승인은 허용하지 않는다. 후속 새 버전 수정은 첫 전송 전만 가능하다.
 
-job에 글 하나라도 unknown이면 집계도 unknown을 우선한다. 일부만 성공하고 나머지는 확실히 미전송/실패면 partial, 모두 성공이면 published다. mock 성공도 저장 상태는 published를 사용하되 transport_mode=mock과 함께 조회·표시하여 실제 X 성공과 구분한다. PM 정상0건/비운영일은 실행 결과이며 이 상태 도식 밖이다.
+job에 글 하나라도 unknown이면 집계도 unknown을 우선한다. 일부만 성공하고 나머지는 확실히 미전송/실패면 partial, 모두 성공이면 published다. mock 성공도 저장 상태는 published를 사용하되 transport_mode=mock과 함께 조회·표시하여 실제 X 성공과 구분한다. 현재 아침 비운영일은 실행 결과이며 이 상태 도식 밖이다. PM은 과거 이력 조회로만 보존한다.
 
 ## 조회·인덱스와 보존
 
@@ -258,3 +258,7 @@ job에 글 하나라도 unknown이면 집계도 unknown을 우선한다. 일부�
 ## 현행과 목표의 검증 경계
 
 현행 SQLAlchemy metadata·migration source와 표/ERD를 대조했다. 실제 운영 DB의 테이블·역할·데이터를 조회하거나 변경하지 않는다. 신규 claim/검토/시도 이벤트와 인덱스는 설계이며 저장 코드·마이그레이션·동시성 시험을 통과해야 구현 완료가 된다.
+
+## 4글 편성의 제약 변경
+
+현행 reserved_count BETWEEN 0 AND 3을 0~4로 확장하는 신규 migration과 AM 전용 승인/한도 검사가 필요하다. 기존 0001의 metadata 참조 방식과 적용 이력을 먼저 대조하고 과거 migration을 무기록 변경하지 않는다. AM/PM enum을 즉시 삭제하여 과거 PM 이력을 깨뜨리지 않으며, 새 PM 생성·승인·전송은 애플리케이션에서 차단한다. 코드·운영 DB는 이번 문서 작업에서 변경하지 않았다.
