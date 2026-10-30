@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="385" viewBox="0 0 1200 385" role="img" aria-labelledby="title desc">
+<title id="title">아침 브리핑의 네 단계</title><desc id="desc">수집, 초안과 검사, 운영자 승인, 아침 08시 예약 게시. 전체 흐름은 목표이며 모의 송신부터 검증한다.</desc>
+<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto-start-reverse"><path d="M0,0 L8,4 L0,8 Z" fill="#64748b"/></marker></defs>
+<style>text{font-family:'Malgun Gothic','Noto Sans KR',sans-serif;fill:#163047} .title{font-size:30px;font-weight:700} .sub{font-size:19px;fill:#526577} .cardTitle{font-size:24px;font-weight:700} .body{font-size:19px} .small{font-size:17px;fill:#526577}</style>
+<rect width="1200" height="385" rx="22" fill="#f4f7fb"/>
+<text x="48" y="55" class="title">근거를 모으고, 확인한 버전만 게시합니다</text>
+<text x="48" y="87" class="sub">아침 단일 편성 · ETF 1글 + 주요 뉴스 0~3글</text>
+<rect x="48" y="120" width="252" height="166" rx="16" fill="#e6f3fa" stroke="#75b7d6" stroke-width="2"/>
+<text x="68" y="159" class="cardTitle">01  수집</text>
+<text x="68" y="208" class="body">yfinance · Exa · BLS</text>
+<text x="68" y="242" class="body">출처·시각·가격 확보</text>
+<path d="M305,203 H322" fill="none" stroke="#64748b" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="332" y="120" width="252" height="166" rx="16" fill="#eaf0ff" stroke="#8dace9" stroke-width="2"/>
+<text x="352" y="159" class="cardTitle">02  초안·검사</text>
+<text x="352" y="208" class="body">Luna · Python</text>
+<text x="352" y="242" class="body">한국어·수치·중복 검사</text>
+<path d="M589,203 H606" fill="none" stroke="#64748b" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="616" y="120" width="252" height="166" rx="16" fill="#e9f6ef" stroke="#8bbfa3" stroke-width="2"/>
+<text x="636" y="159" class="cardTitle">03  운영자 승인</text>
+<text x="636" y="208" class="body">React · FastAPI</text>
+<text x="636" y="242" class="body">원문 대조·버전 승인</text>
+<path d="M873,203 H890" fill="none" stroke="#64748b" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="900" y="120" width="252" height="166" rx="16" fill="#fff3e4" stroke="#dfb57b" stroke-width="2"/>
+<text x="920" y="159" class="cardTitle">04  08:00 게시</text>
+<text x="920" y="208" class="body">Python worker · X API</text>
+<text x="920" y="242" class="body">글별 결과·비용 저장</text>
+<text x="48" y="330" class="sub">AI: 초안 생성   /   코드: 수치·길이 검사   /   운영자: 근거·의미 확인</text>
+<text x="48" y="360" class="small">목표 흐름입니다. 기존 자산을 연결하고 모의 송신으로 먼저 인수합니다.</text>
+</svg>
