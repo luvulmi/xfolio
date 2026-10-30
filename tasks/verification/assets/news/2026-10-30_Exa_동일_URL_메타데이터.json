@@ -1,0 +1,48 @@
+{
+  "observed_at_utc": "2026-10-30T13:25:17.281313+00:00",
+  "provider": "exa",
+  "requests": 1,
+  "parameters": {
+    "urls": [
+      "https://seekingalpha.com/article/4959834-intel-corporation-intc-q3-2026-earnings-call-transcript",
+      "https://www.cnbc.com/2026/10/29/intel-intc-q3-earnings-report-2026-.html"
+    ],
+    "text": {
+      "maxCharacters": 20000
+    },
+    "maxAgeHours": -1
+  },
+  "cost_dollars": {
+    "total": 0.002,
+    "contents": {
+      "text": 0.002
+    }
+  },
+  "statuses": [
+    {
+      "id": "https://seekingalpha.com/article/4959834-intel-corporation-intc-q3-2026-earnings-call-transcript",
+      "status": "success",
+      "source": "cached"
+    },
+    {
+      "id": "https://www.cnbc.com/2026/10/29/intel-intc-q3-earnings-report-2026-.html",
+      "status": "success",
+      "source": "cached"
+    }
+  ],
+  "article_text_saved": false,
+  "articles": [
+    {
+      "url": "https://seekingalpha.com/article/4959834-intel-corporation-intc-q3-2026-earnings-call-transcript",
+      "id": "https://seekingalpha.com/article/4959834-intel-corporation-intc-q3-2026-earnings-call-transcript",
+      "published_at": "2026-10-30T04:38:26.000Z",
+      "text_chars": 2273
+    },
+    {
+      "url": "https://www.cnbc.com/2026/10/29/intel-intc-q3-earnings-report-2026-.html",
+      "id": "https://www.cnbc.com/2026/10/29/intel-intc-q3-earnings-report-2026-.html",
+      "published_at": "2026-10-29T20:04:08.000Z",
+      "text_chars": 5706
+    }
+  ]
+}

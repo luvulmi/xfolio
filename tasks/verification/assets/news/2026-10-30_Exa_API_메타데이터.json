@@ -1,0 +1,211 @@
+{
+  "observed_at_utc": "2026-10-30T13:20:43.348778+00:00",
+  "provider": "exa",
+  "max_requests": 3,
+  "retries": 0,
+  "article_text_saved": false,
+  "queries": [
+    {
+      "case": "market",
+      "parameters": {
+        "query": "US stock market close October 29 2026 Alphabet stocks sectors",
+        "type": "auto",
+        "category": "news",
+        "startPublishedDate": "2026-10-28T00:00:00Z",
+        "endPublishedDate": "2026-10-30T08:00:00Z",
+        "numResults": 5,
+        "contents": {
+          "text": {
+            "maxCharacters": 20000
+          }
+        }
+      },
+      "cost_dollars": {
+        "total": 0.007,
+        "search": {
+          "neural": 0.007
+        }
+      },
+      "resolved_search_type": "",
+      "warnings": null,
+      "notices": null,
+      "articles": [
+        {
+          "id": "https://www.investing.com/news/stock-market-news/us-stocks-lower-at-close-of-trade-dow-jones-industrial-average-down-025-4985114",
+          "url": "https://www.investing.com/news/stock-market-news/us-stocks-lower-at-close-of-trade-dow-jones-industrial-average-down-025-4985114",
+          "published_at": "2026-10-29T00:00:00.000Z",
+          "title_chars": 93,
+          "text_chars": 3355,
+          "highlight_chars": 0
+        },
+        {
+          "id": "https://apnews.com/article/wall-street-stocks-dow-nasdaq-2c26b0b1bbc3bfab9f3f4b902172f458",
+          "url": "https://apnews.com/article/wall-street-stocks-dow-nasdaq-2c26b0b1bbc3bfab9f3f4b902172f458",
+          "published_at": "2026-10-29T20:21:31.000Z",
+          "title_chars": 62,
+          "text_chars": 297,
+          "highlight_chars": 0
+        },
+        {
+          "id": "https://www.marketwatch.com/story/u-s-stocks-fall-as-alphabet-slide-weighs-on-ai-optimism-9580a1f3",
+          "url": "https://www.marketwatch.com/story/u-s-stocks-fall-as-alphabet-slide-weighs-on-ai-optimism-9580a1f3",
+          "published_at": "2026-10-29T00:00:00.000Z",
+          "title_chars": 56,
+          "text_chars": 1536,
+          "highlight_chars": 0
+        },
+        {
+          "id": "https://www.nbcnews.com/business/markets/alphabet-google-stock-ai-advertising-rcna606322",
+          "url": "https://www.nbcnews.com/business/markets/alphabet-google-stock-ai-advertising-rcna606322",
+          "published_at": "2026-10-29T00:00:00.000Z",
+          "title_chars": 47,
+          "text_chars": 4130,
+          "highlight_chars": 0
+        },
+        {
+          "id": "https://www.streetinsider.com/Reuters/Wall+Street+ends+lower+as+Alphabet+revenue+miss+revives+AI%C2%A0capex+jitters/27256859.html",
+          "url": "https://www.streetinsider.com/Reuters/Wall+Street+ends+lower+as+Alphabet+revenue+miss+revives+AI%C2%A0capex+jitters/27256859.html",
+          "published_at": "2026-10-29T00:00:00.000Z",
+          "title_chars": 72,
+          "text_chars": 4281,
+          "highlight_chars": 0
+        }
+      ]
+    },
+    {
+      "case": "sector",
+      "parameters": {
+        "query": "US semiconductor industry news October 29 2026",
+        "type": "auto",
+        "category": "news",
+        "startPublishedDate": "2026-10-28T00:00:00Z",
+        "endPublishedDate": "2026-10-30T08:00:00Z",
+        "numResults": 5,
+        "contents": {
+          "text": {
+            "maxCharacters": 20000
+          }
+        }
+      },
+      "cost_dollars": {
+        "total": 0.007,
+        "search": {
+          "neural": 0.007
+        }
+      },
+      "resolved_search_type": "",
+      "warnings": null,
+      "notices": null,
+      "articles": [
+        {
+          "id": "https://www.cnbc.com/2026/10/29/stock-market-today-live-updates.html",
+          "url": "https://www.cnbc.com/2026/10/29/stock-market-today-live-updates.html",
+          "published_at": "2026-10-29T00:00:00.000Z",
+          "title_chars": 32,
+          "text_chars": 19233,
+          "highlight_chars": 0
+        },
+        {
+          "id": "https://www.bizjournals.com/buffalo/news/2026/10/29/edwards-vacuum-production-opening.html",
+          "url": "https://www.bizjournals.com/buffalo/news/2026/10/29/edwards-vacuum-production-opening.html",
+          "published_at": "2026-10-29T19:00:00.000Z",
+          "title_chars": 69,
+          "text_chars": 539,
+          "highlight_chars": 0
+        },
+        {
+          "id": "https://13wham.com/news/local/first-of-its-kind-manufacturing-facility-now-open-in-western-new-york-stamp-alabama-ny-genesee-county-dry-pump-semiconductor-micron-technology-jobs",
+          "url": "https://13wham.com/news/local/first-of-its-kind-manufacturing-facility-now-open-in-western-new-york-stamp-alabama-ny-genesee-county-dry-pump-semiconductor-micron-technology-jobs",
+          "published_at": "2026-10-29T22:00:00.000Z",
+          "title_chars": 69,
+          "text_chars": 1570,
+          "highlight_chars": 0
+        },
+        {
+          "id": "https://www.investing.com/news/economy-news/wall-street-slides-as-alphabet-revenue-miss-revives-ai-capex-jitters-4984885",
+          "url": "https://www.investing.com/news/economy-news/wall-street-slides-as-alphabet-revenue-miss-revives-ai-capex-jitters-4984885",
+          "published_at": "2026-10-29T00:00:00.000Z",
+          "title_chars": 79,
+          "text_chars": 4648,
+          "highlight_chars": 0
+        },
+        {
+          "id": "https://money.usnews.com/investing/news/articles/2026-10-29/weak-quarter-for-intel-sends-shivers-through-cooling-chip-stocks",
+          "url": "https://money.usnews.com/investing/news/articles/2026-10-29/weak-quarter-for-intel-sends-shivers-through-cooling-chip-stocks",
+          "published_at": "2026-10-29T21:02:00.000Z",
+          "title_chars": 64,
+          "text_chars": 1000,
+          "highlight_chars": 0
+        }
+      ]
+    },
+    {
+      "case": "company",
+      "parameters": {
+        "query": "Intel Q3 2026 earnings results October 29 2026",
+        "type": "auto",
+        "category": "news",
+        "startPublishedDate": "2026-10-28T00:00:00Z",
+        "endPublishedDate": "2026-10-30T08:00:00Z",
+        "numResults": 5,
+        "contents": {
+          "text": {
+            "maxCharacters": 20000
+          }
+        }
+      },
+      "cost_dollars": {
+        "total": 0.007,
+        "search": {
+          "neural": 0.007
+        }
+      },
+      "resolved_search_type": "",
+      "warnings": null,
+      "notices": null,
+      "articles": [
+        {
+          "id": "https://www.intc.com/news-events/press-releases/detail/1786/intel-reports-third-quarter-2026-financial-results",
+          "url": "https://www.intc.com/news-events/press-releases/detail/1786/intel-reports-third-quarter-2026-financial-results",
+          "published_at": "2026-10-29T00:00:00.000Z",
+          "title_chars": 78,
+          "text_chars": 20000,
+          "highlight_chars": 0
+        },
+        {
+          "id": "https://www.businesswire.com/news/home/20261029327355/en/Intel-Reports-Third-Quarter-2026-Financial-Results",
+          "url": "https://www.businesswire.com/news/home/20261029327355/en/Intel-Reports-Third-Quarter-2026-Financial-Results",
+          "published_at": "2026-10-29T20:01:00.000Z",
+          "title_chars": 50,
+          "text_chars": 20000,
+          "highlight_chars": 0
+        },
+        {
+          "id": "https://www.cnbc.com/2026/10/29/intel-intc-q3-earnings-report-2026-.html",
+          "url": "https://www.cnbc.com/2026/10/29/intel-intc-q3-earnings-report-2026-.html",
+          "published_at": "2026-10-29T20:04:08.000Z",
+          "title_chars": 36,
+          "text_chars": 5706,
+          "highlight_chars": 0
+        },
+        {
+          "id": "https://stockanalysis.com/stocks/intc/transcripts/714242-q3-2026/",
+          "url": "https://stockanalysis.com/stocks/intc/transcripts/714242-q3-2026/",
+          "published_at": "2026-10-29T00:00:00.000Z",
+          "title_chars": 53,
+          "text_chars": 20000,
+          "highlight_chars": 0
+        },
+        {
+          "id": "https://www.nasdaq.com/press-release/intel-reports-third-quarter-2026-financial-results-2026-10-29",
+          "url": "https://www.nasdaq.com/press-release/intel-reports-third-quarter-2026-financial-results-2026-10-29",
+          "published_at": "2026-10-29T00:00:00.000Z",
+          "title_chars": 59,
+          "text_chars": 20000,
+          "highlight_chars": 0
+        }
+      ]
+    }
+  ],
+  "requests": 3
+}
