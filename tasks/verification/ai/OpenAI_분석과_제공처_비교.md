@@ -1,6 +1,6 @@
 # 공통 AI 분석·모델·공식 자료 비교
 
-- 관측: 2026-10-25 KST. [계획](../../plans/OpenAI_분석과_비용_비교.md)
+- 관측: 2026-10-25 KST. [계획](../../plans/archive/OpenAI_분석과_비용_비교.md)
 - 범위: 직접 작성한 **가상 뉴스 6건**, 가상 아침 글 1건, BLS 공식 CPI 원문 1건. 실기사 AI 전송·X 게시 없음.
 - 원자료: [모델별 12건](../assets/ai_compare/mini_luna_20261025.jsonl) · [BLS 직접/Web search](../assets/ai_compare/bls_direct_web_20261025.json)
 

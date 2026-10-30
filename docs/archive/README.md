@@ -14,3 +14,5 @@
 - [X_게시_API_조사_이력](X_게시_API_조사_이력.md)
 
 - [공식 자료 전환 이전 기준 문서](official_sources_transition/README.md)
+
+- [예약 실행 검토 이력](예약_실행_검토_이력.md)
