@@ -8,13 +8,15 @@
 
 ## 읽는 순서와 상태
 
-현행은 app/models/store와 OpenAPI snapshot이 기준이다. 아래 표와 본문의 `현행` 열만 현재 호출 계약이다. `목표 추가/강화`·`신규`는 초기 제품 설계, B01·SEC 등은 후속이며 공통 프로필·Exa 세부 필드는 미결정이다. [미결정 계약과 완료 조건](뉴스_입력과_검증_책임.md#미결정-계약과-결정-조건)을 먼저 확인한다. 관련 요구사항: FR-02~08,FR-10,NFR-01~04.
+현행은 app/models/store와 OpenAPI snapshot이 기준이다. AM ETF·뉴스 저장/승인, 세 review_checks 객체, PM 신규 승인 차단을 구현했다. 새 조회 경로·B01·SEC 등의 목표 계약과 구분한다. 관련 요구사항: FR-02~08,FR-10,NFR-01~04.
 
 ## 확정 범위와 구현 차이
 
+N02 공통 모델·N08/N03/N09 수집/검사에 이어 ETF/공통 뉴스 AM 저장·조회·승인에 연결했다. 새 kind=etf, validation.profile, transport_mode, review_checks 객체를 OpenAPI·TypeScript와 대조했다. publication.value/available_at·근거 hash/주장은 상세 evidence에 투영하고 전체 수집/설정 신규 조회 경로와 summary 확장은 B01 후속이다. [AM 계약](../../tasks/verification/integration/ETF와_공통_뉴스_AM_연결.md)
+
 뉴스 핵심은 **Exa+BLS CPI**, 가격 입력은 ETF `SPY/QQQ/DIA`다. 기존 10기업 우선+목록 밖 중요 사건을 검토한다. Fed·BEA·SEC 자동 수집과 CIK 필터는 후속이다. Exa 개발 채택·실측과 제품 어댑터/API 구현은 구분한다. [현재 요구사항](../요구사항.md)
 
-**계약 확장 대기:** 아래 official 프로필·SEC 필드는 공식 자료용 목표 설계를 보존한 것이다. Exa에는 그대로 적용하지 않는다. N02/N08/N09에서 원매체·검색 조건·시각 정밀도·본문 절단·기사/보도자료·요청 비용·순위 상위 결과의 범위를 추가하고 프로필 식별자를 확정한다. 목표에서는 미등록 프로필을 차단하며 현행 전 경로 보장은 구현 인수에서 확인한다.
+**AM 현행 계약:** assembly_profile=am_etf_news_v1, validation.profile=etf_news_review_v1이다. ETF 1글+뉴스 0~3글과 목적별 권리·필수 수집·원문 버전·사람 확인을 승인 때 재검사한다. 미등록/legacy 프로필과 PM 신규 승인은 거절한다. 아래 official 프로필·SEC 필드는 후속 보존안이며 새 AM에 적용하지 않는다. [구현 계약](../../tasks/verification/integration/ETF와_공통_뉴스_AM_연결.md)
 
 이 문서의 **현행 8경로**, **1단계 목표 10경로**, **B01 조회 확장 목표 13경로**를 구분한다. OpenAPI snapshot·DB schema·프론트 구현은 이번 명세 변경으로 바뀌지 않는다.
 
@@ -92,7 +94,7 @@
 
 공식 발표/공시 목표에서는 `source_ids: SourceId[]`, `event_types: EventType[]`, `watchlist_version: string|null`도 요약에 추가한다. 목표 query `source_id`, `event_type`, `cik`는 편성에 해당 근거/사건이 하나 이상 있으면 일치한다. `cik`는 SEC의 10자리 숫자 문자열로 정규화하고 숫자형으로 직렬화하지 않는다. 새 필터는 서명 cursor에 결합하고 현행 API 지원으로 표시하지 않는다. 공급자 자료를 직접 브라우저에서 조회하지 않는다.
 
-`Status = prepared|validated|approved|scheduled|sending|published|held|failed|partial|unknown|expired`. `no_content/not_operating`은 실행 결과이며 이 편성 상태 열거에 넣지 않는다. 목표 AM은 뉴스 0건이어도 ETF job이 있고 비운영일에는 job을 만들지 않는다. PM 상태는 목표에서 기존 이력 해석에만 사용하며 현행 신규 PM 처리 차단은 아직 구현 전이다.
+`Status = prepared|validated|approved|scheduled|sending|published|held|failed|partial|unknown|expired`. no_content/not_operating은 실행 결과다. AM은 정상 수집·선정 뉴스 0건이어도 ETF 1글 job이고 새 완료 거래일이 없으면 job을 만들지 않는다. PM은 기존 이력 조회·보류를 유지하며 신규 생성/승인은 PM_DISABLED로 거절한다.
 
 ## 검토 상세 · GET /api/drafts/{id}
 
@@ -100,10 +102,10 @@
 
 | 현행 필드 | 타입·현재 동작 |
 | --- | --- |
-| mode / synthetic | 모드 enum / boolean |
-| validation | `{status:string, blocking_reasons:string[]}` |
+| mode / synthetic | 모드 enum / boolean. 상세 transport_mode=mock/live/null도 별도로 표시 |
+| validation | `{status:string, blocking_reasons:string[], profile:string|null}` |
 | frozen_at | datetime|null |
-| posts | `Post[]`, 순서·kind(index/news)·text·weighted_length·evidence_ids·evidence·event_key·fact_version |
+| posts | `Post[]`, 순서·kind(etf/index/news)·text·weighted_length·evidence_ids·evidence·event_key·fact_version. index는 legacy |
 | allowed_actions | 문자열 배열. 현재 상태/모드/synthetic 중심 힌트이며 기한·전체 검증 결과를 모두 반영하지는 않음 |
 | publication | `{job_id, posts:[{position,state,x_id}]}` |
 | history | 현행 store는 항상 빈 배열. 감사 조회 완료로 표시하지 않음 |
@@ -155,7 +157,7 @@ published_at과 accepted_at 모두 신뢰할 수 없으면 후보를 보류한�
 | expected_version | integer ≥1 | 유지 |
 | expected_decision_revision | integer ≥0 | 유지 |
 | reason | 1~300자 또는 null, hold에 필수·공백 불가 | 유지. 저장/응답 전 민감 값 제거 추가 필요 |
-| review_checks | **현행에는 없음** | `string[]`, approve 시 아래 3개를 중복 없이 정확히 요구. hold는 생략 또는 빈 배열 |
+| review_checks | approve는 `{evidence_support:true, conditions_preserved:true, relevance_and_novelty:true}` 객체 필요. hold는 생략/null | 현행 구현 |
 
 목표 승인 예시(가상 ID/버전, 실행 권한이나 실제 승인 아님):
 
@@ -164,7 +166,7 @@ published_at과 accepted_at 모두 신뢰할 수 없으면 후보를 보류한�
   "action": "approve",
   "expected_version": 3,
   "expected_decision_revision": 0,
-  "review_checks": ["evidence_support", "conditions_preserved", "relevance_and_novelty"]
+  "review_checks": {"evidence_support": true, "conditions_preserved": true, "relevance_and_novelty": true}
 }
 ```
 
@@ -179,14 +181,14 @@ published_at과 accepted_at 모두 신뢰할 수 없으면 후보를 보류한�
 }
 ```
 
-목표에서는 체크 누락/중복/불명 항목을422 `REQUEST_VALIDATION_FAILED`로 처리한다. 이것은 형식·명시적 확인 기록이며 서버가 의미를 자동 증명하는 검사가 아니다. 실제 source/버전/기계 검사가 실패하면 체크가 모두 있어도409로 차단한다. 기존 클라이언트의 승인 본문에는 새 필드가 없으므로 UI와 API를 같이 갱신한다. 설계 예시의 승인 본문을 현행에 보내면422다.
+review_checks 객체 내부 누락·불명 필드·false·숫자/문자열 true는422다. approve에서 객체 전체를 생략하면409 REVIEW_REQUIRED다. 이는 명시적 사람 확인이며 의미 자동 증명이 아니다. 실제 출처/버전/기계 검사가 실패하면 세 확인이 있어도409로 차단한다. UI/API를 함께 갱신했으며 기존 PM 승인 요청은409 PM_DISABLED다.
 
 트랜잭션 처리 순서는 다음과 같다.
 
 1. 인증·CSRF 확인 후 계정/월 비용을 보호하는 잠금과 job 행 잠금을 획득한다. 현행은 전역 advisory lock과 job 행 lock을 사용한다.
 2. `(운영자, job_id, Idempotency-Key)`의 기존 요청을 조회한다. 같은 키/다른 본문은409, 같은 본문은 기존 결과+현재 상태를 반환하며 다시 승인하지 않는다.
 3. 현재 콘텐츠 버전/revision과 비교한다. approve는 reviewed·비합성·validated·기한·최초 시도 전 조건을 확인한다.
-4. 목표에서는 허용된 assembly/validation profile만 받는다. 저장된 근거/권한/수집/ETF/문안/길이와 새 `review_checks`를 검증한다. 현행은 CPI PM만 전용 재검증하고 그 외는 공통 플래그/구조 검사가 중심이다.
+4. 현행은 am_etf_news_v1/etf_news_review_v1만 새 승인에 허용한다. 저장 근거·권한/만료·필수 수집·ETF/문안/길이·review_checks를 다시 검사한다. 미등록/legacy 프로필은 VALIDATION_BLOCKED이며 기존 CPI PM은 읽기/검증용으로 보존한다.
 5. 편성 전체 한도·비용·사건 claim을 원자적으로 예약한다. job을 scheduled로 바꾸고 승인 감사 기록을 저장한다. 전체 필요량이 없으면 부분 승인하지 않는다.
 6. hold는 첫 전송 전 예약/claim 해제 후 held, 첫 전송 후 stop_requested로 잔여만 중단한다. 이미 전송한 요청을 취소하지 않는다. 버전·결정 이력은 유지한다.
 
@@ -310,4 +312,4 @@ mock의 state가 published여도 UI는 “모의 전송 완료”로 표시한�
 
 ## 아침 최대 4글 전환 계약
 
-현행 store는 AM 글 수 1~3, DB reserved_count는 0~3, publication_posts.position은 1~3이다. 목표는 ETF 첫 글+뉴스 0~3으로 전체 1~4글이며 5글·중복 사건·필수 ETF 누락을 거절한다. reserved_count 0~4·position 1~4의 신규 migration과 API/편성/worker의 글 수·한도 검사를 함께 변경한다. PM은 조회만 허용하고 생성·승인·예약·송신을 차단한다. 과거 PM reservation은 전송 없이 보류하며 감사 이력을 남긴다. 이 문서 작업에서는 코드를 변경하지 않았다.
+현행 AM은 ETF 첫 글+뉴스 0~3으로 전체 1~4글이고 5글·중복 사건·필수 ETF 누락·partial을 거절한다. 0002에서 reserved_count 0~4·position 1~4를 구현했고 격리 DB/HTTPS에서 확인했다. PM 신규 생성·승인은 차단하며 기존 예약은 보류할 수 있다. worker 송신·운영 DB 적용은 후속이다.

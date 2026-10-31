@@ -10,11 +10,21 @@ XFolio는 미국 시장 수집→AI 생성→검토·버전 승인→정시 X �
 
 [프로젝트 구조](docs/프로젝트_구조.md) · [기준 문서](docs/README.md) · [현재 작업](tasks/README.md) · [Python 모듈](src/xfolio/README.md) · [개발/실험 도구](scripts/README.md)
 
-## 2026-10-30 현재 개발 기준
+## 2026-10-31 현재 개발 기준
 
-가격 입력 목표는 **yfinance SPY·QQQ·DIA ETF**, 뉴스 입력은 **Exa + 기존 BLS CPI**입니다. 현재 코드는 두 지수이며 ETF 전환은 미구현입니다. 기존 10기업 우선+시장·업종 중요 사건을 검토하고 Fed·BEA·SEC 자동 수집은 후속입니다. 공개 X 운영은 Yahoo/Exa·원매체 이용 조건 확인 후 시작합니다. [ETF 조사](docs/research/ETF_가격_데이터.md) · [뉴스 조사](docs/research/뉴스_수집.md)
+가격 입력은 **yfinance SPY·QQQ·DIA ETF**, 뉴스 입력은 **Exa + 기존 BLS CPI**입니다. ETF 전용 수집·AM 1~4글 저장·확인/승인 연결과 PM 신규 차단을 구현했습니다. 기존 두 지수 모델/CLI와 PM 자료는 이력 호환용으로 유지합니다. 기존 10기업 우선+시장·업종 중요 사건을 검토하고 Fed·BEA·SEC 자동 수집은 후속입니다. 공개 X 운영은 Yahoo/Exa·원매체 이용 조건 확인 후 시작합니다. [ETF 조사](docs/research/ETF_가격_데이터.md) · [뉴스 조사](docs/research/뉴스_수집.md)
 
 Exa 시험에는 서버 `.env`의 `EXA_API_KEY`를 사용했습니다. 키를 브라우저·Git·발표에 넣지 않습니다. API 실측 성공과 제품 어댑터·정기 수집 구현은 별개이며 기존 Marketaux CLI 예시는 실험 이력입니다.
+
+N01·N02의 [공통 뉴스 입력](tasks/verification/news/뉴스_공통_입력_계약.md)과 N08·N03·N09의 [Exa/BLS 수집·근거 검사](tasks/verification/news/Exa와_BLS_어댑터_근거_검사.md), M01·A01·A04의 [ETF·공통 뉴스 AM 연결](tasks/verification/integration/ETF와_공통_뉴스_AM_연결.md)을 구현했습니다. 허용 실자료 인수·일반 기사 AI 생성·worker/X 송신·운영 DB 적용은 후속입니다. 새 의존성이나 환경 변수는 없습니다.
+
+ETF 조회는 `uv run xfolio etf-close --json`입니다(실제 Yahoo 조회). 기존 `market-close`는 두 지수 이력용입니다. ETF는 USD Close의 가격 변화이며 분배금을 더하지 않습니다. 분할·가격 수정은 재검토하고 한 종목이라도 누락되면 전체 실패합니다.
+
+AM 진입점은 `AMInputs`와 `save_am_edition(engine, inputs, account_id=..., now=...)`입니다. 기본 `transport_mode=mock`이고 허용 fixture는 live 송신용 편성으로 승인할 수 없습니다. 필수 Exa/BLS 수집 완주·07:30 확보·ETF 1글+뉴스 0~3글을 검사하며 승인 시 원문/권리/수집/길이·세 사람 확인을 다시 대조합니다. `record_common_collection(...)`은 본문 없는 수집 메타데이터를 저장하고 기존 승인 근거의 정정을 발견하면 예약을 보류합니다. DB는 0002 migration의 4글 제약을 사용하며 아래 격리 시험을 운영 적용과 구분합니다.
+
+`uv run pytest tests/test_exa.py tests/test_bls_input.py tests/test_news_evaluation.py tests/test_news_input.py`로 키와 외부 API 없이 검사합니다. 설정은 `xfolio.exa.ExaConfig`로 만들며 기본 3질의·질의당 5결과·본문 20,000자·최대 6요청·응답비용 예산 $0.10/요청 여유 $0.02입니다. 비용 여유는 개발 가정이고 제공처 청구 상한이나 월 예산 원장을 보장하지 않습니다. 실제 단가와 권리를 검토한 뒤 실행 설정을 정합니다.
+
+호출 진입점은 `collect_exa(client=..., api_key=SecretStr(...), rights=..., window_start=..., window_end=..., run_id=...)`와 `collect_cpi_input(client=..., rights=..., window_start=..., window_end=..., run_id=...)`입니다. 실제 호출 시 서버 환경의 `EXA_API_KEY`를 `SecretStr`로 전달하며 `.env`를 자동으로 읽지 않습니다. collection 허용 검토가 없거나 만료되면 요청 전에 거절합니다. Exa는 설정과 공통 collection을 감싼 `ExaResult`, CPI는 `(collection, CPIInput 또는 None)`을 반환합니다. `evaluate_news_input(...)`는 이용 목적별 후보 검사이며 항상 사람 검토·발행 불가 결과를 반환합니다. worker/CLI 실호출 연결은 후속입니다.
 
 ## 기존 가상 클라우드 시험 · 2026-10-25
 
@@ -118,7 +128,7 @@ uv run --env-file .env python scripts/dev/setup_telegram.py --run --save-chat
 
 운영 설계는 [지수 수집과 게시 모드](docs/운영_정책.md)를 따릅니다. 관리자 승인은 개발·테스트 기간에 적용하고 안정화 후 자동 검증·게시로 전환할 계획입니다. 공개 게시 조건과 오전 자료 도착은 후속 검증입니다.
 
-월 **50,000원 상한**, 월 22게시일·1GB 서버의 부분 견적은 **45,860원**입니다. 아침 편성의 핵심 56h+여유 4h=60h를 계획하며 7~8주차 시간은 가정입니다. [WBS](docs/planning/작업_분해_WBS.md) · [운영](docs/운영_정책.md) · [비용](docs/research/월_비용.md). 현재 AM 승인 3글 제한·ETF·Exa·worker 전환은 구현 전입니다.
+월 **50,000원 상한**, 월 22게시일·1GB 서버의 부분 견적은 **45,860원**입니다. 아침 편성의 핵심 56h+여유 4h=60h 계획과 7~8주차 시간 가정은 [WBS](docs/planning/작업_분해_WBS.md)를 따릅니다. [운영](docs/운영_정책.md) · [비용](docs/research/월_비용.md). ETF·Exa/BLS·AM 4글 저장/승인은 격리 인수했고 worker/송신·허용 실자료·운영 적용은 후속입니다.
 
 - Python 3.12
 - `uv`로 의존성 설치 및 명령 실행

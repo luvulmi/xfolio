@@ -12,8 +12,8 @@
 | React 목록·상세·승인 | [App.tsx](../../frontend/src/App.tsx) | 대시보드·발행 조회·새 근거 표시 |
 | 인증·8API·OpenAPI | [API](../../src/xfolio/api/app.py) · [로그인 검증](../../tasks/logs/2026-10-29_Google_callback과_로그인_검증.md) | 새 조회 API·운영 도메인 검증 |
 | 8개 저장 단위·승인 트랜잭션 | [schema](../../src/xfolio/db/schema.py) · [store](../../src/xfolio/api/store.py) | worker 점유·전송 결과·알림 연결 |
-| CPI 검사·편성·승인 | [news_edition.py](../../src/xfolio/news_edition.py) · [시험 근거](../../tasks/logs/2026-10-29_실자료_검사와_관리자_승인_연결.md) | Exa/BLS 공통 입력과 AM 연결 |
-| 두 지수·선정 규칙 | [market.py](../../src/xfolio/market.py) · [news_selection.py](../../src/xfolio/news_selection.py) | SPY·QQQ·DIA 전환·공통 근거 연결 |
+| Exa/BLS 공통 입력·AM 저장/승인 | [am_edition.py](../../src/xfolio/am_edition.py) · [격리 인수](../../tasks/logs/2026-10-31_ETF와_AM_승인_연결.md) | 허용 실자료·일반 AI 추출/생성·worker 연결 |
+| 세 ETF 수집·편성 | [etf.py](../../src/xfolio/etf.py) · [통합 계약](../../tasks/verification/integration/ETF와_공통_뉴스_AM_연결.md) | 허용 실자료 인수·운영 적용. 두 지수는 legacy 보존 |
 | worker·X·Telegram·AWS | [publish.py](../../src/xfolio/publish.py)는 설명만 존재, jobs 디렉터리 부재 | 새 구현·실제 연동·배포 필요 |
 
 기존 시험 기록을 새 입력의 검증 완료로 계산하지 않는다. 초기 인증·DB·UI를 처음부터 만드는 시간은 다시 배정하지 않는다.
@@ -24,19 +24,19 @@
 
 | WBS | 요구사항 | 현재 상태 | 검증 방법·기존 근거 / 남은 인수 |
 | --- | --- | --- | --- |
-| N01 | FR-02,NFR-04 | Exa 실측 있음·인수 전 | [뉴스 API 표본](../../tasks/verification/news/뉴스_API_재검토_표본과_예산.md) / 용도별 허용·비용 인수 |
-| N02 | FR-02,FR-03,NFR-01 | 계약 미결정 | [입력 책임](../specifications/뉴스_입력과_검증_책임.md#미결정-계약과-결정-조건) / typed 입력·시각·버전·상태 fixture |
-| N03 | FR-03 | CPI 자산 있음·공통화 전 | [BLS 시험](../../tasks/verification/news/BLS_파서와_제공처_채택.md) / AM·정정 연결 |
-| N08 | FR-02,NFR-04 | 제품 미구현 | [표본](../../tasks/verification/news/뉴스_API_재검토_표본과_예산.md) / 질의·본문·부분 실패·비용 |
-| N09 | FR-02,FR-05 | 기존 검사 일부·확장 전 | [고정 사례](../../tasks/verification/news/뉴스_선정_고정_사례.md) / Exa 조건·권리·중복 |
-| M01 | FR-01,NFR-01 | 두 지수 자산·ETF 전환 전 | [ETF 작업](../../tasks/plans/ETF_수집.md) / 세 ETF·거래일·Close·부분 실패 |
-| A01 | FR-04,FR-06,NFR-03 | 대조·migration 전 | [ERD](../specifications/데이터_모델_ERD.md#4글-편성의-제약-변경) / 4글 저장·5글 거절·PM 이력 호환 |
-| A02 | FR-05,FR-06,FR-07,NFR-02 | 검토 UI/승인 일부·확장 전 | [관리자 검증](../../tasks/verification/admin/관리자_화면과_승인_API.md) / UI01~03·사람 확인 |
+| N01 | FR-02,NFR-04 | 설정·표본·응답비용 인수, 공개조건 대기 | [공통 입력 계약](../../tasks/verification/news/뉴스_공통_입력_계약.md) / 기존 실측 $0.023·용도별 pending_review, 청구/무료잔액 미확인 |
+| N02 | FR-02,FR-03,NFR-01 | 공통 입력·AM 저장/승인 연결 인수 | [AM 계약](../../tasks/verification/integration/ETF와_공통_뉴스_AM_연결.md) / legacy 읽기·새 프로필·출처/시각/본문·0건/실패. 허용 실자료 후속 |
+| N03 | FR-03 | 공통 입력·AM 저장/승인 연결 인수 | [AM 계약](../../tasks/verification/integration/ETF와_공통_뉴스_AM_연결.md) / 기존 CPI 기간·비교기준·정정·격리 PG 승인 |
+| N08 | FR-02,NFR-04 | 수집기·MockTransport·수집 메타데이터 저장 인수, 실호출 전 | [어댑터·검사 계약](../../tasks/verification/news/Exa와_BLS_어댑터_근거_검사.md) · [AM 저장](../../tasks/verification/integration/ETF와_공통_뉴스_AM_연결.md) / 설정·본문 보완·부분 실패·응답비용 저장. 월 비용 원장·허용 실자료 인수 후속 |
+| N09 | FR-02,FR-05 | 기계 검사·AM 승인 재검사 연결 인수 | [어댑터·검사 계약](../../tasks/verification/news/Exa와_BLS_어댑터_근거_검사.md) · [AM 계약](../../tasks/verification/integration/ETF와_공통_뉴스_AM_연결.md) / 조건·범위·GAAP·중복·승인 근거 변화 보류. 일반 AI 추출·의미 검토의 실자료 인수 후속 |
+| M01 | FR-01,NFR-01 | ETF 수집·AM 연결 무통신 인수 | [통합 계약](../../tasks/verification/integration/ETF와_공통_뉴스_AM_연결.md) / 세 ETF USD Close·배당/분할·수정치·legacy 보존. 허용 실자료 후속 |
+| A01 | FR-04,FR-06,NFR-03 | 0001 DDL 고정·0002·API/PM 전환 인수 | [통합 계약](../../tasks/verification/integration/ETF와_공통_뉴스_AM_연결.md) / 격리 PG base/0001→head·4번째 저장/5번째 거절·PM 조회/hold. 운영 적용 후속 |
+| A02 | FR-05,FR-06,FR-07,NFR-02 | 검토 UI/세 확인 인수·전체 메뉴 확장 전 | [AM 계약](../../tasks/verification/integration/ETF와_공통_뉴스_AM_연결.md) / 현재 버전 세 확인·PM 이력·ETF 표시. 대시보드/발행 화면 후속 |
 | A03 | FR-07,FR-08,NFR-02 | 신규 발행 조회 미구현 | [API 목표](../specifications/API_명세서.md) / UI04~05·결과/감사·비밀 비노출 |
-| A04 | FR-01~06,NFR-01 | 기존 CPI 편성 일부·통합 전 | [실자료 연결](../../tasks/logs/2026-10-29_실자료_검사와_관리자_승인_연결.md) / 새 프로필·1~4글·실패 차단 |
+| A04 | FR-01~06,NFR-01 | 새 AM 저장·승인/철회·정정 연결 인수 | [통합 계약](../../tasks/verification/integration/ETF와_공통_뉴스_AM_연결.md) / 0~3뉴스·Exa/BLS·시각/권리·세 확인/감사·정정 보류. 일반 AI/worker·허용 실자료 후속 |
 | A05 | FR-04,FR-06,FR-08,NFR-03 | worker 미구현 | [통합 계약](../../tasks/verification/integration/2주_MVP_구현_계약.md) / 점유·철회·마감·재시작 |
 | A06 | FR-08,NFR-03,NFR-04 | X adapter 미구현 | [X 작업](../../tasks/plans/X_게시.md) / 모의 정상·partial·unknown·원장 |
-| A07 | FR-01~08,NFR-01~04 | 최신 목표 인수 전 | [관리자 검증](../../tasks/verification/admin/관리자_화면과_승인_API.md) / PostgreSQL/API/브라우저+mock 통합 |
+| A07 | FR-01~08,NFR-01~04 | AM 4글 PG/API/HTTPS 부분 인수 | [통합 계약](../../tasks/verification/integration/ETF와_공통_뉴스_AM_연결.md) / worker·송신·partial/unknown 전체 통합은 후속 |
 | A08 | FR-01~08,NFR-01~04 | 결함 대응 여유 | A07 발견 결함의 회귀 근거를 실행 로그에 연결 |
 | N04,N05 | FR-09 | 후속·미구현 | [공식 수집 설계](../specifications/공식_발표와_공시_수집_설계.md) / 기관별 지원·정정 |
 | N06,N07 | FR-09 | 후속·식별자 검증 전 | [SEC 시험](../../tasks/verification/news/SEC_기업_공시_발견과_요약_시험.md) / 법인명·CIK·표본·10기업 범위 |

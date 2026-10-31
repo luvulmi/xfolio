@@ -12,6 +12,8 @@
 
 ## 목표 입력 경계
 
+N02 수집 모델에 이어 M01/A01/A04에서 ETF·Exa/BLS 공통 입력의 저장/승인과 세 확인·정정 감사까지 구현했다. 0001은 migrations/schema_0001.py의 당시 DDL로 고정하고 0002에서 두 4글 CHECK만 바꾼다. [통합 계약](../../tasks/verification/integration/ETF와_공통_뉴스_AM_연결.md). 운영 DB 적용과 worker 송신은 후속이다.
+
 2026-10-30 핵심은 **Exa 뉴스+BLS CPI+세 ETF**다.10기업 우선+목록 밖 중요 사건을 허용하며 Fed·BEA·SEC 자동 수집은 후속이다. 아래 실제8테이블은 변경하지 않았다. Exa 검색 조건·시각 정밀도·절단·원매체·비용 필드와 뉴스/BLS 공통 프로필은 N02/N08/N09에서 typed payload 계약으로 확정한다.
 
 아래 `official_news_reviewed_v1`·`am_official_reviewed_v1`과 SEC 전용 필드는 공식 자료의 목표 설계를 보존한 것이다. Exa에 이름만 바꿔 적용하지 않는다. [입력 책임](뉴스_입력과_검증_책임.md) · [요구사항](../요구사항.md)
@@ -120,12 +122,12 @@ erDiagram
 | collection_runs | 없음 | status complete/partial/failed, window_start < window_end ≤ finished_at |
 | evidence_bundles | published_at | UNIQUE(source_id,content_version), rights_verified 기본false |
 | content_drafts | 없음 | UNIQUE(edition_id,version), version>0, synthetic 기본true, validation_passed 기본false |
-| publication_jobs | first_attempt_at | UNIQUE(account_id,target_date,edition), edition AM/PM, scheduled_at<expires_at, decision_revision≥0, reserved_count 0~3, status 기본prepared, revision/reserved_count 기본0, stop_requested 기본false |
-| publication_posts | event_key,fact_version,x_id | UNIQUE(job_id,content_version,position), position 1~3, active_claim이면 event/fact 필수, active_claim 기본false |
+| publication_jobs | first_attempt_at | UNIQUE(account_id,target_date,edition), edition AM/PM(legacy), scheduled_at<expires_at, decision_revision≥0, reserved_count 0~4, status 기본prepared |
+| publication_posts | event_key,fact_version,x_id | UNIQUE(job_id,content_version,position), position 1~4, active_claim이면 event/fact 필수 |
 | usage_ledger | job_id | amount_krw NUMERIC(14,4)≥0, state estimated/reserved/confirmed/released |
 | operations_events | scope,unique_key,expires_at | UNIQUE(kind,scope,unique_key). NULL 조합은 이 제약만으로 중복 억제를 보장하지 않음 |
 
-모든 테이블에 `id` PK가 있다. 추가 부분 유일 인덱스 `uq_active_event_claim(account_id,event_key,fact_version) WHERE active_claim IS TRUE`는 예약·송신·불명 사건의 중복 claim을 막는 기반이다. 실제 active_claim 전이는 애플리케이션이 관리한다. DB CHECK만으로 게시 상태 전이·아침 4글/뉴스 3건 정책·근거 완주를 보장하지 않는다. 아래 현행 reserved_count 0~3은 목표와 달라 신규 migration이 필요하다.
+모든 테이블에 id PK가 있다. uq_active_event_claim 부분 유일 인덱스가 예약/송신/불명의 사건 중복 claim을 막는다. 0002 CHECK는 4글을 허용하며 AM 전용 구성·수집 완주·권리/버전은 애플리케이션에서 검사한다.
 
 0001 migration은 content_drafts의 **UPDATE를 거절하는 trigger**를 만든다. DELETE까지 차단하는 trigger는 현재 없다. API/worker 역할에서 삭제 권한을 주지 않고 과거 버전을 보존하는 것이 목표이며 운영 DB 역할 분리는 아직 별도 검증 대상이다. FK의 ON DELETE CASCADE는 설정돼 있지 않다.
 
@@ -157,7 +159,7 @@ flowchart LR
 
 ## 1단계 payload 계약 · 목표
 
-**첫 통합에서는 8개 테이블을 유지하고 타입을 가진 payload 계약을 추가**한다. 아래 신규 키는 미구현이다. 핵심 Exa/BLS와 후속 Fed·BEA·SEC의 수집·근거·사건은 기존 runs/evidence/edition 경계에 대응하므로 기관별 테이블을 바로 추가할 필요는 없다. 테이블 수가 영구 제한은 아니며 후속 필요 시 분리할 수 있다. 구조화되지 않은 dict를 임의 저장하는 방식으로 목표 계약을 대체하지 않는다.
+8개 테이블을 유지하고 typed payload를 연결했다. collection_runs에는 본문 없는 공통 수집과 ETF snapshot, evidence_bundles에는 허용된 선택 원문/사실, content_drafts에는 input_meta/news_refs/source_versions와 am_etf_news_payload_v1을 저장한다. 아래 표의 worker/SEC 등 추가 필드는 계속 목표다.
 
 | 저장 위치 | 현행 주요 내용 | 1단계 추가/정리 |
 | --- | --- | --- |
@@ -210,8 +212,8 @@ event_key는 기관 레코드 ID가 아니라 동일 사건의 식별자다. 동
 | --- | --- | --- |
 | oidc | auth / 해시 state | nonce/flow, 10분 만료·소비. API 이력에 노출 금지 |
 | session | auth / 해시 session token | email/display_name/csrf_token/last_seen, 절대12시간·유휴30분. 현재 갱신/로그아웃 소비 허용 |
-| decision | operator:job_id / Idempotency-Key | 현행 request_hash/result. 목표 action/operator/job_id/version/content_hash/decision_revision/review_checks/reason/transport_mode 추가, created_at은 서버 시각 |
-| input_review | source_id:content_version / review_id | 목표 운영자/검토시각·fact_version·관련성·근거 참조. AI가 생성한 reviewed flag와 구분 |
+| decision | operator:job_id / Idempotency-Key | 현행 request_hash/result·operator/job_id/version/decision_revision/content_hash·review_checks·collection_run_ids/source_versions/evidence_ids. created_at은 서버 시각 |
+| input_review | source_id:content_hash / review_id | 현행 운영자·근거 hash·event/fact 버전·관련성/중요성·이유·검토 시각. source 변경 시 input_invalidated 별도 감사 |
 | publication_attempt_started | post_id / attempt_id | 목표 job_id/버전/position/transport_mode/시작시각/lease_token, **외부 호출 전 커밋** |
 | publication_attempt_result | post_id / 같은 attempt_id | 목표 outcome/finished_at/x_id|null/안전한 error_code. 동일 시도의 결과는 유일하게 기록 |
 | publication_reconciliation | post_id / 대조 ID | 후속 수동 대조 근거·운영자·이전 상태/새 상태. 기존 unknown 이벤트를 수정하지 않음 |
@@ -254,15 +256,15 @@ job에 글 하나라도 unknown이면 집계도 unknown을 우선한다. 일부�
 
 - 현행 물리 FK3개와 PK/UNIQUE/부분 인덱스 외에 별도 발행 이력 인덱스가 구현됐다고 가정하지 않는다.
 - A03 목표: jobs `(target_date DESC,edition,id)` 목록 인덱스와 events `(scope,created_at,id)` 이력 인덱스. 이미 UNIQUE가 커버하는 posts(job_id,content_version,position)는 중복 인덱스를 추가하지 않는다. 실제 쿼리 계획/데이터량으로 확인한다.
-- 1단계에는 새 테이블/컬럼이 필수는 아니다. 신규 인덱스/권한/제약은 별도 migration으로 작성한다. 기존 0001은 현재 metadata를 import하므로 이후 변경 시 기존 revision과 신규 revision이 같은 index를 중복 생성하지 않도록 고정 DDL 기준을 점검한다. 이번 작업에서 migration을 바꾸지 않는다.
+- 새 테이블/컬럼은 추가하지 않았다. 0001의 현재 metadata 참조는 당시 DDL snapshot으로 고정했고 0002는 CHECK 두 개만 바꾼다. 신규 인덱스/운영 DB 역할/삭제 권한은 후속이다.
 - JSON 관계의 누락/다른 사건 버전·잘못된 수집 ID는 저장·승인·송신 직전에 검증한다. DB FK가 없는 관계를 다이어그램만으로 보장됐다고 설명하지 않는다.
 - 출처/권한/사건/승인/게시 최소 메타데이터는 운영 기간 보존한다. 허용 발췌·요약과 상세 실행 로그는 기존 30일 목표 및 더 엄격한 제공처 조건을 적용한다. 원문과 승인 요청 전체를 감사 로그에 복사하지 않는다.
 - evidence 텍스트가 만료돼 없어지면 hash만으로 내용을 복원할 수 없다. 과거 결과/근거 만료 상태만 조회하고 재사용은 차단한다. DB 백업도 같은 삭제/접근/보존 조건을 적용하며 실제 백업/복원은 B05다.
 
 ## 현행과 목표의 검증 경계
 
-현행 SQLAlchemy metadata·migration source와 표/ERD를 대조했다. 실제 운영 DB의 테이블·역할·데이터를 조회하거나 변경하지 않는다. 신규 claim/검토/시도 이벤트와 인덱스는 설계이며 저장 코드·마이그레이션·동시성 시험을 통과해야 구현 완료가 된다.
+현행 metadata·고정 0001·신규 0002를 격리 PostgreSQL에서 검증했다. AM typed 입력/근거·input_review·decision·input_invalidated 감사와 예약/철회를 구현했다. worker 점유/송신 시도 이벤트·추가 조회 인덱스·운영 DB 역할/배포·백업은 후속이다. 운영 DB는 조회·변경하지 않았다.
 
 ## 4글 편성의 제약 변경
 
-현행 reserved_count BETWEEN 0 AND 3을 0~4로, publication_posts.position BETWEEN 1 AND 3을 1~4로 확장하는 신규 migration과 AM 전용 승인/한도 검사가 필요하다. 기존 0001의 metadata 참조 방식과 적용 이력을 먼저 대조하고 과거 migration을 무기록 변경하지 않는다. AM/PM enum을 즉시 삭제하여 과거 PM 이력을 깨뜨리지 않으며, 새 PM 생성·승인·전송은 애플리케이션에서 차단한다. A01에서 두 제약을 함께 변경하고 4번째 글 저장·5번째 글 거절·과거 PM 조회를 검증한다. running 수집 행 도입의 finished_at/status 제약 변경은 별도이며 위 공통 계약과 함께 결정한다. 코드·운영 DB는 이번 문서 작업에서 변경하지 않았다.
+0002는 reserved_count 0~4·publication_posts.position 1~4다. 0001 당시 DDL을 유지한 base→head/0001→head·downgrade/reupgrade·4번째 저장/5번째 거절을 일회용 PG에서 검증했다. 4번째 자료가 있으면 downgrade는 실패하고 되돌린다. AM/PM enum을 유지해 PM 이력을 읽고 새 PM 생성·승인은 앱에서 차단한다. running/finished_at 변경과 운영 DB 적용은 후속이다.

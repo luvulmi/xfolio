@@ -8,8 +8,8 @@
 | --- | --- |
 | 11/1 4주차 발표 | [화면 자료](presentations/4주차_개발_계획.md) · [대본](presentations/4주차_발표_대본.md) · [준비 체크리스트](plans/11월_1일_발표와_서비스_준비.md) |
 | 관리자 화면 정의 | [초기 3메뉴·상세 구성](../docs/specifications/관리자_화면_구조.md) · [인수 항목](verification/admin/관리자_화면과_승인_API.md) · [10/31 보완 결과](logs/2026-10-31_관리자_화면_정의_보완.md) |
-| ETF 전환 | [SPY·QQQ·DIA 수집 작업](plans/ETF_수집.md) |
-| Exa·BLS 입력과 아침 편성 | [뉴스 수집 작업](plans/뉴스_수집.md) · [실측 근거](verification/news/뉴스_API_재검토_표본과_예산.md) |
+| ETF·AM 승인 연결 | [M01/A01/A04 작업](plans/ETF_수집.md) · [통합 계약](verification/integration/ETF와_공통_뉴스_AM_연결.md) · [10/31 결과](logs/2026-10-31_ETF와_AM_승인_연결.md) |
+| Exa·BLS 입력과 아침 편성 | [뉴스 수집 작업](plans/뉴스_수집.md) · [N01·N02 입력](verification/news/뉴스_공통_입력_계약.md) · [N08·N03·N09 어댑터/검사](verification/news/Exa와_BLS_어댑터_근거_검사.md) · [10/31 어댑터 구현 결과](logs/2026-10-31_Exa와_BLS_근거_검사_구현.md) · [실측 근거](verification/news/뉴스_API_재검토_표본과_예산.md) |
 | 게시·운영 연결 | [X 게시](plans/X_게시.md) · [AWS](plans/클라우드_전환.md) |
 | 문서·폴더 정리 | [작업 계획](plans/프로젝트_구조와_전체_일정_정리.md) · [10/30 결과](logs/2026-10-30_ETF_편성과_문서_정리.md) · [10/31 개발·발표 문서 보완](logs/2026-10-31_개발과_발표_문서_보완.md) |
 
