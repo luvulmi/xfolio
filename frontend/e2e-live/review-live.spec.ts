@@ -24,7 +24,7 @@ test('실제 HTTPS·FastAPI·PostgreSQL 세션으로 조회·합성 차단·보�
     headers: { Origin: baseURL!, 'X-CSRF-Token': me.csrf_token, 'Idempotency-Key': 'live-synthetic-approve' }, data: body,
   });
   expect(blocked.status()).toBe(409);
-  expect((await blocked.json()).error.code).toBe('MODE_BLOCKED');
+  expect((await blocked.json()).error.code).toBe('PM_DISABLED');
   const missingCsrf = await page.request.post('/api/drafts/browser-pm/decision', {
     headers: { Origin: baseURL!, 'Idempotency-Key': 'live-csrf-reject' },
     data: { action: 'hold', expected_version: detail.version, expected_decision_revision: detail.decision_revision, reason: '보류 시험' },
@@ -58,10 +58,10 @@ test('실제 HTTPS·FastAPI·PostgreSQL 세션으로 조회·합성 차단·보�
   expect(requests.every(url => url.startsWith(baseURL!))).toBe(true);
 });
 
-test('생성·의미·길이 검사를 거친 CPI 편성을 실제 API에서 승인하고 철회한다', async ({ page, baseURL }) => {
-  // API와 브라우저 시각만 시험용 17:50으로 맞춘다. 외부 게시 도구는 없다.
+test('ETF와 공통 뉴스 4글을 세 확인 후 실제 API에서 승인하고 철회한다', async ({ page, baseURL }) => {
+  // API와 브라우저 시각만 시험용 07:35으로 맞춘다. 외부 게시 도구는 없다.
   const day = new Date().toLocaleDateString('sv-SE', { timeZone: 'Asia/Seoul' });
-  await page.clock.install({ time: new Date(`${day}T17:50:00+09:00`) });
+  await page.clock.install({ time: new Date(`${day}T07:35:00+09:00`) });
   const requests: string[] = [];
   page.on('request', request => requests.push(request.url()));
   await page.goto('/');
@@ -72,10 +72,12 @@ test('생성·의미·길이 검사를 거친 CPI 편성을 실제 API에서 승
   expect(candidate).toBeDefined();
   await page.goto(`/#/drafts/${candidate.id}`);
   await expect(page.getByText('검증: 통과')).toBeVisible();
-  await expect(page.locator('.post-heading small')).toHaveText(/\d+ \/ 280/);
-  await expect(page.locator('.post-text')).toContainText('발표일(미국 동부)');
-  await expect(page.locator('.evidence-panel')).toContainText('BLS');
+  await expect(page.locator('.post-heading small')).toHaveCount(4);
+  await expect(page.locator('.post-text').first()).toContainText('USD');
+  await expect(page.locator('.evidence-panel')).toContainText('Yahoo Finance');
   const approve = page.getByRole('button', { name: '편성 전체 승인' });
+  await expect(approve).toBeDisabled();
+  for (const box of await page.getByRole('checkbox').all()) await box.check();
   await expect(approve).toBeEnabled();
   const approvedResponse = page.waitForResponse(response => response.url().endsWith(`/api/drafts/${candidate.id}/decision`) && response.request().method() === 'POST');
   await approve.click();
@@ -83,16 +85,18 @@ test('생성·의미·길이 검사를 거친 CPI 편성을 실제 API에서 승
   await expect(page.getByRole('button', { name: '승인 철회·보류' })).toBeVisible();
   const scheduled = await (await page.request.get(`/api/drafts/${candidate.id}`)).json();
   expect(scheduled.status).toBe('scheduled');
-  expect(scheduled.publication.posts).toMatchObject([{ state: 'reserved', x_id: null }]);
+  expect(scheduled.publication.posts).toHaveLength(4);
+  for (const post of scheduled.publication.posts) expect(post).toMatchObject({ state: 'reserved', x_id: null });
   await page.reload();
   await expect(page.getByRole('button', { name: '승인 철회·보류' })).toBeVisible();
-  await page.screenshot({ path: 'test-results/live-api-cpi-approved.png', fullPage: true });
+  await page.screenshot({ path: 'test-results/live-api-am-approved.png', fullPage: true });
+  await page.screenshot({ path: 'test-results/live-api-am-top.png' });
   await page.getByRole('textbox', { name: '보류 사유' }).fill('정상 승인 후 철회 시험');
   await expect(page.getByRole('button', { name: '승인 철회·보류' })).toBeEnabled();
   await page.getByRole('button', { name: '승인 철회·보류' }).click();
   await expect(page.getByRole('heading', { name: '현재 보류 사유' })).toBeVisible();
   const held = await (await page.request.get(`/api/drafts/${candidate.id}`)).json();
   expect(held.status).toBe('held');
-  expect(held.publication.posts).toMatchObject([{ state: 'cancelled', x_id: null }]);
+  for (const post of held.publication.posts) expect(post).toMatchObject({ state: 'cancelled', x_id: null });
   expect(requests.every(url => url.startsWith(baseURL!))).toBe(true);
 });

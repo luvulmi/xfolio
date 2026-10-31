@@ -18,6 +18,8 @@ npm test
 
 `npm test`는 jsdom에서 로그인 안내·합성 자료/근거 누락 승인 차단·409·응답 불명 재전송·최신 조회 실패를 확인합니다.
 
+새 AM은 첫 글을 ETF 종가(USD)로 표시하고 세 확인 항목을 현재 버전에 묶어 전송합니다. 재조회/버전/결정 revision 변경이나 조회 실패 후에는 확인을 초기화합니다. `transport_mode=mock`은 모의 송신 편성으로 표시하고 PM은 과거 이력 조회·보류만 허용합니다.
+
 ```powershell
 npm run test:e2e
 ```
@@ -37,6 +39,6 @@ npm run test:integration
 
 이 시험은 `https://127.0.0.1:8447`에 테스트 전용 서버를 시작합니다. 권한이 있는 loopback PostgreSQL URL이 필요하며 기존 운영 DB 환경변수나 `.env`를 자동으로 읽지 않습니다. 새로운 `xfolio_browser_e2e_` 접두사 schema에 Alembic migration을 적용하고, 정상 종료 때 해당 schema만 정리합니다. 다른 테이블·schema를 대체하지 않습니다.
 
-브라우저 API 응답을 모의하지 않고 실제 FastAPI·PostgresStore·서버 세션을 호출합니다. Google의 외부 요청 경계만 테스트 provider로 대체하므로 실제 Google JWT 서명 검증 성공을 뜻하지 않습니다. HTTPS Secure/HttpOnly 쿠키와 callback 흐름, 조회, synthetic 승인 차단, CSRF/Origin 거절, 보류·재조회·로그아웃을 검증합니다. 합성 입력을 실자료로 표시하거나 제품의 게시 차단을 해제하지 않으며 실제 승인 성공·X·Telegram 연동은 시험하지 않습니다.
+브라우저 API 응답을 모의하지 않고 실제 FastAPI·PostgresStore·서버 세션을 호출합니다. Google의 외부 요청 경계는 테스트 provider로 대체하며 가격/기사/생성 입력도 격리 fixture 전제이므로 실제 Google JWT·공급자·AI 성공을 뜻하지 않습니다. HTTPS Secure/HttpOnly 쿠키, PM 신규 승인 차단/보류·CSRF/Origin·로그아웃과 AM ETF+뉴스 4글의 세 확인·DB 예약·철회를 검증합니다. 송신 모드는 mock이며 X·Telegram 연동은 수행하지 않습니다.
 
 테스트 인증서는 `.cache/browser-e2e/`에 두고 시험 context에서만 자체서명 인증서를 허용합니다. OS 신뢰 저장소는 변경하지 않습니다. 이미지 `test-results/live-api-held.png`도 격리된 시험 결과입니다.

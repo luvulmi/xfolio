@@ -3,11 +3,11 @@ import type { Page } from '@playwright/test';
 
 const session = { operator: { email: 'operator@example.invalid', display_name: '격리 브라우저 시험' }, mode: 'reviewed', csrf_token: 'browser-test-csrf' };
 const draft = {
-  id: 'browser-test-edition', target_date: '2026-10-28', edition: 'PM', version: 2, decision_revision: 4,
+  id: 'browser-test-edition', target_date: '2026-10-28', edition: 'AM', version: 2, decision_revision: 4,
   status: 'validated', news_count: 1, mode: 'reviewed', synthetic: false,
   scheduled_at: '2099-10-28T09:00:00Z', expires_at: '2099-10-28T09:10:00Z', frozen_at: '2099-10-28T08:45:00Z',
   validation: { status: 'passed', blocking_reasons: [] }, allowed_actions: ['approve', 'hold'],
-  posts: [{ position: 1, kind: 'news', text: '격리된 브라우저에서만 사용하는 계약 시험 문안입니다.', evidence_ids: ['browser-evidence'], evidence: [{ id: 'browser-evidence', source: 'Fixture News', url: 'https://example.invalid/fixture', text: '시험 전용 합성 근거. 외부 게시 입력으로 사용할 수 없습니다.', published_at: '2099-10-28T06:00:00Z', collected_at: '2099-10-28T06:05:00Z' }] }],
+  posts: [{ position: 1, kind: 'etf', text: '격리된 브라우저에서만 사용하는 계약 시험 문안입니다.', evidence_ids: ['browser-evidence'], evidence: [{ id: 'browser-evidence', source: 'Fixture News', url: 'https://example.invalid/fixture', text: '시험 전용 합성 근거. 외부 게시 입력으로 사용할 수 없습니다.', published_at: '2099-10-28T06:00:00Z', collected_at: '2099-10-28T06:05:00Z' }] }],
   publication: { posts: [] },
 };
 
@@ -29,13 +29,14 @@ test('미인증은 Google 로그인으로 안내한다', async ({ page }) => {
   await expect(page.getByRole('button', { name: '편성 전체 승인' })).toHaveCount(0);
 });
 
-test('목록에서 상세 근거와 독립 글 구성을 확인한다', async ({ page }) => {
+test('목록에서 상세 근거와 ETF 스레드 구성을 확인한다', async ({ page }) => {
   await mockReads(page);
   await page.goto('/');
   await expect(page.getByText('알림 미연결')).toBeVisible();
   await page.getByRole('link', { name: '검토 →' }).click();
-  await expect(page.getByText('사건별 독립 글')).toBeVisible();
+  await expect(page.getByText('ETF부터 이어지는 스레드')).toBeVisible();
   await expect(page.getByText('시험 전용 합성 근거. 외부 게시 입력으로 사용할 수 없습니다.')).toBeVisible();
+  for (const box of await page.getByRole('checkbox').all()) await box.check();
   await expect(page.getByRole('button', { name: '편성 전체 승인' })).toBeEnabled();
   await page.screenshot({ path: 'test-results/review-detail.png', fullPage: true });
 });
@@ -45,10 +46,11 @@ test('409 뒤 최신 버전은 표시하고 자동 재승인하지 않는다', a
   await mockReads(page, () => changed ? { ...draft, version: 3, status: 'held', allowed_actions: [] } : draft);
   await page.route('**/api/drafts/browser-test-edition/decision', async route => {
     mutations += 1; changed = true;
-    expect(route.request().postDataJSON()).toEqual({ action: 'approve', expected_version: 2, expected_decision_revision: 4 });
+    expect(route.request().postDataJSON()).toEqual({ action: 'approve', expected_version: 2, expected_decision_revision: 4, review_checks: { evidence_support: true, conditions_preserved: true, relevance_and_novelty: true } });
     await route.fulfill({ status: 409, json: { error: { code: 'VERSION_CONFLICT' } } });
   });
   await page.goto('/#/drafts/browser-test-edition');
+  for (const box of await page.getByRole('checkbox').all()) await box.check();
   await page.getByRole('button', { name: '편성 전체 승인' }).click();
   await expect(page.getByRole('alert')).toContainText('VERSION_CONFLICT');
   await expect(page.getByRole('button', { name: '편성 전체 승인' })).toBeDisabled();
@@ -64,6 +66,7 @@ test('응답 불명은 최신 조회 후 동일한 키와 본문으로만 명시
     return route.fulfill({ json: { status: 'scheduled', replayed: true } });
   });
   await page.goto('/#/drafts/browser-test-edition');
+  for (const box of await page.getByRole('checkbox').all()) await box.check();
   await page.getByRole('button', { name: '편성 전체 승인' }).click();
   await expect(page.getByRole('button', { name: '편성 전체 승인' })).toBeDisabled();
   await page.getByRole('button', { name: '같은 요청 다시 확인' }).click();

@@ -364,6 +364,16 @@
               }
             ],
             "title": "Reason"
+          },
+          "review_checks": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ReviewChecks"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "additionalProperties": false,
@@ -521,6 +531,21 @@
           "synthetic": {
             "type": "boolean",
             "title": "Synthetic"
+          },
+          "transport_mode": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "mock",
+                  "live"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Transport Mode"
           },
           "validation": {
             "$ref": "#/components/schemas/Validation"
@@ -821,6 +846,7 @@
           "kind": {
             "type": "string",
             "enum": [
+              "etf",
               "index",
               "news"
             ],
@@ -891,11 +917,49 @@
         ],
         "title": "Post"
       },
+      "ReviewChecks": {
+        "properties": {
+          "evidence_support": {
+            "type": "boolean",
+            "const": true,
+            "title": "Evidence Support"
+          },
+          "conditions_preserved": {
+            "type": "boolean",
+            "const": true,
+            "title": "Conditions Preserved"
+          },
+          "relevance_and_novelty": {
+            "type": "boolean",
+            "const": true,
+            "title": "Relevance And Novelty"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "evidence_support",
+          "conditions_preserved",
+          "relevance_and_novelty"
+        ],
+        "title": "ReviewChecks"
+      },
       "Validation": {
         "properties": {
           "status": {
             "type": "string",
             "title": "Status"
+          },
+          "profile": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Profile"
           },
           "blocking_reasons": {
             "items": {

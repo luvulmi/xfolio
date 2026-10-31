@@ -30,6 +30,12 @@ def token_hash(token: str) -> str:
     return hashlib.sha256(token.encode()).hexdigest()
 
 
+def payload_hash_for_audit(payload):
+    return token_hash(
+        json.dumps(payload, sort_keys=True, ensure_ascii=False, separators=(",", ":"))
+    )
+
+
 class PostgresStore:
     def __init__(self, url: str):
         if not url.startswith(("postgresql://", "postgresql+psycopg://")):
@@ -133,6 +139,7 @@ class PostgresStore:
             "expires_at": row["expires_at"],
             "mode": mode,
             "synthetic": row["synthetic"],
+            "transport_mode": payload.get("transport_mode"),
             "validation": payload.get(
                 "validation", {"status": "pending", "blocking_reasons": []}
             ),
@@ -140,6 +147,8 @@ class PostgresStore:
             "posts": posts,
             "allowed_actions": ["approve", "hold"]
             if row["status"] == "validated"
+            and row["edition"] == "AM"
+            and payload.get("assembly_profile") == "am_etf_news_v1"
             and mode == "reviewed"
             and not row["synthetic"]
             else (
@@ -169,6 +178,41 @@ class PostgresStore:
                     )
                     if record and record["rights_verified"]:
                         allowed = record["payload"]
+                        if allowed.get("schema_version") == "common_news_evidence_v1":
+                            source = allowed["record"]
+                            post["evidence"].append(
+                                {
+                                    "id": record["id"],
+                                    "source": source["publisher"],
+                                    "url": source["source_url"],
+                                    "published_at": source["publication"]["value"],
+                                    "collected_at": source["available_at"],
+                                    "retrieved_at": source["retrieved_at"],
+                                    "last_checked_at": source["last_checked_at"],
+                                    "text": source["content"]["text"],
+                                    "content_hash": source["content_hash"],
+                                    "claims": (allowed.get("facts") or {}).get(
+                                        "claims", []
+                                    ),
+                                    "event_key": record["event_key"],
+                                    "fact_version": post.get("fact_version"),
+                                }
+                            )
+                            continue
+                        if allowed.get("schema_version") == "etf_market_run_v1":
+                            post["evidence"].append(
+                                {
+                                    "id": record["id"],
+                                    "source": "Yahoo Finance",
+                                    "url": "https://finance.yahoo.com/",
+                                    "published_at": record["published_at"].isoformat(),
+                                    "collected_at": record["collected_at"].isoformat(),
+                                    "text": "ETF USD Close · 분배금 미포함",
+                                    "claims": allowed["snapshot"]["prices"],
+                                    "content_hash": record["content_version"],
+                                }
+                            )
+                            continue
                         post["evidence"].append(
                             {
                                 "id": record["id"],
@@ -273,6 +317,8 @@ class PostgresStore:
             )
             return {
                 "collection": {
+                    "scope": "latest_single_run",
+                    "provider": run["provider"] if run else None,
                     "status": run["status"] if run else "not_observed",
                     "last_finished_at": run["finished_at"].isoformat() if run else None,
                 },
@@ -290,7 +336,10 @@ class PostgresStore:
             }
 
     def decide(self, draft_id, operator, key, request: DecisionRequest, mode, now):
-        body = request.model_dump(mode="json")
+        body = request.model_dump(
+            mode="json",
+            exclude={"review_checks"} if request.review_checks is None else set(),
+        )
         request_hash = token_hash(json.dumps(body, sort_keys=True))
         scope = f"{operator}:{draft_id}"
         with self.engine.begin() as conn:
@@ -325,6 +374,8 @@ class PostgresStore:
             if row["decision_revision"] != request.expected_decision_revision:
                 raise ApiError("DECISION_CONFLICT")
             if request.action == "approve":
+                if row["edition"] != "AM":
+                    raise ApiError("PM_DISABLED")
                 if mode != "reviewed" or row["synthetic"]:
                     raise ApiError("MODE_BLOCKED")
                 if row["status"] != "validated" or not row["validation_passed"]:
@@ -339,6 +390,10 @@ class PostgresStore:
                     raise ApiError("DEADLINE_PASSED")
                 payload = row["draft_payload"]
                 posts = payload.get("posts", [])
+                if payload.get("assembly_profile") != "am_etf_news_v1":
+                    raise ApiError("VALIDATION_BLOCKED")
+                if request.review_checks is None:
+                    raise ApiError("REVIEW_REQUIRED")
                 expected_hash = hashlib.sha256(
                     json.dumps(
                         payload,
@@ -354,25 +409,23 @@ class PostgresStore:
                 )
                 if not secrets.compare_digest(expected_hash, content_hash):
                     raise ApiError("VALIDATION_BLOCKED")
-                if payload.get("assembly_profile") == "bls_cpi_pm_v1":
-                    from xfolio.news_edition import bls_pm_validation
+                from xfolio.am_edition import am_db_validation
 
-                    reasons, _ = bls_pm_validation(
-                        conn, payload, row["target_date"], now, row["synthetic"]
-                    )
-                    if reasons:
-                        raise ApiError("VALIDATION_BLOCKED")
+                if am_db_validation(
+                    conn, payload, row["target_date"], now, row["synthetic"]
+                ):
+                    raise ApiError("VALIDATION_BLOCKED")
                 if not payload.get("rights_verified") or not payload.get(
                     "collection_complete"
                 ):
                     raise ApiError("VALIDATION_BLOCKED")
-                if not 1 <= len(posts) <= (3 if row["edition"] == "AM" else 2):
+                if not 1 <= len(posts) <= 4:
                     raise ApiError("VALIDATION_BLOCKED")
                 if [p.get("position") for p in posts] != list(range(1, len(posts) + 1)):
                     raise ApiError("VALIDATION_BLOCKED")
                 if row["edition"] == "AM" and (
                     [p.get("kind") for p in posts]
-                    != ["index"] + ["news"] * (len(posts) - 1)
+                    != ["etf"] + ["news"] * (len(posts) - 1)
                 ):
                     raise ApiError("VALIDATION_BLOCKED")
                 if row["edition"] == "PM" and any(
@@ -428,6 +481,18 @@ class PostgresStore:
                     )
                     if used + len(posts) > 2:
                         raise ApiError("QUOTA_BLOCKED")
+                daily_used = conn.scalar(
+                    sa.select(
+                        sa.func.coalesce(
+                            sa.func.sum(publication_jobs.c.reserved_count), 0
+                        )
+                    ).where(
+                        publication_jobs.c.account_id == row["account_id"],
+                        publication_jobs.c.target_date == row["target_date"],
+                    )
+                )
+                if daily_used + len(posts) > 4:
+                    raise ApiError("QUOTA_BLOCKED")
                 cost = payload.get("max_cost_krw")
                 try:
                     cost = Decimal(str(cost))
@@ -480,7 +545,10 @@ class PostgresStore:
                             fact_version=post.get("fact_version"),
                             state="reserved",
                             active_claim=post.get("kind") == "news",
-                            payload={"version": row["version"]},
+                            payload={
+                                "version": row["version"],
+                                "transport_mode": payload.get("transport_mode"),
+                            },
                         )
                     )
                 status, reserved = "scheduled", len(posts)
@@ -556,7 +624,29 @@ class PostgresStore:
                     scope=scope,
                     unique_key=key,
                     created_at=now,
-                    payload={"request_hash": request_hash, "result": result},
+                    payload={
+                        "request_hash": request_hash,
+                        "result": result,
+                        "operator": operator,
+                        "job_id": draft_id,
+                        "version": row["version"],
+                        "decision_revision": revision,
+                        "content_hash": payload_hash_for_audit(row["draft_payload"]),
+                        "review_checks": request.review_checks.model_dump()
+                        if request.review_checks
+                        else None,
+                        "collection_run_ids": row["draft_payload"].get(
+                            "collection_run_ids", []
+                        ),
+                        "source_versions": row["draft_payload"].get(
+                            "source_versions", []
+                        ),
+                        "evidence_ids": [
+                            e
+                            for p in row["draft_payload"].get("posts", [])
+                            for e in p.get("evidence_ids", [])
+                        ],
+                    },
                 )
             )
             return result

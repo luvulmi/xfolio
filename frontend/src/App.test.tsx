@@ -7,14 +7,16 @@ import type { Draft } from './api';
 const session = { operator: { email: 'operator@example.invalid', display_name: '시험 운영자' }, mode: 'reviewed', csrf_token: 'test-csrf' };
 function sample(overrides: Partial<Draft> = {}): Draft {
   return {
-    id: 'edition-local-test', target_date: '2026-10-28', edition: 'PM', version: 2,
+    id: 'edition-local-test', target_date: '2026-10-28', edition: 'AM', version: 2,
     decision_revision: 4, status: 'validated', news_count: 1, mode: 'reviewed', synthetic: false,
     validation: { status: 'passed', blocking_reasons: [] }, expires_at: '2099-10-28T09:10:00Z',
-    posts: [{ position: 1, kind: 'news', text: '격리된 UI 시험 문안', evidence_ids: ['test-evidence'], evidence: [{ id: 'test-evidence', source: 'Fixture News', url: 'https://example.invalid/test', text: '허용 근거의 시험 발췌', claims: [{ subject: '가상기업', period: '2026-Q3' }] }] }],
+    posts: [{ position: 1, kind: 'etf', text: '격리된 UI 시험 문안', evidence_ids: ['test-evidence'], evidence: [{ id: 'test-evidence', source: 'Fixture News', url: 'https://example.invalid/test', text: '허용 근거의 시험 발췌', claims: [{ subject: '가상기업', period: '2026-Q3' }] }] }],
     allowed_actions: ['approve', 'hold'], publication: { posts: [] }, ...overrides,
   };
 }
 const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } });
+const checks = { evidence_support: true, conditions_preserved: true, relevance_and_novelty: true };
+function confirmReview() { for (const checkbox of screen.getAllByRole('checkbox')) fireEvent.click(checkbox); }
 function openApp() {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false, refetchOnWindowFocus: false }, mutations: { retry: false } } });
   const view = render(<QueryClientProvider client={client}><App /></QueryClientProvider>);
@@ -103,11 +105,12 @@ describe('운영자 편성 검토', () => {
     }));
     openApp();
     const approve = await screen.findByRole('button', { name: '편성 전체 승인' });
+    confirmReview();
     fireEvent.click(approve);
     expect(await screen.findByText(/VERSION_CONFLICT/)).toBeInTheDocument();
     await waitFor(() => expect(screen.getByRole('button', { name: '편성 전체 승인' })).toBeDisabled());
     expect(mutations).toHaveLength(1);
-    expect(JSON.parse(mutations[0].body as string)).toEqual({ action: 'approve', expected_version: 2, expected_decision_revision: 4 });
+    expect(JSON.parse(mutations[0].body as string)).toEqual({ action: 'approve', expected_version: 2, expected_decision_revision: 4, review_checks: checks });
     expect(mutations[0].headers).toMatchObject({ 'X-CSRF-Token': 'test-csrf' });
   });
 
@@ -121,7 +124,9 @@ describe('운영자 편성 검토', () => {
       return json(sample());
     }));
     openApp();
-    fireEvent.click(await screen.findByRole('button', { name: '편성 전체 승인' }));
+    const approve = await screen.findByRole('button', { name: '편성 전체 승인' });
+    confirmReview();
+    fireEvent.click(approve);
     const retry = await screen.findByRole('button', { name: '같은 요청 다시 확인' });
     await waitFor(() => expect(retry).toBeEnabled());
     expect(screen.getByRole('button', { name: '편성 전체 승인' })).toBeDisabled();
@@ -146,4 +151,30 @@ describe('운영자 편성 검토', () => {
     expect(await screen.findByText(/최신 확인 실패/)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: '편성 전체 승인' })).toBeDisabled();
   });
+});
+
+
+it('세 확인이 모두 필요하고 같은 버전 재조회 후에도 확인을 초기화한다', async () => {
+  location.hash = '#/drafts/edition-local-test';
+  vi.stubGlobal('fetch', vi.fn(async (path: string) => path === '/api/auth/me' ? json(session) : json(sample())));
+  openApp();
+  const approve = await screen.findByRole('button', { name: '편성 전체 승인' });
+  expect(approve).toBeDisabled();
+  const boxes = screen.getAllByRole('checkbox');
+  fireEvent.click(boxes[0]); fireEvent.click(boxes[1]);
+  expect(approve).toBeDisabled();
+  fireEvent.click(boxes[2]);
+  expect(approve).toBeEnabled();
+  fireEvent.click(screen.getByRole('button', { name: /최신 상태 확인/ }));
+  await waitFor(() => expect(boxes[0]).not.toBeChecked());
+  expect(approve).toBeDisabled();
+});
+
+it('PM 과거 이력을 보여주되 새 승인은 허용하지 않는다', async () => {
+  location.hash = '#/drafts/edition-local-test';
+  vi.stubGlobal('fetch', vi.fn(async (path: string) => path === '/api/auth/me' ? json(session) : json(sample({ edition: 'PM', allowed_actions: ['hold'] }))));
+  openApp();
+  expect(await screen.findByRole('heading', { name: 'PM 과거 이력' })).toBeInTheDocument();
+  expect(screen.getByRole('button', { name: '편성 전체 승인' })).toBeDisabled();
+  expect(screen.queryByRole('checkbox')).not.toBeInTheDocument();
 });

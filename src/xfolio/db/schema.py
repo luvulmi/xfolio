@@ -76,7 +76,10 @@ publication_jobs = sa.Table(
     sa.UniqueConstraint("account_id", "target_date", "edition"),
     sa.CheckConstraint("edition IN ('AM','PM')"),
     sa.CheckConstraint("scheduled_at < expires_at"),
-    sa.CheckConstraint("decision_revision >= 0 AND reserved_count BETWEEN 0 AND 3"),
+    sa.CheckConstraint(
+        "decision_revision >= 0 AND reserved_count BETWEEN 0 AND 4",
+        name="ck_jobs_reservation",
+    ),
 )
 publication_posts = sa.Table(
     "publication_posts",
@@ -93,7 +96,7 @@ publication_posts = sa.Table(
     sa.Column("x_id", sa.Text),
     sa.Column("payload", JSONB, nullable=False),
     sa.UniqueConstraint("job_id", "content_version", "position"),
-    sa.CheckConstraint("position BETWEEN 1 AND 3"),
+    sa.CheckConstraint("position BETWEEN 1 AND 4", name="ck_posts_position"),
     sa.CheckConstraint(
         "NOT active_claim OR (event_key IS NOT NULL AND fact_version IS NOT NULL)"
     ),

@@ -1,8 +1,12 @@
 """8개 운영 테이블. 기존 가상 preview_drafts를 변경하지 않는다."""
 
+from pathlib import Path
+from runpy import run_path
+
 from alembic import op
 
-from xfolio.db.schema import metadata
+# 당시 DDL snapshot. 현재 metadata 변경이 이미 배포된 0001의 의미를 바꾸지 않는다.
+metadata = run_path(str(Path(__file__).parents[1] / "schema_0001.py"))["metadata"]
 
 revision = "0001_operational_schema"
 down_revision = None

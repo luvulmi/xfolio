@@ -3,7 +3,7 @@
 from datetime import date, datetime
 from typing import Literal
 
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 Edition = Literal["AM", "PM"]
 Status = Literal[
@@ -25,11 +25,30 @@ class StrictModel(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
 
+class ReviewChecks(StrictModel):
+    evidence_support: Literal[True]
+    conditions_preserved: Literal[True]
+    relevance_and_novelty: Literal[True]
+
+    @field_validator(
+        "evidence_support",
+        "conditions_preserved",
+        "relevance_and_novelty",
+        mode="before",
+    )
+    @classmethod
+    def explicit_true(cls, value):
+        if value is not True:
+            raise ValueError("explicit_review_confirmation_required")
+        return value
+
+
 class DecisionRequest(StrictModel):
     action: Literal["approve", "hold"]
     expected_version: int = Field(ge=1)
     expected_decision_revision: int = Field(ge=0)
     reason: str | None = Field(default=None, min_length=1, max_length=300)
+    review_checks: ReviewChecks | None = None
 
     @model_validator(mode="after")
     def hold_reason(self):
@@ -70,12 +89,13 @@ class DraftList(StrictModel):
 
 class Validation(StrictModel):
     status: str
+    profile: str | None = None
     blocking_reasons: list[str] = []
 
 
 class Post(StrictModel):
     position: int
-    kind: Literal["index", "news"]
+    kind: Literal["etf", "index", "news"]
     text: str
     weighted_length: int | None = Field(default=None, ge=0)
     evidence_ids: list[str] = []
@@ -87,6 +107,7 @@ class Post(StrictModel):
 class DraftDetail(DraftSummary):
     mode: Literal["dry_run", "reviewed", "auto"]
     synthetic: bool
+    transport_mode: Literal["mock", "live"] | None = None
     validation: Validation
     frozen_at: datetime | None = None
     posts: list[Post]

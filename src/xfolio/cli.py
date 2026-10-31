@@ -32,6 +32,8 @@ def main(argv: Sequence[str] | None = None) -> None:
     market.add_argument(
         "--json", action="store_true", help="공통 출력 모델을 JSON으로 표시"
     )
+    etf = commands.add_parser("etf-close", help="SPY·QQQ·DIA ETF의 USD Close 조회")
+    etf.add_argument("--json", action="store_true")
     news = commands.add_parser(
         "news-check", help="좁힌 뉴스 질의 계획 또는 실제 메타데이터 조회"
     )
@@ -66,9 +68,9 @@ def main(argv: Sequence[str] | None = None) -> None:
 
     if args.command == "status":
         print(
-            "지수·뉴스 수집·BLS CPI 파서·수집 커서·가상 미리보기: 구현됨. "
-            "뉴스 선정 정책·관리자 API/React·DB migration: 초기 구현. "
-            "실기사 AI·운영 승인 검증·X/worker·Telegram·AWS 배포: 연결 전."
+            "ETF·Exa/BLS 공통 입력·AM 4글 저장/승인·PM 신규 차단: 구현·격리 검증됨. "
+            "지수·CPI PM 이력과 가상 미리보기: 보존. "
+            "허용 실자료 인수·일반 기사 AI·worker/X·Telegram·AWS 운영: 후속."
         )
     elif args.command == "bls-check":
         if not args.run:
@@ -94,6 +96,16 @@ def main(argv: Sequence[str] | None = None) -> None:
         print(json.dumps(report, ensure_ascii=False, indent=2))
         if report["state"] != "snapshot_parsed":
             parser.exit(1, "예정 발표가 아직 확인되지 않아 보류합니다.\n")
+    elif args.command == "etf-close":
+        from xfolio.etf import collect_etf_closes, etf_post_text
+
+        try:
+            snapshot = collect_etf_closes()
+        except (MarketDataError, ValueError) as exc:
+            parser.exit(1, f"ETF 데이터 조회 실패: {exc}\n")
+        print(
+            snapshot.model_dump_json(indent=2) if args.json else etf_post_text(snapshot)
+        )
     elif args.command == "market-close":
         try:
             snapshot = collect_index_closes()

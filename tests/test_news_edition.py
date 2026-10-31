@@ -9,6 +9,7 @@ from datetime import timedelta
 import pytest
 import sqlalchemy as sa
 from fastapi.testclient import TestClient
+from legacy_pm_history import seed_historical_bls_pm
 from test_news_workflow import NOW, Client, bundle, limits, review
 from test_news_workflow import (
     pg_engine as pg_engine,  # noqa: PLC0414 - 격리 PG fixture 재사용
@@ -24,7 +25,12 @@ from xfolio.db.schema import (
     publication_jobs,
     publication_posts,
 )
-from xfolio.news_edition import assemble_bls_pm, payload_hash, record_bls_collection
+from xfolio.news_edition import (
+    assemble_bls_pm,
+    bls_pm_validation,
+    payload_hash,
+    record_bls_collection,
+)
 from xfolio.news_workflow import SQLWorkflowStore, WorkflowError, generate_and_store
 
 TARGET = NOW.date()
@@ -61,7 +67,7 @@ def assemble(engine, draft_id, **updates):
         "now": FREEZE,
         "max_publish_cost_krw": "10",
     }
-    return assemble_bls_pm(engine, draft_id, **(args | updates))
+    return seed_historical_bls_pm(engine, draft_id, **(args | updates))
 
 
 def api_client(engine, *, mode="reviewed", now=APPROVE):
@@ -114,7 +120,9 @@ def decision(
     )
 
 
-def test_generated_immutable_draft_reaches_list_detail_approval_and_hold(pg_engine):
+def test_historical_cpi_draft_remains_readable_and_holdable_but_new_pm_approval_is_blocked(
+    pg_engine,
+):
     original_id = generated(pg_engine)
     job_id = assemble(pg_engine, original_id)
     with pg_engine.connect() as conn:
@@ -133,25 +141,24 @@ def test_generated_immutable_draft_reaches_list_detail_approval_and_hold(pg_engi
         rows = client.get("/api/drafts").json()["items"]
         assert rows[0]["id"] == job_id
         detail = client.get(f"/api/drafts/{job_id}").json()
-        assert detail["validation"] == {"status": "passed", "blocking_reasons": []}
-        assert detail["allowed_actions"] == ["approve", "hold"]
+        assert detail["validation"]["status"] == "passed"
+        assert detail["validation"]["blocking_reasons"] == []
+        assert detail["allowed_actions"] == ["hold"]
         post = detail["posts"][0]
         assert 0 < post["weighted_length"] <= 280
         assert len(post["evidence"][0]["claims"]) == 2
         assert "발표일(미국 동부)" in post["text"]
         assert decision(client, job_id, version=2).status_code == 409
         approved = decision(client, job_id)
-        assert approved.status_code == 200
-        assert approved.json()["status"] == "scheduled"
-        assert decision(client, job_id).json()["replayed"] is True
-        held = decision(client, job_id, action="hold", revision=1, key="hold-key")
+        assert approved.status_code == 409
+        assert approved.json()["error"]["code"] == "PM_DISABLED"
+        held = decision(client, job_id, action="hold", revision=0, key="hold-key")
         assert held.status_code == 200 and held.json()["status"] == "held"
-        assert decision(client, job_id).json()["status"] == "held"
+        assert decision(client, job_id).status_code == 409
         assert decision(client, job_id, revision=2, key="new-key").status_code == 409
     with pg_engine.connect() as conn:
         rows = conn.execute(sa.select(publication_posts)).mappings().all()
-        assert len(rows) == 1 and rows[0]["state"] == "cancelled"
-        assert rows[0]["x_id"] is None
+        assert rows == []
 
 
 @pytest.mark.parametrize("synthetic,mode", [(True, "reviewed"), (False, "dry_run")])
@@ -165,7 +172,7 @@ def test_trial_data_and_dry_run_still_cannot_approve(pg_engine, synthetic, mode)
         response = decision(client, job_id)
         assert (
             response.status_code == 409
-            and response.json()["error"]["code"] == "MODE_BLOCKED"
+            and response.json()["error"]["code"] == "PM_DISABLED"
         )
 
 
@@ -246,8 +253,15 @@ def test_approval_rechecks_facts_permission_and_collection_before_reserving(
             conn.execute(evidence_bundles.update().values(payload=payload))
         else:
             conn.execute(collection_runs.update().values(status="partial"))
+    with pg_engine.connect() as conn:
+        payload = conn.scalar(
+            sa.select(content_drafts.c.payload).where(
+                content_drafts.c.edition_id == job_id
+            )
+        )
+        assert bls_pm_validation(conn, payload, TARGET, APPROVE, False)[0]
     with api_client(pg_engine) as client:
-        assert decision(client, job_id).json()["error"]["code"] == "VALIDATION_BLOCKED"
+        assert decision(client, job_id).json()["error"]["code"] == "PM_DISABLED"
     with pg_engine.connect() as conn:
         assert (
             conn.scalar(sa.select(sa.func.count()).select_from(publication_posts)) == 0
@@ -276,3 +290,16 @@ def test_missing_publish_cost_never_creates_edition(pg_engine):
     draft = generated(pg_engine)
     with pytest.raises(WorkflowError, match="PUBLISH_COST_REQUIRED"):
         assemble(pg_engine, draft, max_publish_cost_krw=None)
+
+
+def test_public_pm_assembly_entry_is_disabled_without_touching_db():
+    with pytest.raises(WorkflowError, match="PM_DISABLED"):
+        assemble_bls_pm(
+            None,
+            "old",
+            collection_run_id="old",
+            account_id="old",
+            target_date=TARGET,
+            now=FREEZE,
+            max_publish_cost_krw="10",
+        )

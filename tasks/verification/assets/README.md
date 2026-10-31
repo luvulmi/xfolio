@@ -13,3 +13,4 @@
 | auth/ | 로그인 검증 |
 | cloud/ | 이전 Streamlit/Neon 시험 |
 | preview/ | 미리보기 그림 |
+| integration/ | ETF·AM 4글의 격리 HTTPS/API/DB 시험 화면. 실제 시장 수치·X 성공이 아님 |

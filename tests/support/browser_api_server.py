@@ -12,7 +12,6 @@ import re
 import secrets
 import sys
 from datetime import UTC, datetime, time, timedelta
-from decimal import Decimal
 from pathlib import Path
 from urllib.parse import urlencode
 from zoneinfo import ZoneInfo
@@ -31,15 +30,7 @@ from sqlalchemy.engine import make_url
 from xfolio.api.app import create_app
 from xfolio.api.auth import Settings
 from xfolio.api.store import PostgresStore
-from xfolio.bls import parse_release
 from xfolio.db.schema import content_drafts, evidence_bundles, publication_jobs
-from xfolio.news_edition import assemble_bls_pm, record_bls_collection
-from xfolio.news_workflow import (
-    GenerationLimits,
-    PermissionReview,
-    SQLWorkflowStore,
-    generate_and_store,
-)
 
 ROOT = Path(__file__).resolve().parents[2]
 ORIGIN = "https://127.0.0.1:8447"
@@ -47,7 +38,7 @@ EMAIL = "browser-operator@example.invalid"
 SCHEMA = "xfolio_browser_e2e_" + secrets.token_hex(4)
 SCHEMA_RECORD = ROOT / ".cache" / "browser-e2e" / "run-schema.txt"
 TEST_CLOCK = datetime.combine(
-    datetime.now(ZoneInfo("Asia/Seoul")).date(), time(17, 50), ZoneInfo("Asia/Seoul")
+    datetime.now(ZoneInfo("Asia/Seoul")).date(), time(7, 35), ZoneInfo("Asia/Seoul")
 ).astimezone(UTC)
 
 
@@ -195,90 +186,22 @@ def seed_synthetic(store):
         )
 
 
-def seed_cpi_workflow(store):
-    """고정 HTML·모의 모델·허용 전제를 사용해 제품 생성/검사/편성을 실행한다.
+def seed_am_workflow(store):
+    """실제 AM 저장/승인의 시험 전제. 공급자·AI·X 실제 호출은 없다."""
+    sys.path.insert(0, str(ROOT / "tests"))
+    import am_fixtures
 
-    non-synthetic은 승인 정상 경로의 시험 전제이며 실제 모델의 성공 증거가 아니다.
-    """
-    retrieved = TEST_CLOCK - timedelta(minutes=50)
-    bundle = parse_release(
-        (ROOT / "tests/fixtures/bls/cpi.html").read_text(encoding="utf-8"),
-        retrieved_at=retrieved,
-        run_id="browser-cpi-collection",
+    from xfolio.am_edition import save_am_edition
+
+    am_fixtures.CUTOFF = (TEST_CLOCK - timedelta(minutes=5)).astimezone(
+        ZoneInfo("Asia/Seoul")
     )
-    record_bls_collection(
+    am_fixtures.NOW = TEST_CLOCK
+    save_am_edition(
         store.engine,
-        bundle,
-        started_at=retrieved - timedelta(seconds=1),
-        finished_at=retrieved + timedelta(seconds=1),
-    )
-    review = PermissionReview(
-        **{
-            key: getattr(bundle.source, key)
-            for key in (
-                "provider",
-                "source_id",
-                "source_url",
-                "content_version",
-                "text_scope",
-            )
-        },
-        reviewed_by="browser fixture",
-        policy_reference="fixture-only:browser-normal-path",
-        reviewed_at=retrieved,
-        expires_at=TEST_CLOCK + timedelta(days=1),
-        storage="permitted",
-        ai_transfer="permitted",
-        summary_publication="permitted",
-        fixture_only=False,
-    )
-
-    class FixtureGenerator:
-        def generate(self, **request):
-            data = json.loads(request["input_json"])
-            return {
-                "model": "gpt-6-luna",
-                "status": "completed",
-                "input_tokens": 400,
-                "output_tokens": 100,
-                "output": {
-                    "source_id": data["source_id"],
-                    "content_version": data["content_version"],
-                    "claims": [
-                        {
-                            "claim_id": c["claim_id"],
-                            "text_ko": " ".join(c["required_literals"]),
-                            "evidence_span": c["evidence_span"],
-                        }
-                        for c in data["claims"]
-                    ],
-                },
-            }
-
-    draft_id = generate_and_store(
-        bundle,
-        review,
-        client=FixtureGenerator(),
-        store=SQLWorkflowStore(store.engine),
-        limits=GenerationLimits(
-            max_input_tokens=16000,
-            input_krw_per_million=Decimal(200),
-            output_krw_per_million=Decimal(1000),
-            price_basis="fixture-only:not-a-quote",
-            prices_valid_until=TEST_CLOCK + timedelta(days=1),
-        ),
-        now=retrieved + timedelta(minutes=10),
-        target_date=TEST_CLOCK.astimezone(ZoneInfo("Asia/Seoul")).date(),
-        synthetic=False,
-    )
-    assemble_bls_pm(
-        store.engine,
-        draft_id,
-        collection_run_id=bundle.source.collection_run_id,
-        account_id="browser-cpi-fixture",
-        target_date=TEST_CLOCK.astimezone(ZoneInfo("Asia/Seoul")).date(),
-        now=TEST_CLOCK - timedelta(minutes=10),
-        max_publish_cost_krw="10",
+        am_fixtures.inputs(3),
+        account_id="browser-am-fixture",
+        now=TEST_CLOCK,
     )
 
 
@@ -322,7 +245,7 @@ def main():
     admin, store = prepare_database()
     try:
         seed_synthetic(store)
-        seed_cpi_workflow(store)
+        seed_am_workflow(store)
         settings = Settings(
             origin=ORIGIN,
             google_client_id="browser-provider-double",

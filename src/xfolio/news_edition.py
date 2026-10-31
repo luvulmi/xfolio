@@ -1,9 +1,7 @@
 """확인된 단일 BLS CPI 초안을 PM 편성으로 묶는 저장 경계. 외부 전송은 없다."""
 
 import json
-import secrets
 from datetime import datetime, time, timedelta
-from decimal import Decimal, InvalidOperation
 from zoneinfo import ZoneInfo
 
 import sqlalchemy as sa
@@ -12,13 +10,10 @@ from pydantic import ValidationError
 from xfolio.bls import RELEASE_URL
 from xfolio.db.schema import (
     collection_runs,
-    content_drafts,
     evidence_bundles,
-    publication_jobs,
 )
 from xfolio.news_contracts import EvidenceClaim, NewsEvent, digest
 from xfolio.news_validation import (
-    PROFILE,
     DraftValidationError,
     validate_stored_cpi_post,
 )
@@ -209,85 +204,5 @@ def assemble_bls_pm(
     now,
     max_publish_cost_krw,
 ):
-    """원초안을 보존하고 새 편성 버전·job을 원자적으로 만든다. 승인은 별도다."""
-    if now.utcoffset() is None or not account_id or not account_id.strip():
-        raise WorkflowError("EDITION_INPUT_INVALID")
-    try:
-        cost = Decimal(str(max_publish_cost_krw))
-    except (InvalidOperation, ValueError, TypeError):
-        raise WorkflowError("PUBLISH_COST_REQUIRED") from None
-    if not cost.is_finite() or cost < 0:
-        raise WorkflowError("PUBLISH_COST_REQUIRED")
-    with engine.begin() as conn:
-        conn.execute(sa.text("SELECT pg_advisory_xact_lock(718435902)"))
-        existing = conn.scalar(
-            sa.select(publication_jobs.c.id).where(
-                publication_jobs.c.account_id == account_id,
-                publication_jobs.c.target_date == target_date,
-                publication_jobs.c.edition == "PM",
-            )
-        )
-        if existing:
-            raise WorkflowError("EDITION_ALREADY_EXISTS")
-        original = (
-            conn.execute(
-                sa.select(content_drafts)
-                .where(content_drafts.c.id == draft_id)
-                .with_for_update()
-            )
-            .mappings()
-            .one_or_none()
-        )
-        if (
-            not original
-            or original["edition_id"] != "unassembled:" + draft_id
-            or original["content_hash"] != payload_hash(original["payload"])
-            or original["payload"].get("generation_validation", {}).get("profile")
-            != PROFILE
-            or original["payload"].get("target_date") != target_date.isoformat()
-        ):
-            raise WorkflowError("GENERATED_DRAFT_INVALID")
-        job_id, assembled_id = secrets.token_hex(16), secrets.token_hex(16)
-        payload = {
-            **original["payload"],
-            "assembly_profile": ASSEMBLY_PROFILE,
-            "source_draft_id": draft_id,
-            "collection_run_id": collection_run_id,
-            "frozen_at": now.isoformat(),
-            "max_cost_krw": str(cost),
-        }
-        reasons, lengths = bls_pm_validation(
-            conn, payload, target_date, now, original["synthetic"]
-        )
-        payload["collection_complete"] = "EDITION_COLLECTION_REQUIRED" not in reasons
-        payload["validation"] = {
-            "status": "passed" if not reasons else "failed",
-            "blocking_reasons": reasons,
-        }
-        payload["weighted_lengths"] = lengths
-        conn.execute(
-            content_drafts.insert().values(
-                id=assembled_id,
-                edition_id=job_id,
-                version=1,
-                content_hash=payload_hash(payload),
-                synthetic=original["synthetic"],
-                validation_passed=not reasons,
-                payload=payload,
-            )
-        )
-        scheduled = datetime.combine(target_date, time(18), KST)
-        conn.execute(
-            publication_jobs.insert().values(
-                id=job_id,
-                account_id=account_id,
-                target_date=target_date,
-                edition="PM",
-                draft_id=assembled_id,
-                status="validated" if not reasons else "prepared",
-                scheduled_at=scheduled,
-                expires_at=scheduled + timedelta(minutes=10),
-                payload={"assembly_profile": ASSEMBLY_PROFILE},
-            )
-        )
-    return job_id
+    """제거된 PM 제품 진입점. 기존 자료의 조회·검증 함수는 보존한다."""
+    raise WorkflowError("PM_DISABLED")

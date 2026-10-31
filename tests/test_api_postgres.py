@@ -9,7 +9,7 @@ import json
 import os
 import secrets
 from concurrent.futures import ThreadPoolExecutor
-from datetime import UTC, date, datetime
+from datetime import UTC, date, datetime, timedelta
 from pathlib import Path
 
 import pytest
@@ -63,7 +63,15 @@ def store():
         base.engine.dispose()
 
 
-def seed(store, *, synthetic=False, cost=100, posts=None, status="validated"):
+def seed(
+    store,
+    *,
+    synthetic=False,
+    cost=100,
+    posts=None,
+    status="validated",
+    historical_approval=False,
+):
     posts = posts or [
         {
             "position": 1,
@@ -124,6 +132,64 @@ def seed(store, *, synthetic=False, cost=100, posts=None, status="validated"):
                 payload={},
             )
         )
+        if historical_approval:
+            conn.execute(
+                publication_jobs.update().values(
+                    status="scheduled", decision_revision=1, reserved_count=1
+                )
+            )
+            conn.execute(
+                publication_posts.insert().values(
+                    id="past-post",
+                    job_id="j1",
+                    account_id="layer-only",
+                    position=1,
+                    content_version=1,
+                    event_key="event-1",
+                    fact_version="v1",
+                    state="reserved",
+                    active_claim=True,
+                    payload={"historical": True},
+                )
+            )
+            conn.execute(
+                usage_ledger.insert().values(
+                    id="past-cost",
+                    provider="X",
+                    month="2026-10",
+                    job_id="j1",
+                    state="reserved",
+                    amount_krw=cost,
+                    payload={"historical": True},
+                )
+            )
+            request = DecisionRequest(
+                action="approve", expected_version=1, expected_decision_revision=0
+            )
+            request_hash = hashlib.sha256(
+                json.dumps(
+                    request.model_dump(mode="json", exclude={"review_checks"}),
+                    sort_keys=True,
+                ).encode()
+            ).hexdigest()
+            result = {
+                "decision_id": "past-decision",
+                "applied": True,
+                "replayed": False,
+                "version": 1,
+                "decision_revision": 1,
+                "status": "scheduled",
+            }
+            conn.execute(
+                operations_events.insert().values(
+                    id="past-decision",
+                    kind="decision",
+                    scope="test@example.invalid:j1",
+                    unique_key="k1",
+                    created_at=NOW - timedelta(minutes=10),
+                    payload={"request_hash": request_hash, "result": result},
+                )
+            )
 
 
 def decide(store, key="k1", action="approve", revision=0, now=NOW, mode="reviewed"):
@@ -143,14 +209,14 @@ def decide(store, key="k1", action="approve", revision=0, now=NOW, mode="reviewe
 
 
 def test_approve_hold_old_approve_replay_is_not_reapproval(store):
-    seed(store)
-    assert decide(store)["status"] == "scheduled"
+    seed(store, historical_approval=True)
+    assert decide(store)["replayed"] is True
     assert decide(store, key="k2", action="hold", revision=1)["status"] == "held"
     replay = decide(store)
     assert replay["replayed"] is True and replay["status"] == "held"
     with pytest.raises(ApiError) as conflict:
         decide(store, key="k3", revision=2)
-    assert conflict.value.code == "VALIDATION_BLOCKED"
+    assert conflict.value.code == "PM_DISABLED"
     with store.engine.connect() as conn:
         assert (
             conn.scalar(
@@ -205,7 +271,7 @@ def test_bad_input_cannot_reserve(store, change, code):
     )
     with pytest.raises(ApiError) as err:
         decide(store)
-    assert err.value.code == code
+    assert err.value.code == "PM_DISABLED"
     with store.engine.connect() as conn:
         assert conn.scalar(sa.select(sa.func.count()).select_from(usage_ledger)) == 0
         assert conn.scalar(sa.select(publication_jobs.c.decision_revision)) == 0
@@ -219,11 +285,11 @@ def test_deadline_and_day_are_enforced(store):
     ]:
         with pytest.raises(ApiError) as err:
             decide(store, now=now)
-        assert err.value.code == "DEADLINE_PASSED"
+        assert err.value.code == "PM_DISABLED"
 
 
-def test_concurrent_approvals_have_one_winner(store):
-    seed(store)
+def test_concurrent_historical_replay_cannot_reserve_again(store):
+    seed(store, historical_approval=True)
 
     def request(key):
         try:
@@ -242,8 +308,7 @@ def test_concurrent_approvals_have_one_winner(store):
 
 
 def test_claim_is_not_released_after_transmission_started(store):
-    seed(store)
-    decide(store)
+    seed(store, historical_approval=True)
     with store.engine.begin() as conn:
         conn.execute(
             publication_jobs.update().values(status="sending", first_attempt_at=NOW)

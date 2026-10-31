@@ -108,6 +108,9 @@ textarea { resize: vertical; min-height: 80px; line-height: 1.6; font-size: 11px
 .evidence-panel article small { color: #8b9ea5; font-size: 10px; }
 pre { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 10px; background: #f7f9f9; padding: 12px; border-radius: 4px; }
 .retry-panel { margin-top: 18px; padding-top: 6px; border-top: 1px solid #e4e9e9; }
+.review-confirmations { display: grid; gap: 10px; margin: 18px 0; padding: 12px; border: 1px solid #dce5e7; font-size: 12px; }
+.review-confirmations label { display: flex; flex-direction: row; gap: 8px; align-items: flex-start; font-size: 12px; line-height: 1.5; }
+.review-confirmations input { width: 16px; height: 16px; min-width: 16px; padding: 0; margin: 1px 0 0; }
 footer { font-size: 10px; color: #a0afb4; padding: 20px 42px; text-align: right; border-top: 1px solid #e7ecee; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
 @media (max-width: 1100px) { .sidebar { width: 175px; flex-basis: 175px; padding-inline: 14px; } .workspace { margin-left: 175px; } main { padding-inline: 25px; } .topbar { padding-inline: 25px; } .summary-grid { gap: 10px; } .summary-card { padding: 17px; } .summary-card strong { font-size: 14px; } .review-layout { grid-template-columns: minmax(0,1fr) 260px; gap: 15px; } }
