@@ -8,6 +8,7 @@
 
 | 작업 | 진입점 |
 | --- | --- |
+| 5주차 발표 초안 | [개인용 Telegram 뉴스레터 전환](presentations/5주차_개인용_뉴스레터_전환.md) — 11/1 기준, 발표 전 실제 개발 결과 갱신 |
 | 개인용 뉴스레터 전환 | [작업](plans/개인용_뉴스레터_전환.md) · [확정 결정](discussions/2026-11-01_개인용_Telegram_뉴스레터_전환.md) · [API 표본](verification/market/국내_ETF_API_표본_검증.md) · [결과](logs/2026-11-01_개인용_뉴스레터_전환.md) |
 | 11/1 4주차 발표 | [화면 자료](presentations/4주차_개발_계획_김유림.md) · [대본](presentations/4주차_발표_대본.md) · [준비 체크리스트](plans/11월_1일_발표와_서비스_준비.md) |
 | 관리자 화면 정의 | [초기 3메뉴·상세 구성](../docs/specifications/관리자_화면_구조.md) · [인수 항목](verification/admin/관리자_화면과_승인_API.md) · [10/31 보완 결과](logs/2026-10-31_관리자_화면_정의_보완.md) |
