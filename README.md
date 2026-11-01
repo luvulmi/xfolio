@@ -1,6 +1,12 @@
 # XFolio
 
-XFolio는 미국 시장 수집→AI 생성→검토·버전 승인→정시 X 게시→장애 알림을 연결하는 풀스택 포트폴리오입니다. **08:00(KST)에 SPY·QQQ·DIA ETF 종가·등락률 1글+주요 뉴스 최대 3글**, 하루 최대 4글을 게시하는 비상업 정보 공유 프로젝트입니다. [요구사항](docs/요구사항.md) · [개발 일정](docs/planning/작업_분해_WBS.md)
+XFolio는 국내 상장 해외 ETF와 미국 시장 뉴스를 정리해 본인 Telegram으로 자동 전달하는 개인용 뉴스레터 프로젝트입니다. 기본3종목·활성총10종목, 월~금08:00·한국 거래일14:00 기본,16:00 선택입니다. [현재 요구사항](docs/요구사항.md) · [관리자 화면](docs/specifications/관리자_화면_구조.md) · [새 WBS](docs/planning/작업_분해_WBS.md)
+
+2026-11-01 기준 새 국내 시세·종목/알림 관리·Telegram worker는 구현 전입니다. KIS 공개 마스터3종목 식별을 확인했고, 계좌는 있으나 Open API 신청 및 인증 시세·이용 조건 인수는 대기입니다. [검증 결과](tasks/verification/market/국내_ETF_API_표본_검증.md)
+
+아래 설명과 실행 예시는 **기존 X/미국 ETF 구현·시험 자산**입니다. 새 제품의 현재 요구사항으로 사용하지 않습니다. 국내 종목 식별 확인 도구는 `uv run python scripts/experiments/kis_market_probe.py`이며 가격·계좌·주문 API는 호출하지 않습니다.
+
+이전 XFolio는 미국 시장 수집→AI 생성→검토·버전 승인→정시 X 게시→장애 알림을 연결하는 풀스택 포트폴리오입니다. **08:00(KST)에 SPY·QQQ·DIA ETF 종가·등락률 1글+주요 뉴스 최대 3글**, 하루 최대 4글을 게시하는 비상업 정보 공유 프로젝트입니다. [요구사항](docs/요구사항.md) · [개발 일정](docs/planning/작업_분해_WBS.md)
 
 기존 Python 지수/뉴스 수집·BLS 시험·가상 미리보기·Luna 가상 분석·Neon 가상 저장과 이전 Streamlit 인증에 더해, 뉴스 선정 정책과 합성 회귀 사례·React 관리자·FastAPI 인증/조회/승인 초기 코드·운영 DB migration을 작성했습니다. 격리 PostgreSQL 통합과 로컬 HTTPS의 실제 Google 로그인·세션 유지·로그아웃을 검증했습니다. PostgreSQL 운영 배포·실뉴스 연결·X·worker·Telegram·AWS 제품 배포는 후속입니다. [초기 구현 결과](tasks/logs/2026-10-28_뉴스_선정과_관리자_초기_구현.md) · [실제 로그인 결과](tasks/logs/2026-10-29_Google_callback과_로그인_검증.md)
 
@@ -10,7 +16,7 @@ XFolio는 미국 시장 수집→AI 생성→검토·버전 승인→정시 X �
 
 [프로젝트 구조](docs/프로젝트_구조.md) · [기준 문서](docs/README.md) · [현재 작업](tasks/README.md) · [Python 모듈](src/xfolio/README.md) · [개발/실험 도구](scripts/README.md)
 
-## 2026-10-31 현재 개발 기준
+## 2026-10-31 이전 X 개발·실행 자산
 
 가격 입력은 **yfinance SPY·QQQ·DIA ETF**, 뉴스 입력은 **Exa + 기존 BLS CPI**입니다. ETF 전용 수집·AM 1~4글 저장·확인/승인 연결과 PM 신규 차단을 구현했습니다. 기존 두 지수 모델/CLI와 PM 자료는 이력 호환용으로 유지합니다. 기존 10기업 우선+시장·업종 중요 사건을 검토하고 Fed·BEA·SEC 자동 수집은 후속입니다. 공개 X 운영은 Yahoo/Exa·원매체 이용 조건 확인 후 시작합니다. [ETF 조사](docs/research/ETF_가격_데이터.md) · [뉴스 조사](docs/research/뉴스_수집.md)
 

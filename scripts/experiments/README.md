@@ -1,5 +1,7 @@
 # 조사·실험 스크립트
 
+- `kis_market_probe.py`: KIS 공개 마스터에서 국내 ETF3종목 코드/ISIN/명칭 검증. `uv run python scripts/experiments/kis_market_probe.py`. HTTPS 검증 유지·인증/주문 없음, 출력은 `tasks/verification/assets/market/kis_<UTC_시각>/selected_master.json`.
+
 제품의 정기 worker가 아닌 제한 표본 조사 도구다. 실행 완료·공급자 채택 여부는 [작업 문서](../../tasks/README.md)와 [조사 기준](../../docs/README.md)의 근거를 확인한다. 아래 파일은 재현 경로와 시험 import를 유지하기 위해 이동하지 않는다.
 
 | 주제 | 파일 |

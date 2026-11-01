@@ -8,7 +8,7 @@
 
 ## 프로젝트 구조
 
-- XFolio는 시장·뉴스 수집 → AI 분석·콘텐츠 생성 → X 게시를 목표로 하는 Python 3.12·`uv` 프로젝트입니다.
+- XFolio는 시장·뉴스 수집 → AI 분석·콘텐츠 생성 → 본인 Telegram 뉴스레터 자동 전달을 목표로 하는 Python 3.12·`uv` 프로젝트입니다.
 - `docs/프로젝트_개요.md`는 목적, `docs/요구사항.md`는 기능 범위, `docs/운영_정책.md`는 시각·한도·게시 정책, `docs/기술_구성.md`는 현재 기술 선택, `docs/스터디_일정.md`는 스터디 일정의 기준입니다. 설계 초안과 미결정 사항을 확정 요구사항처럼 다루지 마세요.
 - `pyproject.toml`·`uv.lock`은 루트, 애플리케이션 코드는 `src/xfolio/`, 테스트는 `tests/`, 대시보드는 `dashboard/`에 둡니다.
 - 2026-10-28 제품 목표는 React·TypeScript(`frontend/`) + FastAPI(`src/xfolio/api/`) + PostgreSQL + 별도 Python worker(`src/xfolio/jobs/`) + Docker/AWS입니다. 새 디렉터리·기능의 실제 구현 완료로 취급하지 마세요. `dashboard/`는 기존 Streamlit 가상 시험 자산입니다.
@@ -35,7 +35,7 @@
 - `docs/research/`: 주차별 폴더 대신 주제별로 기술·제공처·이용 조건·비용의 근거를 모읍니다. 같은 주제의 기준 문서는 하나만 두고 나머지는 링크로 연결합니다. 이전 기획·대체된 비교안은 `docs/archive/`에 현재 기준과 구별해 보존합니다.
 - `tasks/`: 현재 작업 계획은 `plans/`, 완료·대체된 계획은 `plans/archive/`, 구현 계약·시험 방법·관측 근거는 `verification/`, 실제 수행 결과는 `logs/YYYY-MM-DD_주제.md`, 발표 자료·대본은 `presentations/`, 질문·결정 과정은 `discussions/`에 둡니다. 구현·검증 전용 문서를 `docs/`에 새로 만들지 마세요. 문서명은 한글과 `_`를 사용하고 `tasks/README.md`에 링크를 유지합니다. GitHub Issues를 쓰면 업무 목록을 중복 관리하지 마세요.
 - `tasks/verification/`: 문서는 `market/`, `news/`, `admin/`, `ai/`, `integration/`의 해당 주제에 둡니다. 원본은 `assets/` 하위 주제 폴더에 보존하고 [목차](tasks/verification/README.md)로 연결합니다. 전체 폴더 역할은 [프로젝트 구조](docs/프로젝트_구조.md)를 따릅니다.
-- `src/xfolio/`: Market·News·분석/생성·Upload와 API/worker 경계를 분명히 하세요. 최신 확정은 **yfinance SPY·QQQ·DIA ETF + Exa + BLS CPI**, **08:00 ETF 종가·등락률 1글+뉴스 최대 3글**, 하루 최대 4글입니다. 오후 게시·정기 낮 감시는 범위에서 제거했습니다. M01/A01/A04에서 ETF 전용 수집·AM 4글 저장/승인·0002 migration·PM 신규 생성/승인 차단을 구현하고 격리 DB/브라우저에서 검증했습니다. `^GSPC`·`^NDX`와 PM은 legacy 이력·시험으로 보존하세요. 운영 DB 적용·허용 실자료 인수·worker/송신은 후속입니다. ETF 가격을 지수 포인트로 표시하지 마세요. 10기업 우선+목록 밖 중요 사건 허용, Fed·BEA·SEC 자동 수집은 후속이며 SEC 착수 전 법인명·CIK·표본을 대조합니다. 개발 채택·실측과 공개 허가·제품 구현을 구분하고 Yahoo/Exa·원매체 이용 범위를 확인하세요. 공수·일정은 WBS, 비용은 월 비용 문서가 기준입니다. AWS·Telegram 운영·실제 X는 후속이며 Windows는 개발용입니다.
+- `src/xfolio/`: Market·News·분석/생성·전송과 API/worker 경계를 분명히 하세요. 2026-11-01 확정 목표는 국내 상장 해외 ETF 기본 360750/379810/458730·활성 총10종목, Exa+BLS, 본인1:1 Telegram 자동 전송입니다. 월~금08:00 종가+뉴스최대3건, 한국 거래일14:00 가격,16:00 선택·기본꺼짐입니다. 관리자 종목/알림 설정·이력 조회를 구현하며 매회 사람 승인은 필수가 아닙니다. KIS는 공개 마스터 식별만 검증한 조건부 채택이고 계좌 있음/Open API 신청·인증 시세·이용 조건 인수 전입니다. 실제 국내 시세/새 UI/worker/송신은 아직 미구현입니다. 기존 미국 ETF·AM 승인·0002·PM 차단 코드/시험은 legacy 이력으로 보존하고 신규 슬롯 계약·migration·회귀로 이행하세요. 한국 거래일·KRW·가격 기준시각/조회시각·지연·분배락·원주가 기준은 운영 정책을 따르세요. 개인용도 제공처·원매체의 수집/AI 입력/보관/전달 허용을 확인해야 합니다. 공수는 T WBS, 비용은 새로 재산정하며 이전 X 견적을 사용하지 마세요. Windows는 개발용이며 AWS 운영은 별도 인수입니다.
 - `dashboard/`: 선택 의존성 `streamlit`을 사용합니다. 실행 명령은 `uv run --extra dashboard streamlit run dashboard/app.py`입니다.
 - `frontend/`: 새 React·TypeScript·Vite 관리자 계획입니다. 인증·승인·DB 검사는 FastAPI가 담당하고 브라우저에 공급자/DB/봇 비밀을 넣지 마세요. 실제 생성 시 package manifest·실행·build/검사 방법을 README에 기록하세요.
 - `tests/`: 기능을 구현할 때 외부 API에 의존하지 않는 검증을 추가하세요.
