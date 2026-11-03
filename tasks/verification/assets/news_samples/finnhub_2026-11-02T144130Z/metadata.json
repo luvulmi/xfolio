@@ -1,0 +1,38 @@
+{
+  "status": "ok",
+  "endpoint": "https://finnhub.io/api/v1/news",
+  "parameters": {
+    "category": "general",
+    "minId": 0
+  },
+  "http_status": 200,
+  "http_calls": 1,
+  "requested_at_utc": "2026-11-02T14:41:30.331920+00:00",
+  "received_at_utc": "2026-11-02T14:41:31.311088+00:00",
+  "observed_at_kst": "2026-11-02T23:41:31.311088+09:00",
+  "duration_seconds": 0.979,
+  "response_sha256": "e573a781cb26089bb6a65c6877872aaed1b5e9de4654ef80217b011d9f62831e",
+  "returned_count": 100,
+  "valid_timestamp_count": 100,
+  "invalid_row_or_timestamp_count": 0,
+  "future_timestamp_count": 0,
+  "invalid_url_count": 0,
+  "duplicate_id_count": 0,
+  "duplicate_url_count": 0,
+  "within_24h_of_query": 32,
+  "within_96h_of_query": 100,
+  "newest_published_at_utc": "2026-11-02T14:03:44+00:00",
+  "oldest_published_at_utc": "2026-10-30T07:25:07+00:00",
+  "source_hosts": {
+    "www.cnbc.com": 20,
+    "news.google.com": 80
+  },
+  "slot_0800_kst": "2026-11-02T08:00:00+09:00",
+  "returned_rows_published_after_0800": 26,
+  "returned_rows_in_0800_previous_24h": 15,
+  "returned_rows_in_0800_previous_96h": 74,
+  "historical_snapshot_verified": false,
+  "raw_response_or_article_text_saved": false,
+  "telegram_sent": false,
+  "retention_or_delivery_permission_verified": false
+}

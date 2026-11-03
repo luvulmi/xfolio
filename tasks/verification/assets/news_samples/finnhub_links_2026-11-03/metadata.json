@@ -1,0 +1,65 @@
+{
+  "requested_at_utc": "2026-11-03T13:00:34.966400+00:00",
+  "observed_at_utc": "2026-11-03T13:00:36.009740+00:00",
+  "completed_at_utc": "2026-11-03T13:00:36.592241+00:00",
+  "selection_as_of_utc": "2026-11-03T13:00:36.009740+00:00",
+  "api_calls": 1,
+  "http_status": 200,
+  "response_sha256": "3b0a2369ab92dee8e8e1f3fb07d130c9c034264beaa125c2b8b3aa0b485dfc7d",
+  "returned_count": 100,
+  "candidate_count": 9,
+  "rejections": {
+    "no_explicit_us_relevance": 80,
+    "excluded_opinion_or_crypto": 10,
+    "unsupported_source_or_url": 1
+  },
+  "selection_rejections": {},
+  "head_calls": 2,
+  "links": [
+    {
+      "id": 8712147,
+      "source": "CNBC",
+      "input_host": "www.cnbc.com",
+      "status": "provider_direct_url",
+      "head_calls": 0,
+      "article_availability_verified": false,
+      "selected_for_development": true
+    },
+    {
+      "id": 8710980,
+      "source": "Reuters",
+      "input_host": "news.google.com",
+      "status": "google_interstitial",
+      "head_calls": 2,
+      "article_availability_verified": false,
+      "selected_for_development": false
+    },
+    {
+      "id": 8711622,
+      "source": "CNBC",
+      "input_host": "www.cnbc.com",
+      "status": "provider_direct_url",
+      "head_calls": 0,
+      "article_availability_verified": false,
+      "selected_for_development": true
+    },
+    {
+      "id": 8711518,
+      "source": "CNBC",
+      "input_host": "www.cnbc.com",
+      "status": "provider_direct_url",
+      "head_calls": 0,
+      "article_availability_verified": false,
+      "selected_for_development": true
+    }
+  ],
+  "development_selected_ids": [
+    8712147,
+    8711622,
+    8711518
+  ],
+  "raw_content_saved": false,
+  "telegram_sent": false,
+  "permission_verified": false,
+  "permission_verification_scope": "no_individual_provider_reply"
+}
