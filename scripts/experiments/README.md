@@ -1,6 +1,8 @@
 # 조사·실험 스크립트
 
 - `kis_market_probe.py`: KIS 공개 마스터에서 국내 ETF3종목 코드/ISIN/명칭 검증. `uv run python scripts/experiments/kis_market_probe.py`. HTTPS 검증 유지·인증/주문 없음, 출력은 `tasks/verification/assets/market/kis_<UTC_시각>/selected_master.json`.
+- `finnhub_news_probe.py`: 미국 관련 제목·중복·원문 주소 검증. `uv run python scripts/experiments/finnhub_news_probe.py --live --output tasks/verification/assets/news_samples/새_관측/metadata.json`. `.env`의 `FINNHUB_API_KEY`로 API1회·Google 정상 HEAD 최대12회. 공급자가 제공한 직접 개별 기사주소는 HEAD 성공 없이 인정하고 열람 가능 여부는 미검증으로 표시한다. 원시 응답/기사 본문/제목/URL/키 저장·Telegram 송신 없음. CNBC/Reuters만 지원하는 개발 시험이며 운영 어댑터가 아니다. [검증·한계](../../tasks/verification/news/Finnhub_시장뉴스_표본과_개인_전달.md).
+- `finnhub_slot_probe.py`: 평일08:00 KST 1회 관측. `uv run python scripts/experiments/finnhub_slot_probe.py --slot 2026-11-04T08:00:00+09:00 --output tasks/verification/assets/news_samples/finnhub_slot_2026-11-04_0800/metadata.json`은 무통신 계획만 출력한다. 예약 시에만 `--live`를 붙인다. 슬롯 전 최대90초 대기, 실제 API 요청 시작08:00:00~08:00:59만 정시 인정, 지각은 무통신 누락 기록. 결과/claim 존재 시 재조회하지 않는다. 요청·수신·발행시각을 구분하고 원문 열람/Telegram 수신 성공으로 확대하지 않는다.
 
 제품의 정기 worker가 아닌 제한 표본 조사 도구다. 실행 완료·공급자 채택 여부는 [작업 문서](../../tasks/README.md)와 [조사 기준](../../docs/README.md)의 근거를 확인한다. 아래 파일은 재현 경로와 시험 import를 유지하기 위해 이동하지 않는다.
 

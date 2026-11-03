@@ -1,10 +1,28 @@
 # XFolio
 
-XFolio는 국내 상장 해외 ETF와 미국 시장 뉴스를 정리해 본인 Telegram으로 자동 전달하는 개인용 뉴스레터 프로젝트입니다. 기본3종목·활성총10종목, 월~금08:00·한국 거래일14:00 기본,16:00 선택입니다. [현재 요구사항](docs/요구사항.md) · [관리자 화면](docs/specifications/관리자_화면_구조.md) · [새 WBS](docs/planning/작업_분해_WBS.md)
+XFolio는 국내 상장 해외 ETF와 미국 공식 경제·정책 발표를 정리해 본인 Telegram으로 자동 전달하는 개인용 뉴스레터 프로젝트입니다. 기본3종목·활성총10종목, **월~금08:00 아침1회**가 기본 목표입니다. 한국 거래일14:00·16:00 알림은 모두 선택 기능이며 기본 꺼짐입니다. [프로젝트 기획서](docs/프로젝트_기획서.md) · [현재 요구사항](docs/요구사항.md) · [관리자 화면](docs/specifications/관리자_화면_구조.md) · [새 WBS](docs/planning/작업_분해_WBS.md)
 
-2026-11-01 기준 새 국내 시세·종목/알림 관리·Telegram worker는 구현 전입니다. KIS 공개 마스터3종목 식별을 확인했고, 계좌는 있으나 Open API 신청 및 인증 시세·이용 조건 인수는 대기입니다. [검증 결과](tasks/verification/market/국내_ETF_API_표본_검증.md)
+2026-11-03 현재 뉴스 범위는 일반 뉴스 제목·링크 + BLS·BEA·Federal Reserve Board 자체 발표 AI 요약입니다. 일반 뉴스는 Finnhub Free general을 본인 개인용으로 채택했으며 별도 이메일 확인 없이 개인 이용 기준을 적용하고 운영 기술 검증을 진행합니다. 공식 발표는 직접 수집하고 Exa는 초기 필수 경로에서 제외합니다. 관리자는 AWS Lightsail + Tailscale로 본인 PC·휴대폰에만 제공합니다. 새 국내 시세·종목/알림·공식 발표 확장·Telegram worker·비공개 배포는 구현/인수 전입니다. KIS 공개 마스터3종목 식별을 확인했고, Open API 신청과 발급정보의 로컬 `.env` 등록은 완료했습니다(11/3 사용자 확인). 인증 시세·이용 조건 인수는 대기입니다. [검증 결과](tasks/verification/market/국내_ETF_API_표본_검증.md)
 
 아래 설명과 실행 예시는 **기존 X/미국 ETF 구현·시험 자산**입니다. 새 제품의 현재 요구사항으로 사용하지 않습니다. 국내 종목 식별 확인 도구는 `uv run python scripts/experiments/kis_market_probe.py`이며 가격·계좌·주문 API는 호출하지 않습니다.
+
+Finnhub Free 시장뉴스는 **본인 개인용 채택**입니다. 본인 키로 11/2 23:54 KST 재조회100건→미국 관련 제목 후보5건→원매체 HEAD 확인 통과0건을 관측했습니다. 필터/중복/경유 처리는 개발용 시험과 무통신 테스트로 검증했고 정기 worker는 미연결입니다. 실제08:00 확보·개인 이용 기준은 확정했고 실제08시/원문 링크·worker/송신은 기술 인수 전입니다. 루트 `.env`의 `FINNHUB_API_KEY` 값은 공유하지 않습니다. [실측·재현·미확인 조건](tasks/verification/news/Finnhub_시장뉴스_표본과_개인_전달.md)
+
+## 현재 환경 변수와 KIS 준비
+
+루트 `.env.example`은 현재 뉴스레터 기준입니다. 실제 값은 Git에서 제외한 `.env`에 입력하고 기존 파일을 예시로 덮어쓰지 않습니다. OpenAI·Finnhub·Telegram과 관리자 로그인/API DB·마이그레이션·격리 시험 설정을 유지합니다. 모델 선택은 코드의 기본값/실행 옵션을 사용하므로 `OPENAI_MODEL`은 사용하지 않습니다.
+
+KIS 신청·발급정보의 로컬 등록은 완료했습니다. 아래는 설정 이름을 보여주는 예시입니다. 시세 어댑터·토큰 발급/캐시·인증 조회는 후속 검증/구현 대상입니다.
+
+```dotenv
+KIS_APP_KEY=
+KIS_APP_SECRET=
+KIS_BASE_URL=https://openapi.koreainvestment.com:9443
+```
+
+[KIS 공식 설정 예제](https://github.com/koreainvestment/open-trading-api/blob/main/kis_devlp.yaml)와 [공식 현재가 REST 예제](https://github.com/koreainvestment/open-trading-api/blob/main/legacy/rest/current_price_samle.py)의 앱 키/시크릿·실전 주소를 기준으로 이름을 정했습니다. 현재가 조회 준비에 계좌번호·HTS ID는 추가하지 않습니다. 만료되는 access token은 `.env`의 고정 입력값으로 두지 않고 후속 어댑터에서 발급·만료 관리를 구현합니다. 모의투자 키를 위 실전 주소와 섞지 않습니다. 주문 API는 사용하지 않습니다.
+
+현재 사용하지 않는 X 인증4개·`EXA_API_KEY`·`MARKETAUX_API_TOKEN`·`MARKETNEWSAPI_KEY`·`OPENAI_MODEL`·이전 미리보기용 `XFOLIO_DATABASE_URL`은 기본 설정에서 제거했습니다. 이전 실험/Streamlit 코드는 보존했으므로 이를 별도 실행할 때만 해당 이전 변수를 실행 환경에 직접 지정합니다. API DB를 이전 preview DB로 대체하지 않습니다. [이전 X 설정](docs/research/X_게시_API.md) · [개발 도구](scripts/dev/README.md).
 
 이전 XFolio는 미국 시장 수집→AI 생성→검토·버전 승인→정시 X 게시→장애 알림을 연결하는 풀스택 포트폴리오입니다. **08:00(KST)에 SPY·QQQ·DIA ETF 종가·등락률 1글+주요 뉴스 최대 3글**, 하루 최대 4글을 게시하는 비상업 정보 공유 프로젝트입니다. [요구사항](docs/요구사항.md) · [개발 일정](docs/planning/작업_분해_WBS.md)
 
@@ -86,32 +104,9 @@ OpenAPI 산출물은 [contracts/openapi.json](contracts/openapi.json), 동작 �
 
 뉴스 정책 회귀 시험은 `uv run pytest tests/test_news_selection.py`로 실행합니다. 중요성/관련성/새 사실 판단은 근거를 검토한 입력을 요구하며 이 구현이 원문에서 의미를 자동 추출한 결과라고 보지 않습니다. PostgreSQL 시험에는 일회용 DB의 `XFOLIO_TEST_DATABASE_URL`을 별도로 명시합니다. 미설정 시 관련 통합 시험은 건너뛰고 메모리 시험과 구분합니다.
 
-## X 인증 환경 설정 준비
+## 이전 X 인증 설정
 
-게시 계정은 `@ringXFolioBot`입니다. OAuth 1.0a 소비자 키와 사용자 토큰을 루트 `.env`에 아래 이름으로 저장합니다. 기존 `.env`를 `.env.example`로 덮어쓰지 말고, 같은 이름이 이미 있으면 해당 줄을 수정합니다. 실제 값은 채팅·Git·프론트엔드에 넣지 않습니다.
-
-```dotenv
-X_API_KEY=소비자_키
-X_API_KEY_SECRET=소비자_키_시크릿
-X_ACCESS_TOKEN=액세스_토큰
-X_ACCESS_TOKEN_SECRET=액세스_토큰_시크릿
-```
-
-위 오른쪽은 설명용 자리표시자이므로 실제 보관한 값으로 바꿉니다. `XFOLIO_MODE=dry_run`은 유지합니다. `.env`는 Git 제외 대상이며, 환경 변수는 프로세스를 시작할 때 전달됩니다. 변경 후 기존 실행 프로세스를 재시작해야 합니다.
-
-값을 출력하지 않고 4개 환경 변수의 비어 있지 않음만 확인합니다. 자리표시자·유효성·권한·계정 일치·API 인증 성공은 검사하지 않으며 외부 요청은 없습니다.
-
-```powershell
-uv run --env-file .env python -c "import os; names=('X_API_KEY','X_API_KEY_SECRET','X_ACCESS_TOKEN','X_ACCESS_TOKEN_SECRET'); missing=[n for n in names if not os.environ.get(n,'').strip()]; print('MISSING: '+', '.join(missing) if missing else 'X_ENV_READY (presence only)'); raise SystemExit(bool(missing))"
-```
-
-기존 FastAPI 실행에 환경 파일을 명시하는 예시는 아래와 같습니다. 로컬 HTTPS 개발 도구를 사용하는 경우 기존 실행 흐름을 유지하고 서버 프로세스가 동일한 환경을 받도록 합니다.
-
-```powershell
-uv run --env-file .env uvicorn xfolio.api.app:app --host 127.0.0.1 --port 8000
-```
-
-현재 X 전송 어댑터와 worker는 미구현입니다. 위 명령은 서버 환경에 값을 전달할 뿐, 실제 X 인증·게시를 실행하지 않습니다. AWS 서버에 배포한 상태도 아닙니다. [콘솔 설정·요금 가이드](docs/research/X_게시_API.md)
+현재 뉴스레터에서는 X를 사용하지 않아 X 인증 환경 변수를 기본 설정에서 제거했습니다. 이전 설정/요금 조사 이력은 [X 게시 API](docs/research/X_게시_API.md)에 보존합니다. 현재 서버 실행은 위 관리자 절차를 따르고 `XFOLIO_MODE=dry_run`을 유지합니다.
 
 ## Telegram 알림 환경 설정 준비
 
