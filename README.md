@@ -2,7 +2,7 @@
 
 XFolio는 국내 상장 해외 ETF와 미국 공식 경제·정책 발표를 정리해 본인 Telegram으로 자동 전달하는 개인용 뉴스레터 프로젝트입니다. 기본3종목·활성총10종목, **월~금08:00 아침1회**가 기본 목표입니다. 한국 거래일14:00·16:00 알림은 모두 선택 기능이며 기본 꺼짐입니다. [프로젝트 기획서](docs/프로젝트_기획서.md) · [현재 요구사항](docs/요구사항.md) · [관리자 화면](docs/specifications/관리자_화면_구조.md) · [새 WBS](docs/planning/작업_분해_WBS.md)
 
-2026-11-03 현재 뉴스 범위는 일반 뉴스 제목·링크 + BLS·BEA·Federal Reserve Board 자체 발표 AI 요약입니다. 일반 뉴스는 Finnhub Free general을 본인 개인용으로 채택했으며 별도 이메일 확인 없이 개인 이용 기준을 적용하고 운영 기술 검증을 진행합니다. 공식 발표는 직접 수집하고 Exa는 초기 필수 경로에서 제외합니다. 관리자는 AWS Lightsail + Tailscale로 본인 PC·휴대폰에만 제공합니다. 새 국내 시세 어댑터·종목/알림·공식 발표 확장·Telegram worker·비공개 배포는 구현/인수 전입니다. KIS는11/3 실전 인증·기본3종목의11/2·11/3 비수정 종가와 주말 휴장 응답을 확인했습니다. 본인 AWS/비공개 관리자·본인1명 Telegram 경유·가격30일 보관은11/3 사용자 결정으로 허용해 T01 완료로 인수했습니다. 공급자 별도 명시 허가 취득과 구분합니다. [검증·T02 계약](tasks/verification/market/국내_ETF_API_표본_검증.md)
+2026-11-03 현재 뉴스 범위는 일반 뉴스 제목·링크 + BLS·BEA·Federal Reserve Board 자체 발표 AI 요약입니다. 일반 뉴스는 Finnhub Free general을 본인 개인용으로 채택했으며 별도 이메일 확인 없이 개인 이용 기준을 적용하고 운영 기술 검증을 진행합니다. 공식 발표는 직접 수집하고 Exa는 초기 필수 경로에서 제외합니다. 관리자는 AWS Lightsail + Tailscale로 본인 PC·휴대폰에만 제공합니다. 국내 시세 어댑터·거래일·종목/가격 DB는 T02에서 구현·격리 검증했고 관리자 UI/알림·공식 발표 확장·Telegram worker·비공개 배포는 후속입니다. KIS는11/3 실전 인증·기본3종목의11/2·11/3 비수정 종가와 주말 휴장 응답을 확인했습니다. 본인 AWS/비공개 관리자·본인1명 Telegram 경유·가격90일 보관은11/3 사용자 결정으로 허용해 T01 완료로 인수했습니다. 공급자 별도 명시 허가 취득과 구분합니다. [검증·T02 계약](tasks/verification/market/국내_ETF_API_표본_검증.md)
 
 아래 설명과 실행 예시는 **기존 X/미국 ETF 구현·시험 자산**입니다. 새 제품의 현재 요구사항으로 사용하지 않습니다. KIS 도구의 기본 실행 `uv run python scripts/experiments/kis_market_probe.py`는 기존 공개 마스터 식별 전용입니다. 인증 종가 모드는 아래처럼 명시적으로 선택합니다.
 
@@ -10,9 +10,26 @@ Finnhub Free 시장뉴스는 **본인 개인용 채택**입니다. 본인 키로
 
 ## 현재 환경 변수와 KIS 준비
 
+T02 국내 시세 어댑터·거래일·종목/가격 DB를 구현했습니다. 가격 보존은 사용자 확정 **90일**입니다. [구현/검증 계약](tasks/verification/market/국내_시세_어댑터와_종목_DB.md) · [작업 계획](tasks/plans/국내_시세와_종목_DB.md). 실제 worker/Telegram·AWS 운영은 후속입니다.
+
+```powershell
+# 기본은 무통신·DB 쓰기 없음
+uv run xfolio domestic-close
+uv run xfolio domestic-catalogue
+uv run xfolio domestic-prune
+# 공식 실전 인증·휴장일·완료2일 원종가 조회 (.env는 KIS3개만 읽음)
+uv run xfolio domestic-close --run
+# 공개 KOSPI 마스터 수집/검색 (인증 키 불필요)
+uv run xfolio domestic-catalogue --run --query 360750
+```
+
+저장은 먼저 격리/운영 대상 DB에0003 migration을 적용한 뒤 실행 환경에 `XFOLIO_API_DATABASE_URL`을 명시하고 `--run --save`를 붙입니다. DB URL은 명령행에 직접 쓰지 않으며 KIS용 `--env-file`이 DB 설정까지 자동 로드하지 않습니다. `uv run xfolio domestic-prune --run`은 이 명시 DB의 만료 국내 가격만 삭제합니다. 운영 대상에서 실행하는 작업은 별도 운영 인수 절차를 따릅니다. CLI는 DDL·주문·송신을 수행하지 않습니다. 새 의존성/비밀 설정은 없고 기존 HTTPX·pandas-market-calendars·SQLAlchemy/psycopg·dotenv를 사용합니다.
+
+기본3종목 외 검색 후보는 지원 해외 ETF임을 별도 근거로 확인해야 활성화할 수 있습니다. 목록 변경/순서/revision·활성10개 한도는 서버 저장 서비스와 DB가 보장하며 관리자 UI/API는 T05입니다. 가격은 일봉 실제 시각 미제공과 달력 마감/조회시각을 구분하고, 분할/원주가 비교 미확인은 등락률을 보류합니다. 상세 조건은 위 검증 계약을 따릅니다.
+
 루트 `.env.example`은 현재 뉴스레터 기준입니다. 실제 값은 Git에서 제외한 `.env`에 입력하고 기존 파일을 예시로 덮어쓰지 않습니다. OpenAI·Finnhub·Telegram과 관리자 로그인/API DB·마이그레이션·격리 시험 설정을 유지합니다. 모델 선택은 코드의 기본값/실행 옵션을 사용하므로 `OPENAI_MODEL`은 사용하지 않습니다.
 
-KIS 신청·발급정보의 로컬 등록과11/3 인증 종가 표본 검증은 완료했습니다. 아래는 설정 이름을 보여주는 예시입니다. 제품 시세 어댑터·토큰 캐시/만료·DB 연결은 T02 후속입니다.
+KIS 신청·발급정보의 로컬 등록과11/3 인증 종가 표본 검증은 완료했습니다. 아래는 설정 이름을 보여주는 예시입니다. 제품 시세 어댑터·토큰 메모리 캐시/만료·DB 연결은 T02 구현·격리 검증 완료입니다.
 
 ```dotenv
 KIS_APP_KEY=
@@ -20,7 +37,7 @@ KIS_APP_SECRET=
 KIS_BASE_URL=https://openapi.koreainvestment.com:9443
 ```
 
-[KIS 공식 설정 예제](https://github.com/koreainvestment/open-trading-api/blob/main/kis_devlp.yaml)와 [공식 현재가 REST 예제](https://github.com/koreainvestment/open-trading-api/blob/main/legacy/rest/current_price_samle.py)의 앱 키/시크릿·실전 주소를 기준으로 이름을 정했습니다. 현재가 조회 준비에 계좌번호·HTS ID는 추가하지 않습니다. 만료되는 access token은 `.env`의 고정 입력값으로 두지 않고 후속 어댑터에서 발급·만료 관리를 구현합니다. 모의투자 키를 위 실전 주소와 섞지 않습니다. 주문 API는 사용하지 않습니다.
+[KIS 공식 설정 예제](https://github.com/koreainvestment/open-trading-api/blob/main/kis_devlp.yaml)와 [공식 현재가 REST 예제](https://github.com/koreainvestment/open-trading-api/blob/main/legacy/rest/current_price_samle.py)의 앱 키/시크릿·실전 주소를 기준으로 이름을 정했습니다. 현재가 조회 준비에 계좌번호·HTS ID는 추가하지 않습니다. 만료되는 access token은 `.env`의 고정 입력값으로 두지 않고 T02 어댑터가 메모리로 발급·만료 관리합니다. 모의투자 키를 위 실전 주소와 섞지 않습니다. 주문 API는 사용하지 않습니다.
 
 ```powershell
 # 무통신: 루트 .env의 KIS 설정 존재와 공식 실전 주소 일치만 확인

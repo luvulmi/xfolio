@@ -5,6 +5,7 @@
 | 경계 | 현재 파일 | 역할 |
 | --- | --- | --- |
 | 실행 진입 | `cli.py`, `__main__.py` | CLI 상태·조회·미리보기·시험 명령 |
+| 국내 시장 | `domestic/`, `db/domestic.py` | KIS 원종가/토큰·거래일·마스터/검색·종목/버전·90일 DB, 관리자 라우트/worker는 후속 |
 | 시장 수집 | `etf.py`, `market.py`, `models.py` | 제품 SPY/QQQ/DIA USD Close·배당/분할·수정치와 legacy 두 지수 모델 |
 | 뉴스 수집 | `news.py`, `news_models.py`, `news_queries.py`, `bls.py` | 기존 Marketaux 수집 실험과 BLS CPI 근거 파서 |
 | 공통 뉴스 입력 | `news_input.py`, `exa.py`, `bls_input.py` | Exa/BLS 출처·시각·본문·권리·개정·수집 상태와 수집기. MockTransport 인수, 허용 실호출 검증 후속 |

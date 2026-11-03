@@ -1,0 +1,51 @@
+{
+  "kind": "public_master_identity_and_search",
+  "source": "https://new.real.download.dws.co.kr/common/master/kospi_code.mst.zip",
+  "capture_finished_at_from_file_mtime": "2026-11-03T14:29:54.576161+00:00",
+  "validated_at": "2026-11-03T14:33:04.195118+00:00",
+  "sha256": "1c3408e1bf7c7543515a733e9c7403a0e4862c8adddb8b298b2e52252d6b19e8",
+  "all_rows": 2580,
+  "supported_six_digit_rows": 1772,
+  "excluded_other_identifiers": 808,
+  "public_fetches": 2,
+  "authenticated_quote_requests": 0,
+  "selected_defaults": [
+    {
+      "code": "360750",
+      "isin": "KR7360750004",
+      "name": "TIGER 미국S&P500",
+      "market": "KRX",
+      "currency": "KRW",
+      "master_source": "https://new.real.download.dws.co.kr/common/master/kospi_code.mst.zip",
+      "retrieved_at": "2026-11-03T14:29:54.576161Z",
+      "eligible": true,
+      "eligibility_basis": "user_confirmed_default_scope:T01:2026-11-03"
+    },
+    {
+      "code": "379810",
+      "isin": "KR7379810005",
+      "name": "KODEX 미국나스닥100",
+      "market": "KRX",
+      "currency": "KRW",
+      "master_source": "https://new.real.download.dws.co.kr/common/master/kospi_code.mst.zip",
+      "retrieved_at": "2026-11-03T14:29:54.576161Z",
+      "eligible": true,
+      "eligibility_basis": "user_confirmed_default_scope:T01:2026-11-03"
+    },
+    {
+      "code": "458730",
+      "isin": "KR7458730009",
+      "name": "TIGER 미국배당다우존스",
+      "market": "KRX",
+      "currency": "KRW",
+      "master_source": "https://new.real.download.dws.co.kr/common/master/kospi_code.mst.zip",
+      "retrieved_at": "2026-11-03T14:29:54.576161Z",
+      "eligible": true,
+      "eligibility_basis": "user_confirmed_default_scope:T01:2026-11-03"
+    }
+  ],
+  "search_360750": [
+    "360750"
+  ],
+  "full_zip_committed": false
+}

@@ -1,12 +1,45 @@
 # 데이터 모델과 ERD
 
-> 2026-11-01 전환 안내: 아래 API/ERD/시퀀스/입력 상세는 이전 X·수동 승인 구현 계약이다. 현재 목표는 [요구사항](../요구사항.md)·[관리자 화면](관리자_화면_구조.md)이며, 새 국내 종목/슬롯/자동 Telegram 계약은 T02/T05/T06에서 개정한다. 기존 명세만으로 새 기능 구현 완료를 판단하지 않는다.
+> 2026-11-03: 국내 종목/가격은 아래 T02 절의 신규7테이블을 구현·격리 검증했다. 나머지 기존8테이블/AM 승인 설명은 이전 X 계약이다. 슬롯/자동 Telegram·관리자 라우트는 T05/T06 후속이며 [현재 요구사항](../요구사항.md)을 따른다.
 
-> 입력·편성의 단일 기준은 [현재 요구사항](../요구사항.md)이다. 현재 목표는 AM 최대 4글이며 기존 코드·OpenAPI·PM 이력/시험과 구분한다.
-- 기준: 2026-10-31, Asia/Seoul
-- 상태: **현행 물리 모델 대조 + 1단계 논리 계약**. 운영 DB에 migration을 적용한 결과가 아니다.
-- 기준 소스: [schema.py](../../src/xfolio/db/schema.py) · [0001 migration](../../migrations/versions/0001_operational_schema.py) · [API store](../../src/xfolio/api/store.py)
+> 입력·편성의 단일 기준은 [현재 요구사항](../요구사항.md)이다. 아래 AM 최대4글·기존 OpenAPI/PM 이력은 현재 자동 뉴스레터와 구분한다.
+- 기준: 국내 T02는2026-11-03, 기존8개/논리 계약은2026-10-31, Asia/Seoul
+- 상태: **국내7개 추가·격리 검증 + 기존8개 물리 모델/논리 계약 보존**. 운영 DB에 migration을 적용한 결과가 아니다.
+- 기존8개 기준 소스: [schema.py](../../src/xfolio/db/schema.py) · [0001 migration](../../migrations/versions/0001_operational_schema.py) · [API store](../../src/xfolio/api/store.py)
 - 연결: [API](API_명세서.md) · [뉴스 입력/검증](뉴스_입력과_검증_책임.md) · [WBS](../planning/작업_분해_WBS.md)
+
+## T02 국내 시장 물리 모델 · 7개 테이블
+
+- 11/3 구현·격리 PostgreSQL 검증: [국내 metadata](../../src/xfolio/db/domestic.py) · [0003 migration](../../migrations/versions/0003_domestic_market.py) · [정확한 계약·시험](../../tasks/verification/market/국내_시세_어댑터와_종목_DB.md).
+- 기존8개와 신규7개를 합쳐15개 물리 테이블이다. 신규 metadata는 별도이며 기존0001/0002 DDL·AM/PM 행을 바꾸지 않는다. 운영 DB 적용 결과가 아니다.
+
+```mermaid
+erDiagram
+    domestic_instruments ||--o{ domestic_price_snapshots : code
+    domestic_watchlist_versions ||--o{ domestic_market_runs : watchlist_revision
+    domestic_market_runs ||--o{ domestic_price_snapshots : run_id
+    domestic_price_snapshots |o--o{ domestic_price_snapshots : supersedes_nullable
+    domestic_watchlist {
+        integer id PK
+        integer revision
+        jsonb codes
+    }
+    domestic_calendar_requests {
+        date observed_on PK
+        text status
+    }
+    domestic_calendar_days {
+        date observed_on PK
+        date trade_date PK
+        boolean is_open
+    }
+```
+
+관심목록의 순서는 `codes` 배열에 저장하고 row lock·revision/CAS·DB trigger로 중복/미검증 코드·11번째 활성화를 막는다. 관심목록 revision 이력은 trigger가 생성한다. 개장일 캐시의 두 테이블은 관측일 기준의 점유/상세이며 diagram에 없는 FK를 가정하지 않는다.
+
+수집 run은 매회 조회시각·종목 순서·재사용 가격 ID를 `observations` JSON에 남긴다. 가격을 복제하지 않는 논리 참조이며 SQL FK는 아니다. 가격 만료 후에도 이 메타데이터는 남는다.
+
+가격은 KRW·비수정 종가이고 종목/거래일/버전이 유일하다. 내용이 같은 재조회는 가격 행/만료를 늘리지 않으며 정정은 새 버전이다. **최초 저장시각+2160시간(90일)** 만료를 DB에서 강제하고 조회 차단·삭제한다. payload 가격도 같은 행에서 삭제한다. 가격 없는 수집/설정 감사와 구분하며 편성/송신 payload로 복제할 때도90일 계약을 전달한다. 정기 삭제/복원·worker 인수는 후속이다.
 
 ## 읽는 순서와 상태
 

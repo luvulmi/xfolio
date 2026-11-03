@@ -8,6 +8,8 @@ Alembic으로 PostgreSQL 운영 schema의 변경 순서를 관리한다.
 | `versions/0001_operational_schema.py` | 초기 운영 schema migration |
 | `schema_0001.py` | 0001 당시 8테이블 DDL 고정 snapshot. 현재 metadata와 분리 |
 | `versions/0002_am_four_posts.py` | reserved_count 0~4·post position 1~4 전환 |
+| `versions/0003_domestic_market.py` · `schema_0003.py` | 국내 종목·관심목록/버전·휴장일 일일 점유/캐시·수집·원종가90일의 신규7테이블/trigger, 고정 DDL |
+| [domestic.py](../src/xfolio/db/domestic.py) | 국내 시장 전용 metadata. legacy8테이블과 분리하며 env.py에서 함께 연결 |
 | [schema.py](../src/xfolio/db/schema.py) | 애플리케이션의 현재 테이블 정의 |
 
 실제 실행 절차는 [루트 README](../README.md)를 따른다. `XFOLIO_MIGRATION_DATABASE_URL` 또는 명시적 연결을 사용하며 `.env`와 기존 미리보기 DB 설정을 자동으로 읽지 않는다. migration 파일이 있다는 사실이 특정 DB에 적용되었다는 뜻은 아니다.

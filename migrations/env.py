@@ -5,19 +5,22 @@ import os
 from alembic import context
 from sqlalchemy import create_engine
 
+from xfolio.db.domestic import metadata as domestic_metadata
 from xfolio.db.schema import metadata
+
+all_metadata = [metadata, domestic_metadata]
 
 connection = context.config.attributes.get("connection")
 url = os.environ.get("XFOLIO_MIGRATION_DATABASE_URL", "")
 if connection is not None:
-    context.configure(connection=connection, target_metadata=metadata)
+    context.configure(connection=connection, target_metadata=all_metadata)
     with context.begin_transaction():
         context.run_migrations()
 elif context.is_offline_mode():
     if not url.startswith(("postgresql://", "postgresql+psycopg://")):
         raise ValueError("XFOLIO_MIGRATION_DATABASE_URL PostgreSQL URL required")
     url = url.replace("postgresql://", "postgresql+psycopg://", 1)
-    context.configure(url=url, target_metadata=metadata, literal_binds=True)
+    context.configure(url=url, target_metadata=all_metadata, literal_binds=True)
     with context.begin_transaction():
         context.run_migrations()
 else:
@@ -25,6 +28,6 @@ else:
         raise ValueError("XFOLIO_MIGRATION_DATABASE_URL PostgreSQL URL required")
     url = url.replace("postgresql://", "postgresql+psycopg://", 1)
     with create_engine(url, hide_parameters=True).connect() as connection:
-        context.configure(connection=connection, target_metadata=metadata)
+        context.configure(connection=connection, target_metadata=all_metadata)
         with context.begin_transaction():
             context.run_migrations()

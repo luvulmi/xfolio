@@ -28,6 +28,20 @@ def main(argv: Sequence[str] | None = None) -> None:
     parser = argparse.ArgumentParser(description="XFolio 개발용 명령")
     commands = parser.add_subparsers(dest="command", required=True)
     commands.add_parser("status", help="현재 구현 상태 확인")
+    for command, help_text in (
+        ("domestic-close", "국내 ETF 완료2거래일 원종가·기본 무통신"),
+        ("domestic-catalogue", "KIS 공개 종목 마스터 수집/검색·기본 무통신"),
+        ("domestic-prune", "만료90일 국내 가격 삭제·기본 무통신"),
+    ):
+        domestic = commands.add_parser(command, help=help_text)
+        domestic.add_argument("--run", action="store_true")
+        domestic.add_argument(
+            "--save",
+            action="store_true",
+            help="명시된 API DB에 저장(미리 migration 필요)",
+        )
+        domestic.add_argument("--env-file", type=Path, default=Path(".env"))
+        domestic.add_argument("--query", default="")
     market = commands.add_parser("market-close", help="두 지수의 완료 거래일 종가 조회")
     market.add_argument(
         "--json", action="store_true", help="공통 출력 모델을 JSON으로 표시"
@@ -66,10 +80,16 @@ def main(argv: Sequence[str] | None = None) -> None:
     ai.add_argument("--model", choices=tuple(MODEL_PRICES), default=DEFAULT_MODEL)
     args = parser.parse_args(argv)
 
+    if args.command.startswith("domestic-"):
+        from xfolio.domestic.cli import execute
+
+        execute(args)
+        return
     if args.command == "status":
         print(
             "ETF·Exa/BLS 공통 입력·AM 4글 저장/승인·PM 신규 차단: 구현·격리 검증됨. "
             "지수·CPI PM 이력과 가상 미리보기: 보존. "
+            "국내 KIS 원종가·거래일·종목/90일 가격 DB: T02 구현. "
             "허용 실자료 인수·일반 기사 AI·worker/X·Telegram·AWS 운영: 후속."
         )
     elif args.command == "bls-check":
