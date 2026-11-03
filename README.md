@@ -2,9 +2,9 @@
 
 XFolio는 국내 상장 해외 ETF와 미국 공식 경제·정책 발표를 정리해 본인 Telegram으로 자동 전달하는 개인용 뉴스레터 프로젝트입니다. 기본3종목·활성총10종목, **월~금08:00 아침1회**가 기본 목표입니다. 한국 거래일14:00·16:00 알림은 모두 선택 기능이며 기본 꺼짐입니다. [프로젝트 기획서](docs/프로젝트_기획서.md) · [현재 요구사항](docs/요구사항.md) · [관리자 화면](docs/specifications/관리자_화면_구조.md) · [새 WBS](docs/planning/작업_분해_WBS.md)
 
-2026-11-03 현재 뉴스 범위는 일반 뉴스 제목·링크 + BLS·BEA·Federal Reserve Board 자체 발표 AI 요약입니다. 일반 뉴스는 Finnhub Free general을 본인 개인용으로 채택했으며 별도 이메일 확인 없이 개인 이용 기준을 적용하고 운영 기술 검증을 진행합니다. 공식 발표는 직접 수집하고 Exa는 초기 필수 경로에서 제외합니다. 관리자는 AWS Lightsail + Tailscale로 본인 PC·휴대폰에만 제공합니다. 새 국내 시세·종목/알림·공식 발표 확장·Telegram worker·비공개 배포는 구현/인수 전입니다. KIS 공개 마스터3종목 식별을 확인했고, Open API 신청과 발급정보의 로컬 `.env` 등록은 완료했습니다(11/3 사용자 확인). 인증 시세·이용 조건 인수는 대기입니다. [검증 결과](tasks/verification/market/국내_ETF_API_표본_검증.md)
+2026-11-03 현재 뉴스 범위는 일반 뉴스 제목·링크 + BLS·BEA·Federal Reserve Board 자체 발표 AI 요약입니다. 일반 뉴스는 Finnhub Free general을 본인 개인용으로 채택했으며 별도 이메일 확인 없이 개인 이용 기준을 적용하고 운영 기술 검증을 진행합니다. 공식 발표는 직접 수집하고 Exa는 초기 필수 경로에서 제외합니다. 관리자는 AWS Lightsail + Tailscale로 본인 PC·휴대폰에만 제공합니다. 새 국내 시세 어댑터·종목/알림·공식 발표 확장·Telegram worker·비공개 배포는 구현/인수 전입니다. KIS는11/3 실전 인증·기본3종목의11/2·11/3 비수정 종가와 주말 휴장 응답을 확인했습니다. 본인 AWS/비공개 관리자·본인1명 Telegram 경유·가격30일 보관은11/3 사용자 결정으로 허용해 T01 완료로 인수했습니다. 공급자 별도 명시 허가 취득과 구분합니다. [검증·T02 계약](tasks/verification/market/국내_ETF_API_표본_검증.md)
 
-아래 설명과 실행 예시는 **기존 X/미국 ETF 구현·시험 자산**입니다. 새 제품의 현재 요구사항으로 사용하지 않습니다. 국내 종목 식별 확인 도구는 `uv run python scripts/experiments/kis_market_probe.py`이며 가격·계좌·주문 API는 호출하지 않습니다.
+아래 설명과 실행 예시는 **기존 X/미국 ETF 구현·시험 자산**입니다. 새 제품의 현재 요구사항으로 사용하지 않습니다. KIS 도구의 기본 실행 `uv run python scripts/experiments/kis_market_probe.py`는 기존 공개 마스터 식별 전용입니다. 인증 종가 모드는 아래처럼 명시적으로 선택합니다.
 
 Finnhub Free 시장뉴스는 **본인 개인용 채택**입니다. 본인 키로 11/2 23:54 KST 재조회100건→미국 관련 제목 후보5건→원매체 HEAD 확인 통과0건을 관측했습니다. 필터/중복/경유 처리는 개발용 시험과 무통신 테스트로 검증했고 정기 worker는 미연결입니다. 실제08:00 확보·개인 이용 기준은 확정했고 실제08시/원문 링크·worker/송신은 기술 인수 전입니다. 루트 `.env`의 `FINNHUB_API_KEY` 값은 공유하지 않습니다. [실측·재현·미확인 조건](tasks/verification/news/Finnhub_시장뉴스_표본과_개인_전달.md)
 
@@ -12,7 +12,7 @@ Finnhub Free 시장뉴스는 **본인 개인용 채택**입니다. 본인 키로
 
 루트 `.env.example`은 현재 뉴스레터 기준입니다. 실제 값은 Git에서 제외한 `.env`에 입력하고 기존 파일을 예시로 덮어쓰지 않습니다. OpenAI·Finnhub·Telegram과 관리자 로그인/API DB·마이그레이션·격리 시험 설정을 유지합니다. 모델 선택은 코드의 기본값/실행 옵션을 사용하므로 `OPENAI_MODEL`은 사용하지 않습니다.
 
-KIS 신청·발급정보의 로컬 등록은 완료했습니다. 아래는 설정 이름을 보여주는 예시입니다. 시세 어댑터·토큰 발급/캐시·인증 조회는 후속 검증/구현 대상입니다.
+KIS 신청·발급정보의 로컬 등록과11/3 인증 종가 표본 검증은 완료했습니다. 아래는 설정 이름을 보여주는 예시입니다. 제품 시세 어댑터·토큰 캐시/만료·DB 연결은 T02 후속입니다.
 
 ```dotenv
 KIS_APP_KEY=
@@ -21,6 +21,17 @@ KIS_BASE_URL=https://openapi.koreainvestment.com:9443
 ```
 
 [KIS 공식 설정 예제](https://github.com/koreainvestment/open-trading-api/blob/main/kis_devlp.yaml)와 [공식 현재가 REST 예제](https://github.com/koreainvestment/open-trading-api/blob/main/legacy/rest/current_price_samle.py)의 앱 키/시크릿·실전 주소를 기준으로 이름을 정했습니다. 현재가 조회 준비에 계좌번호·HTS ID는 추가하지 않습니다. 만료되는 access token은 `.env`의 고정 입력값으로 두지 않고 후속 어댑터에서 발급·만료 관리를 구현합니다. 모의투자 키를 위 실전 주소와 섞지 않습니다. 주문 API는 사용하지 않습니다.
+
+```powershell
+# 무통신: 루트 .env의 KIS 설정 존재와 공식 실전 주소 일치만 확인
+uv run python scripts/experiments/kis_market_probe.py --mode check-config
+# 실호출: 인증1회 + 휴장일1회 + 기본3종목 일봉 각1회
+uv run python scripts/experiments/kis_market_probe.py --mode close --environment real
+```
+
+실전 인증 성공으로 키/주소 사용 가능성을 확인하며 모의 키 종류를 값으로 추정하지 않습니다. 토큰은 메모리에만 두고20초 timeout·호출 사이1.1초·자동 재시도 없이 검증합니다. 휴장일 API는 공식 권장1일1회이므로 같은 날 반복하지 않습니다. 허용 시세/휴장 필드만 검증 원본에 기록하며 키·토큰·계좌정보는 저장하지 않습니다. 날짜만 있는 일봉은 실제 가격시각을 미제공으로 남기고 조회시각과 구분합니다. 원종가 Decimal 진단 계산과 발송용 등락률·이용 조건 인수는 별도입니다. 현재는 개발용 probe이며 정기 worker가 아닙니다.
+
+Windows sandbox에서 기본 `uv` cache/pytest 임시 폴더 쓰기가 막히면 Git 제외 workspace 경로를 사용합니다: `$env:UV_CACHE_DIR = "$PWD\.cache\uv"`, `uv run pytest --basetemp .cache/pytest_<새_실행명>`. 새 실행명을 사용하며 기존 임시 폴더를 수동 삭제할 필요는 없습니다.
 
 현재 사용하지 않는 X 인증4개·`EXA_API_KEY`·`MARKETAUX_API_TOKEN`·`MARKETNEWSAPI_KEY`·`OPENAI_MODEL`·이전 미리보기용 `XFOLIO_DATABASE_URL`은 기본 설정에서 제거했습니다. 이전 실험/Streamlit 코드는 보존했으므로 이를 별도 실행할 때만 해당 이전 변수를 실행 환경에 직접 지정합니다. API DB를 이전 preview DB로 대체하지 않습니다. [이전 X 설정](docs/research/X_게시_API.md) · [개발 도구](scripts/dev/README.md).
 

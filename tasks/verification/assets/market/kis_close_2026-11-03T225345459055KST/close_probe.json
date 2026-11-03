@@ -1,0 +1,235 @@
+{
+  "kind": "authenticated_daily_close_probe",
+  "started_at": "2026-11-03T22:53:39.162236+09:00",
+  "environment": "real",
+  "base_url": "https://openapi.koreainvestment.com:9443",
+  "calendar": "pandas_market_calendars:XKRX; scheduled close, not exchange timestamp",
+  "sessions": [
+    {
+      "trade_date": "2026-11-02",
+      "scheduled_market_close_at": "2026-11-02T15:30:00+09:00"
+    },
+    {
+      "trade_date": "2026-11-03",
+      "scheduled_market_close_at": "2026-11-03T15:30:00+09:00"
+    }
+  ],
+  "auth": "success",
+  "requests_attempted": 5,
+  "quotes": [
+    {
+      "code": "360750",
+      "market": "KRX",
+      "market_parameter": "J",
+      "currency": "KRW",
+      "source": "KIS",
+      "endpoint": "/uapi/domestic-stock/v1/quotations/inquire-daily-itemchartprice",
+      "tr_id": "FHKST03010100",
+      "retrieved_at": "2026-11-03T22:53:43.222244+09:00",
+      "adjustment": "unadjusted",
+      "rows": [
+        {
+          "trade_date": "2026-11-02",
+          "scheduled_market_close_at": "2026-11-02T15:30:00+09:00",
+          "close": "25355",
+          "price_as_of": null,
+          "price_time_status": "daily_date_only",
+          "provider_fields": {
+            "stck_bsop_date": "20261102",
+            "stck_clpr": "25355",
+            "flng_cls_code": "00",
+            "prtt_rate": "0.00",
+            "mod_yn": "N",
+            "prdy_vrss_sign": "2",
+            "prdy_vrss": "45",
+            "revl_issu_reas": ""
+          }
+        },
+        {
+          "trade_date": "2026-11-03",
+          "scheduled_market_close_at": "2026-11-03T15:30:00+09:00",
+          "close": "25010",
+          "price_as_of": null,
+          "price_time_status": "daily_date_only",
+          "provider_fields": {
+            "stck_bsop_date": "20261103",
+            "stck_clpr": "25010",
+            "flng_cls_code": "00",
+            "prtt_rate": "0.00",
+            "mod_yn": "N",
+            "prdy_vrss_sign": "5",
+            "prdy_vrss": "-345",
+            "revl_issu_reas": ""
+          }
+        }
+      ],
+      "raw_close_change_pct": "-1.360678367185959376848747780",
+      "raw_close_change_pct_display": "-1.36",
+      "publishable_change_pct": null,
+      "event_basis_status": "review_required",
+      "supplier_summary_not_used_for_return": {
+        "stck_prpr": "25010",
+        "stck_prdy_clpr": "25355",
+        "prdy_ctrt": "-1.36"
+      }
+    },
+    {
+      "code": "379810",
+      "market": "KRX",
+      "market_parameter": "J",
+      "currency": "KRW",
+      "source": "KIS",
+      "endpoint": "/uapi/domestic-stock/v1/quotations/inquire-daily-itemchartprice",
+      "tr_id": "FHKST03010100",
+      "retrieved_at": "2026-11-03T22:53:44.344367+09:00",
+      "adjustment": "unadjusted",
+      "rows": [
+        {
+          "trade_date": "2026-11-02",
+          "scheduled_market_close_at": "2026-11-02T15:30:00+09:00",
+          "close": "25420",
+          "price_as_of": null,
+          "price_time_status": "daily_date_only",
+          "provider_fields": {
+            "stck_bsop_date": "20261102",
+            "stck_clpr": "25420",
+            "flng_cls_code": "00",
+            "prtt_rate": "0.00",
+            "mod_yn": "N",
+            "prdy_vrss_sign": "5",
+            "prdy_vrss": "-45",
+            "revl_issu_reas": ""
+          }
+        },
+        {
+          "trade_date": "2026-11-03",
+          "scheduled_market_close_at": "2026-11-03T15:30:00+09:00",
+          "close": "24770",
+          "price_as_of": null,
+          "price_time_status": "daily_date_only",
+          "provider_fields": {
+            "stck_bsop_date": "20261103",
+            "stck_clpr": "24770",
+            "flng_cls_code": "00",
+            "prtt_rate": "0.00",
+            "mod_yn": "N",
+            "prdy_vrss_sign": "5",
+            "prdy_vrss": "-650",
+            "revl_issu_reas": ""
+          }
+        }
+      ],
+      "raw_close_change_pct": "-2.557041699449252557041699450",
+      "raw_close_change_pct_display": "-2.56",
+      "publishable_change_pct": null,
+      "event_basis_status": "review_required",
+      "supplier_summary_not_used_for_return": {
+        "stck_prpr": "24770",
+        "stck_prdy_clpr": "25420",
+        "prdy_ctrt": "-2.56"
+      }
+    },
+    {
+      "code": "458730",
+      "market": "KRX",
+      "market_parameter": "J",
+      "currency": "KRW",
+      "source": "KIS",
+      "endpoint": "/uapi/domestic-stock/v1/quotations/inquire-daily-itemchartprice",
+      "tr_id": "FHKST03010100",
+      "retrieved_at": "2026-11-03T22:53:45.456531+09:00",
+      "adjustment": "unadjusted",
+      "rows": [
+        {
+          "trade_date": "2026-11-02",
+          "scheduled_market_close_at": "2026-11-02T15:30:00+09:00",
+          "close": "15190",
+          "price_as_of": null,
+          "price_time_status": "daily_date_only",
+          "provider_fields": {
+            "stck_bsop_date": "20261102",
+            "stck_clpr": "15190",
+            "flng_cls_code": "00",
+            "prtt_rate": "0.00",
+            "mod_yn": "N",
+            "prdy_vrss_sign": "2",
+            "prdy_vrss": "15",
+            "revl_issu_reas": ""
+          }
+        },
+        {
+          "trade_date": "2026-11-03",
+          "scheduled_market_close_at": "2026-11-03T15:30:00+09:00",
+          "close": "15220",
+          "price_as_of": null,
+          "price_time_status": "daily_date_only",
+          "provider_fields": {
+            "stck_bsop_date": "20261103",
+            "stck_clpr": "15220",
+            "flng_cls_code": "00",
+            "prtt_rate": "0.00",
+            "mod_yn": "N",
+            "prdy_vrss_sign": "2",
+            "prdy_vrss": "30",
+            "revl_issu_reas": ""
+          }
+        }
+      ],
+      "raw_close_change_pct": "0.197498354180381830151415400",
+      "raw_close_change_pct_display": "0.20",
+      "publishable_change_pct": null,
+      "event_basis_status": "review_required",
+      "supplier_summary_not_used_for_return": {
+        "stck_prpr": "15220",
+        "stck_prdy_clpr": "15190",
+        "prdy_ctrt": "0.20"
+      }
+    }
+  ],
+  "errors": [],
+  "holiday": {
+    "source": "KIS",
+    "endpoint": "/uapi/domestic-stock/v1/quotations/chk-holiday",
+    "tr_id": "CTCA0903R",
+    "rows": [
+      {
+        "bass_dt": "20261030",
+        "bzdy_yn": "Y",
+        "tr_day_yn": "Y",
+        "opnd_yn": "Y",
+        "sttl_day_yn": "Y"
+      },
+      {
+        "bass_dt": "20261031",
+        "bzdy_yn": "N",
+        "tr_day_yn": "Y",
+        "opnd_yn": "N",
+        "sttl_day_yn": "N"
+      },
+      {
+        "bass_dt": "20261101",
+        "bzdy_yn": "N",
+        "tr_day_yn": "Y",
+        "opnd_yn": "N",
+        "sttl_day_yn": "N"
+      },
+      {
+        "bass_dt": "20261102",
+        "bzdy_yn": "Y",
+        "tr_day_yn": "Y",
+        "opnd_yn": "Y",
+        "sttl_day_yn": "Y"
+      },
+      {
+        "bass_dt": "20261103",
+        "bzdy_yn": "Y",
+        "tr_day_yn": "Y",
+        "opnd_yn": "Y",
+        "sttl_day_yn": "Y"
+      }
+    ],
+    "matches_selected_sessions": true,
+    "retrieved_at": "2026-11-03T22:53:42.111495+09:00"
+  },
+  "status": "success"
+}

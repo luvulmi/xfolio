@@ -1,0 +1,3 @@
+# Preserve captured official documents byte-for-byte for provenance hashes.
+tasks/verification/assets/market/KIS_*/KIS_*.html -text
+tasks/verification/assets/market/KIS_*/KIS_*.txt -text

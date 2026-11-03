@@ -1,0 +1,44 @@
+[
+  {
+    "retrieved_at": "2026-11-03T22:54:48.4657150+09:00",
+    "sha256": "6759151bffd320bc6829b4fad48484a332a26b54d2a4c739c33eca06ddd0a812",
+    "bytes": 25865,
+    "url": "https://raw.githubusercontent.com/koreainvestment/open-trading-api/main/examples_llm/kis_auth.py",
+    "file": "KIS_인증_예제.txt"
+  },
+  {
+    "retrieved_at": "2026-11-03T22:54:48.5056722+09:00",
+    "sha256": "429f45248678d60a67990da1760af5965597201a3f9b790fb27a34e1fcfb2c06",
+    "bytes": 4140,
+    "url": "https://raw.githubusercontent.com/koreainvestment/open-trading-api/main/examples_llm/domestic_stock/inquire_daily_itemchartprice/inquire_daily_itemchartprice.py",
+    "file": "KIS_일봉_예제.txt"
+  },
+  {
+    "retrieved_at": "2026-11-03T22:54:48.7285562+09:00",
+    "sha256": "bf5f5327696ee7fb1f83e63eed8bc7750b405444c2df7b10cfba43a7e8d0a220",
+    "bytes": 4286,
+    "url": "https://raw.githubusercontent.com/koreainvestment/open-trading-api/main/examples_llm/domestic_stock/inquire_daily_itemchartprice/chk_inquire_daily_itemchartprice.py",
+    "file": "KIS_일봉_필드.txt"
+  },
+  {
+    "retrieved_at": "2026-11-03T22:54:48.9631208+09:00",
+    "sha256": "d645cfb9de40a28c901be8c2879adb12c5b508dcf2884a6386bc9fcbd83db7b1",
+    "bytes": 3610,
+    "url": "https://raw.githubusercontent.com/koreainvestment/open-trading-api/main/examples_llm/domestic_stock/chk_holiday/chk_holiday.py",
+    "file": "KIS_휴장일_예제.txt"
+  },
+  {
+    "retrieved_at": "2026-11-03T22:54:49.0089359+09:00",
+    "sha256": "2ed69006d27b5cb0d8d89e50735608e21797cd839f14caf917cfc20d486ec3cf",
+    "bytes": 19534,
+    "url": "https://file.koreainvestment.com/Storage/customer/guide/regards/openAPI_service_customer.html",
+    "file": "KIS_개인고객_약관.html"
+  },
+  {
+    "retrieved_at": "2026-11-03T22:54:49.5693560+09:00",
+    "sha256": "22dd22bc26c0314dcf95822aa1a246ee53792c19a165dc73c967c02ff146b405",
+    "bytes": 93753,
+    "url": "https://apiportal.koreainvestment.com/provider",
+    "file": "KIS_제휴안내.html"
+  }
+]

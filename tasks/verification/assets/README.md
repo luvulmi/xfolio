@@ -1,5 +1,7 @@
 # 검증 원본과 그림
 
+- [KIS 인증 종가·주말 휴장 실표본](market/kis_close_2026-11-03T225345459055KST/README.md) · [11/3 공식 근거/해시](market/KIS_인수_공식근거_2026-11-03/README.md) — 실전5회·3종목×2일, 키/토큰/계좌정보 제거·사용자 개인 이용 허용 결정으로 T01 완료
+
 - [Finnhub 시장뉴스 집계 표본](news_samples/finnhub_2026-11-02T144130Z/README.md) — 11/2 인증1회100건, 원문/키 미보관·지연/08시/원매체 링크 검증과 구분
 - [Finnhub 필터·경유 후속](news_samples/finnhub_filter_followup/README.md) — 23:54 재조회100건, 제목 후보5건·HEAD9회·원매체 확인 통과0건. 원제/URL/본문 미보관
 - [Finnhub 직접 링크 보완](news_samples/finnhub_links_2026-11-03/README.md) — 11/3 22:00 실제100건→후보9건→직접 기사주소3건, 원문 열람 검증과 구분
