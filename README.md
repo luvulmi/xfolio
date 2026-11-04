@@ -2,11 +2,28 @@
 
 XFolio는 국내 상장 해외 ETF와 미국 공식 경제·정책 발표를 정리해 본인 Telegram으로 자동 전달하는 개인용 뉴스레터 프로젝트입니다. 기본3종목·활성총10종목, **월~금08:00 아침1회**가 기본 목표입니다. 한국 거래일14:00·16:00 알림은 모두 선택 기능이며 기본 꺼짐입니다. [프로젝트 기획서](docs/프로젝트_기획서.md) · [현재 요구사항](docs/요구사항.md) · [관리자 화면](docs/specifications/관리자_화면_구조.md) · [새 WBS](docs/planning/작업_분해_WBS.md)
 
-2026-11-03 현재 뉴스 범위는 일반 뉴스 제목·링크 + BLS·BEA·Federal Reserve Board 자체 발표 AI 요약입니다. 일반 뉴스는 Finnhub Free general을 본인 개인용으로 채택했으며 별도 이메일 확인 없이 개인 이용 기준을 적용하고 운영 기술 검증을 진행합니다. 공식 발표는 직접 수집하고 Exa는 초기 필수 경로에서 제외합니다. 관리자는 AWS Lightsail + Tailscale로 본인 PC·휴대폰에만 제공합니다. 국내 시세 어댑터·거래일·종목/가격 DB는 T02에서 구현·격리 검증했고 관리자 UI/알림·공식 발표 확장·Telegram worker·비공개 배포는 후속입니다. KIS는11/3 실전 인증·기본3종목의11/2·11/3 비수정 종가와 주말 휴장 응답을 확인했습니다. 본인 AWS/비공개 관리자·본인1명 Telegram 경유·가격90일 보관은11/3 사용자 결정으로 허용해 T01 완료로 인수했습니다. 공급자 별도 명시 허가 취득과 구분합니다. [검증·T02 계약](tasks/verification/market/국내_ETF_API_표본_검증.md)
+2026-11-04 현재 뉴스 범위는 일반 뉴스 제목·링크 + BLS·BEA·Federal Reserve Board 자체 발표 AI 요약입니다. 일반 뉴스는 Finnhub Free general을 본인 개인용으로 채택했으며 별도 이메일 확인 없이 개인 이용 기준을 적용합니다. 공식 발표는 직접 수집하고 Exa는 초기 필수 경로에서 제외합니다. 관리자는 AWS Lightsail + Tailscale로 본인 PC·휴대폰에만 제공하는 목표입니다. 국내 시세·거래일·종목/가격 DB는 T02, 뉴스 수집·공식 요약 연결·기발송 DB는 T03에서 구현·격리 검증했습니다. 아침 편성·관리자 UI/알림·Telegram worker·비공개 배포는 후속입니다. KIS는11/3 실전 인증·기본3종목의11/2·11/3 비수정 종가와 주말 휴장 응답을 확인했습니다. 본인 AWS/비공개 관리자·본인1명 Telegram 경유·가격90일 보관은11/3 사용자 결정으로 허용해 T01 완료로 인수했습니다. 공급자 별도 명시 허가 취득과 구분합니다. [검증·T02 계약](tasks/verification/market/국내_ETF_API_표본_검증.md)
 
-아래 설명과 실행 예시는 **기존 X/미국 ETF 구현·시험 자산**입니다. 새 제품의 현재 요구사항으로 사용하지 않습니다. KIS 도구의 기본 실행 `uv run python scripts/experiments/kis_market_probe.py`는 기존 공개 마스터 식별 전용입니다. 인증 종가 모드는 아래처럼 명시적으로 선택합니다.
+이전 X/미국 ETF 구현·시험 자산은 아래의 별도 절에 보존합니다. KIS 도구의 기본 실행 `uv run python scripts/experiments/kis_market_probe.py`는 공개 마스터 식별 전용입니다. 인증 종가 모드는 아래처럼 명시적으로 선택합니다.
 
-Finnhub Free 시장뉴스는 **본인 개인용 채택**입니다. 본인 키로 11/2 23:54 KST 재조회100건→미국 관련 제목 후보5건→원매체 HEAD 확인 통과0건을 관측했습니다. 필터/중복/경유 처리는 개발용 시험과 무통신 테스트로 검증했고 정기 worker는 미연결입니다. 실제08:00 확보·개인 이용 기준은 확정했고 실제08시/원문 링크·worker/송신은 기술 인수 전입니다. 루트 `.env`의 `FINNHUB_API_KEY` 값은 공유하지 않습니다. [실측·재현·미확인 조건](tasks/verification/news/Finnhub_시장뉴스_표본과_개인_전달.md)
+Finnhub Free 시장뉴스는 **본인 개인용 채택**입니다. 11/4 무료 수동 조회에서 직접 기사주소3건을 선정했고 경유 HEAD 요청 상한으로 수집은 partial입니다. 필터/중복/경유 처리·DB는 무통신/격리 시험으로 검증했으며 정기 worker는 미연결입니다. 제품07:50/08:00 정시 확보·송신은 기술 인수 전입니다. 루트 `.env`의 `FINNHUB_API_KEY` 값은 공유하지 않습니다. [기존 실측·조건](tasks/verification/news/Finnhub_시장뉴스_표본과_개인_전달.md) · [T03 실조회](tasks/verification/assets/news_samples/t03_2026-11-04/README.md)
+
+## T03 뉴스 수집·공식 발표 요약
+
+11/4 T03는 Finnhub 운영 어댑터·BLS CPI·BEA GDP/PCE·Board FOMC 직접 수집, 공식 발표 근거/한국어 문형 검사·AI 연결, 일반/공식 전체0~3건 선정과 PostgreSQL 기발송 제외를 구현했습니다. 지원 밖 형식·권리/시각 불명은 보류하며 일반 기사 본문을 수집하거나 AI에 보내지 않습니다. 실제 유료 요약·07:50 제품 실행/Telegram 수신·운영 DB 적용은 별도 인수입니다. [계약/시험](tasks/verification/news/뉴스_수집과_요약_통합.md) · [실제 결과·공수](tasks/logs/2026-11-04_뉴스_수집과_요약_통합.md).
+
+```powershell
+# 기본은 무통신·DB 쓰기 없음
+uv run xfolio newsletter-news
+# 무료 목록/공식 원문 수집. .env의 FINNHUB_API_KEY 사용
+uv run xfolio newsletter-news --run
+# 공식 발표 AI 요약과 저장은 명시 옵션·유효 가격·예산 DB가 필요
+uv run xfolio newsletter-news --run --summarize --limits-file .cache/news_generation_limits.json --save
+```
+
+저장은0004 migration을 적용한 명시적 `XFOLIO_API_DATABASE_URL`이 필요합니다. `.env`에서는 API 키만 읽고 DB URL은 실행 환경에 지정합니다. `--summarize`는 유료 호출이며 기존 `gpt-6-luna`·응답 보관 해제·자동재시도0회로 실행합니다. limits JSON은 `GenerationLimits`의 `model`, `max_input_tokens`, `max_output_tokens`, `input_krw_per_million`, `output_krw_per_million`, `price_basis`, `prices_valid_until` 필드를 사용합니다. 현재 검토한 원화 환산 단가·근거와 timezone 포함 유효기간을 직접 넣어야 하며 오래된 시험 가격을 기본 운영값으로 쓰지 않습니다. 월50,000원 원장에 최대 비용을 예약한 후 호출하고 결과 불명은 예약을 유지합니다. 키/DB URL/가격 파일을 Git에 넣지 않습니다.
+
+`--as-of`는 timezone 포함 발행 기준, `--last-success`는 직전 성공 아침의 **발행 기준시각**입니다. 기본은 현재 시각의 수동 진단이며 제품07:50 정시 관측을 뜻하지 않습니다. 24h 우선·미전달96h 보완·전체3건 제한이며 정상0건/부분/실패를 구별해 미완료 수집은 종료 코드1을 반환합니다. `NewsletterNewsStore.seen_keys`/`save_result`/`record_delivery`/`purge_expired`는 후속 worker 연결 경계입니다. 미리보기만으로 발송 이력을 만들지 않습니다. 신규 의존성은 없습니다.
 
 ## 현재 환경 변수와 KIS 준비
 
@@ -120,13 +137,14 @@ Vite의 `/api` 요청은 로컬 `127.0.0.1:8000`으로 전달합니다. 설정�
 새 운영 schema는 기존 `preview_drafts`와 별도입니다. DDL 역할의 `XFOLIO_MIGRATION_DATABASE_URL`을 **별도 초기 개발 DB**에 지정한 뒤 migration을 적용합니다. API가 시작하면서 DDL을 실행하지 않습니다.
 
 ```powershell
-uv run alembic upgrade head --sql
+# 현재0003에서0004로 바뀌는 SQL만 무통신 검토
+uv run alembic upgrade 0003_domestic_market:head --sql
 # 대상 DB·권한을 확인한 뒤 실제 migration
 uv run --env-file .env alembic upgrade head
 uv run python -m xfolio.api.export_openapi
 ```
 
-`--sql`은 DB에 접속하지 않지만 `XFOLIO_MIGRATION_DATABASE_URL`은 필요합니다. 오프라인 검토만 할 때는 `postgresql+psycopg://offline@localhost/offline` 같은 시험용 URL을 현재 셸에 지정할 수 있습니다. 이 URL로 실제 `upgrade head`를 실행하지 않습니다.
+`--sql`은 DB에 접속하지 않지만 `XFOLIO_MIGRATION_DATABASE_URL`은 필요합니다. 오프라인 검토만 할 때는 `postgresql+psycopg://offline@localhost/offline` 같은 시험용 URL을 현재 셸에 지정할 수 있습니다. 이 URL로 실제 `upgrade head`를 실행하지 않습니다. 기존0002는 적용된 CHECK 제약을 DB에서 조회하므로 base→head 전체 오프라인 출력은 지원하지 않습니다. 새 DB의 실제 생성은 연결된 개발 DB에서 `upgrade head`,0004만의 SQL 검토는 위 구간 지정 명령을 사용합니다.
 
 OpenAPI 산출물은 [contracts/openapi.json](contracts/openapi.json), 동작 계약은 [관리자 화면·승인 API](tasks/verification/admin/관리자_화면과_승인_API.md)입니다. 합성 뉴스는 `synthetic=true`·발행 불가를 유지합니다. 조회·승인 API가 X에 전송하지 않으며 worker·실기사 입력/생성·CLI 수정·실제 게시 연결은 후속입니다.
 

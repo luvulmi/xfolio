@@ -9,10 +9,13 @@ Alembic으로 PostgreSQL 운영 schema의 변경 순서를 관리한다.
 | `schema_0001.py` | 0001 당시 8테이블 DDL 고정 snapshot. 현재 metadata와 분리 |
 | `versions/0002_am_four_posts.py` | reserved_count 0~4·post position 1~4 전환 |
 | `versions/0003_domestic_market.py` · `schema_0003.py` | 국내 종목·관심목록/버전·휴장일 일일 점유/캐시·수집·원종가90일의 신규7테이블/trigger, 고정 DDL |
+| `versions/0004_newsletter_news.py` · `schema_0004.py` | 뉴스 수집/선정 메타데이터·본인 수신자별 전달 결과의 신규3테이블, 최초 저장+90일 만료. 원문/근거 발췌 제외 |
 | [domestic.py](../src/xfolio/db/domestic.py) | 국내 시장 전용 metadata. legacy8테이블과 분리하며 env.py에서 함께 연결 |
 | [schema.py](../src/xfolio/db/schema.py) | 애플리케이션의 현재 테이블 정의 |
 
 실제 실행 절차는 [루트 README](../README.md)를 따른다. `XFOLIO_MIGRATION_DATABASE_URL` 또는 명시적 연결을 사용하며 `.env`와 기존 미리보기 DB 설정을 자동으로 읽지 않는다. migration 파일이 있다는 사실이 특정 DB에 적용되었다는 뜻은 아니다.
+
+새 DB 생성은 연결된 대상에서 `uv run alembic upgrade head`로0001~0004를 순서대로 적용한다. DB/접속 역할은 미리 준비해야 하며 이 명령이 PostgreSQL 서버나 DB 자체를 만들지는 않는다.0004 SQL만 검토할 때는 `uv run alembic upgrade 0003_domestic_market:head --sql`을 사용한다. 기존0002의 CHECK 조회 때문에 base→head 전체 오프라인 출력은 지원하지 않는다.
 
 새 schema 변경은 `versions/`에 추가하고 관련 API·DB 시험을 함께 검증한다. 기존 적용 이력을 파일 이동이나 번호 재정렬로 바꾸지 않는다.
 

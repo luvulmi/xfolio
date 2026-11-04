@@ -1,0 +1,90 @@
+{
+  "run_id": "a52dceaa-905d-499c-a4e6-9a461da7e1d6",
+  "as_of": "2026-11-04T08:19:23.692314+00:00",
+  "finished_at": "2026-11-04T08:19:29.208815+00:00",
+  "status": "partial",
+  "normal_zero": false,
+  "selected": [
+    {
+      "provider": "Finnhub",
+      "source_id": "8712147",
+      "url": "https://www.cnbc.com/2026/11/02/options-traders-are-getting-anxious-on-palantir-and-apple-ahead-of-earnings.html",
+      "published_at": "2026-11-02T18:16:02Z",
+      "retrieved_at": "2026-11-04T08:19:24.590493Z",
+      "content_version": "27c4c38803307df8644290db65428f31bab6994b1fcc4a325bfa29428ed96b26",
+      "event_key": "title:options traders are getting anxious on palantir and apple ahead of earnings"
+    },
+    {
+      "provider": "Finnhub",
+      "source_id": "8711622",
+      "url": "https://www.cnbc.com/2026/11/02/stock-market-after-midterm-elections-sp-500-history.html",
+      "published_at": "2026-11-02T15:41:12Z",
+      "retrieved_at": "2026-11-04T08:19:24.590493Z",
+      "content_version": "0801a6e4a6fe87dd10775128886329bfc1434ce33cd9e18fbe0b4c5d245a41a3",
+      "event_key": "title:stock market after midterm elections what s p 500 history shows"
+    },
+    {
+      "provider": "Finnhub",
+      "source_id": "8711518",
+      "url": "https://www.cnbc.com/2026/11/02/wall-streets-fear-index-is-doing-something-strange-heres-what-it-means-for-stocks.html",
+      "published_at": "2026-11-02T15:30:41Z",
+      "retrieved_at": "2026-11-04T08:19:24.590493Z",
+      "content_version": "f48a0abb9bc50201812a5908ee55a11867116615b375fef80e9e9e3a97b05e95",
+      "event_key": "title:wall street s fear index is doing something strange here s what it means for stocks"
+    }
+  ],
+  "sources": [
+    {
+      "provider": "Finnhub",
+      "status": "partial",
+      "requests": 13,
+      "errors": [
+        "link_request_budget_exhausted"
+      ],
+      "excluded": {
+        "no_explicit_us_relevance": 75,
+        "excluded_opinion_or_crypto": 10,
+        "link_google_interstitial": 6,
+        "link_request_budget_exhausted": 5
+      }
+    },
+    {
+      "provider": "BLS",
+      "status": "complete",
+      "requests": 1,
+      "errors": [],
+      "excluded": {
+        "outside_96h_or_cutoff": 1
+      }
+    },
+    {
+      "provider": "BEA",
+      "status": "complete",
+      "requests": 1,
+      "errors": [],
+      "excluded": {
+        "outside_96h_or_cutoff": 9
+      }
+    },
+    {
+      "provider": "Board",
+      "status": "complete",
+      "requests": 1,
+      "errors": [],
+      "excluded": {
+        "outside_96h_or_cutoff": 4
+      }
+    }
+  ],
+  "excluded": {
+    "selection_limit": 1
+  },
+  "can_send": false,
+  "mode": "free_collection_diagnostic",
+  "scheduled_observation": false,
+  "requested_at": "2026-11-04T08:19:23.692314+00:00",
+  "paid_ai_calls": 0,
+  "database_writes": 0,
+  "telegram_sent": false,
+  "raw_content_saved": false
+}

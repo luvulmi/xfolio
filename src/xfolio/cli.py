@@ -28,6 +28,20 @@ def main(argv: Sequence[str] | None = None) -> None:
     parser = argparse.ArgumentParser(description="XFolio 개발용 명령")
     commands = parser.add_subparsers(dest="command", required=True)
     commands.add_parser("status", help="현재 구현 상태 확인")
+    newsletter = commands.add_parser(
+        "newsletter-news", help="T03 뉴스 수집·요약 통합. 기본 무통신"
+    )
+    newsletter.add_argument("--run", action="store_true")
+    newsletter.add_argument("--save", action="store_true")
+    newsletter.add_argument(
+        "--summarize",
+        action="store_true",
+        help="공식 발표 유료 AI 요약. 가격·예산 DB 필수",
+    )
+    newsletter.add_argument("--limits-file", type=Path)
+    newsletter.add_argument("--env-file", type=Path, default=Path(".env"))
+    newsletter.add_argument("--as-of", type=datetime.fromisoformat)
+    newsletter.add_argument("--last-success", type=datetime.fromisoformat)
     for command, help_text in (
         ("domestic-close", "국내 ETF 완료2거래일 원종가·기본 무통신"),
         ("domestic-catalogue", "KIS 공개 종목 마스터 수집/검색·기본 무통신"),
@@ -80,6 +94,11 @@ def main(argv: Sequence[str] | None = None) -> None:
     ai.add_argument("--model", choices=tuple(MODEL_PRICES), default=DEFAULT_MODEL)
     args = parser.parse_args(argv)
 
+    if args.command == "newsletter-news":
+        from xfolio.newsletter_news_cli import execute
+
+        execute(args)
+        return
     if args.command.startswith("domestic-"):
         from xfolio.domestic.cli import execute
 
@@ -90,7 +109,9 @@ def main(argv: Sequence[str] | None = None) -> None:
             "ETF·Exa/BLS 공통 입력·AM 4글 저장/승인·PM 신규 차단: 구현·격리 검증됨. "
             "지수·CPI PM 이력과 가상 미리보기: 보존. "
             "국내 KIS 원종가·거래일·종목/90일 가격 DB: T02 구현. "
-            "허용 실자료 인수·일반 기사 AI·worker/X·Telegram·AWS 운영: 후속."
+            "Finnhub·BLS/BEA/Board 뉴스 통합·공식 요약 연결·기발송 DB: T03 구현. "
+            "유료 공식 요약·제품 정시 편성/수신·worker·AWS 운영: 후속. "
+            "일반 기사 AI는 초기 범위 제외, X는 이전 이력."
         )
     elif args.command == "bls-check":
         if not args.run:

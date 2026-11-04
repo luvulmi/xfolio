@@ -2,6 +2,8 @@
 
 `uv run pytest`로 외부 API 없이 기능을 검증합니다.
 
+`test_newsletter_news.py`는 T03 Finnhub/공식4출처·근거 요약·시각/권리·24/96h·중복·정상0건/부분/실패·일반 뉴스 AI 차단·예산/응답불명을 검사합니다. `test_newsletter_news_postgres.py`는 명시적 격리 PostgreSQL에서0004 업/다운·최초 저장/만료·confirmed만 기발송 제외·수신자 분리·본문 미보관을 검증합니다. 실제 유료 AI·제품07:50/08:00·Telegram 수신 인수와 구분합니다.
+
 `test_finnhub_news_probe.py`는 개발용 Finnhub 제목 규칙·ID/정규 URL/정규 제목 중복·발행 창·기발송 제외·사건군 편성·허용 호스트·정상 HEAD 경유와 중간 페이지/403/루프/위험 주소 제외를 합성 입력과 MockTransport로 검사합니다. 실기사 의미 중복 전체나 운영 송신·이용 허가 검증이 아닙니다.
 
 `test_etf.py`는 SPY/QQQ/DIA의 USD·동일 완료 거래일·원본 Close·분배금/분할·수정치·누락을 검사합니다. `test_am_edition.py`·`test_am_guards.py`는 뉴스 0~3건·5글 거절·07:30·권리/원문/사람 확인·정정·모의/실제 경계와 격리 PostgreSQL 저장/예약/철회·멱등·감사를, `test_am_migration.py`는 base/0001→0002·downgrade·4번째 저장/5번째 거절을 검사합니다. DB 시험은 명시적 시험 URL이 필요합니다.

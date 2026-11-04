@@ -1,0 +1,60 @@
+{
+  "checked_at_utc": "2026-11-04T08:25:33.286280+00:00",
+  "mode": "cached_official_parser_replay",
+  "ai_calls": 0,
+  "raw_text_saved_in_evidence": false,
+  "sources": [
+    {
+      "provider": "BEA",
+      "url": "https://www.bea.gov/news/2026/gdp-advance-estimate-3rd-quarter-2026",
+      "http_status_during_capture": 200,
+      "capture_file_written_at_utc": "2026-11-04T07:55:53.055933+00:00",
+      "published_at_utc": "2026-10-29T12:30:00+00:00",
+      "response_sha256": "f14308f9c2c7778253b10ccab0be9d23e37e1868bc38f5b70c5813671f808264",
+      "response_bytes": 52035,
+      "content_version": "583283944bbdfeb5158afefb7f398eb021695c6fd7d6b467f84d752230f3c663",
+      "fact_count": 1,
+      "event_key": "GDP:2026-10-29",
+      "actual_ai_summary": false
+    },
+    {
+      "provider": "BEA",
+      "url": "https://www.bea.gov/news/2026/personal-income-and-outlays-september-2026",
+      "http_status_during_capture": 200,
+      "capture_file_written_at_utc": "2026-11-04T07:55:54.314645+00:00",
+      "published_at_utc": "2026-10-29T12:30:00+00:00",
+      "response_sha256": "25b27ea33a8508c7e11fba80111b812eb42f6a794a29061ef7b9d42f328ede1f",
+      "response_bytes": 52432,
+      "content_version": "0586631492b58f30f0cfb5a18b92b54cab65aa978d17a88798fc78fe3bddb0d6",
+      "fact_count": 2,
+      "event_key": "PCE:2026-10-29",
+      "actual_ai_summary": false
+    },
+    {
+      "provider": "Board",
+      "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20261028a.htm",
+      "http_status_during_capture": 200,
+      "capture_file_written_at_utc": "2026-11-04T07:55:54.772144+00:00",
+      "published_at_utc": "2026-10-28T18:00:00+00:00",
+      "response_sha256": "5ddcd053dd38fbae57e595c4eb52b124dd3b97b96e0e91aa8fa6198050e073da",
+      "response_bytes": 84650,
+      "content_version": "d990ae7b4342c4a8d54f1120d5f935c88b17df44c58aff33a1f5b75102e03938",
+      "fact_count": 1,
+      "event_key": "FOMC:2026-10-28",
+      "actual_ai_summary": false
+    },
+    {
+      "provider": "BLS",
+      "url": "https://www.bls.gov/news.release/cpi.htm",
+      "http_status_during_capture": 200,
+      "capture_file_written_at_utc": "2026-11-04T08:17:46.317196+00:00",
+      "published_at_utc": "2026-10-14T12:30:00+00:00",
+      "response_sha256": "83f99d40e27b9d4d8e27f0548137d34157e2b3236e2630e0b7f9ce689a8f9923",
+      "response_bytes": 1373507,
+      "content_version": "8d4a82258a3a5e9d099b857cefc598ed3aff8c4b4e4ee83d12d30fc918c2f9fd",
+      "fact_count": 2,
+      "event_key": "CPI:2026-10-14",
+      "actual_ai_summary": false
+    }
+  ]
+}

@@ -6,9 +6,10 @@ from alembic import context
 from sqlalchemy import create_engine
 
 from xfolio.db.domestic import metadata as domestic_metadata
+from xfolio.db.newsletter_news import metadata as newsletter_news_metadata
 from xfolio.db.schema import metadata
 
-all_metadata = [metadata, domestic_metadata]
+all_metadata = [metadata, domestic_metadata, newsletter_news_metadata]
 
 connection = context.config.attributes.get("connection")
 url = os.environ.get("XFOLIO_MIGRATION_DATABASE_URL", "")
