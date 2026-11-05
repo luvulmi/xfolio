@@ -1,106 +1,99 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { ApiError, canApprove, decide, request, safeSourceUrl } from './api';
-import type { Attempt, Draft, DraftSummary, Session } from './api';
+import { ApiError, request } from './api';
+import type { Session } from './api';
+import { App as LegacyApp } from './LegacyApp';
 
-const labels: Record<string, string> = { prepared: '검증 준비', validated: '승인 대기', approved: '승인됨', scheduled: '예약됨', held: '보류', sending: '게시 중', published: '게시 완료', partial: '일부 게시', unknown: '결과 불명', failed: '실패', expired: '만료', no_content: '정상 · 선정 뉴스 없음', not_operating: '운영일 아님', complete: '완료', dry_run: '시험 실행', reviewed: '운영자 검토', auto: '자동 운영', PM_FREEZE_DEADLINE_PASSED: '17:45 동결 마감을 지키지 못했습니다.', EDITION_COLLECTION_REQUIRED: '편성에 필요한 수집 완료를 확인해 주세요.', PERMISSION_SCOPE_UNVERIFIED: '원문 이용 범위와 검토 유효기간을 확인해 주세요.', SOURCE_TIME_INVALID: '원문 발행·수집 시각을 확인해 주세요.', OUTPUT_SEMANTIC_MISMATCH: '문안이 확인된 사실과 허용 문형에 맞지 않습니다.', X_WEIGHTED_LENGTH_EXCEEDED: '출처를 포함한 글이 280 가중 글자를 초과했습니다.', X_WEIGHTED_LENGTH_MISMATCH: '저장된 글자 수와 완성 글의 계산 결과가 다릅니다.' };
-const label = (value: string) => labels[value] ?? value;
-function todayKst() { return new Intl.DateTimeFormat('sv-SE', { timeZone: 'Asia/Seoul', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date()); }
-function time(value?: string | null) { return value && !Number.isNaN(Date.parse(value)) ? new Intl.DateTimeFormat('ko-KR', { timeZone: 'Asia/Seoul', dateStyle: 'short', timeStyle: 'short' }).format(new Date(value)) : '—'; }
-function detailId() { try { const match = location.hash.match(/^#\/drafts\/(.+)$/); return match ? decodeURIComponent(match[1]) : null; } catch { return null; } }
+type Settings = { revision: number; morning_enabled: boolean; paused: boolean; intraday_enabled: boolean; close_enabled: boolean };
+type Instrument = { code: string; name: string; market: string; currency: string; eligible: boolean; retrieved_at?: string };
+type Watchlist = { revision: number; codes: string[]; items: Instrument[]; max_active: number };
+type Edition = { id: string; target_date: string; slot: string; status: string; price_count: number; news_count: number; reasons: string[]; settings_revision: number; watchlist_revision: number; mode: string; synthetic: boolean; body?: string; created_at: string; expires_at: string; settings?: Settings };
+type Delivery = { id: string; edition_id: string; target_date: string; slot: string; status: string; transport_mode: string; created_at: string; updated_at: string; parts?: { position?: number; status?: string; message_id?: string | number; error_code?: string; attempt_count?: number }[]; body?: string | null };
+type Summary = { market_open: boolean | null; settings: Settings; watchlist: Watchlist; newsletters: Edition[] };
+const names: Record<string, string> = { ready: '준비됨', partial: '일부 준비·일부 성공', failed: '실패', skipped: '정상 건너뜀', pending: '대기', sending: '전송 중', confirmed: '전송 확인', unknown: '결과 불명', retryable_failure: '안전한 재시도 대기', mock: '모의', live: '실제' };
+const label = (value: string) => names[value] ?? value;
+const time = (value?: string) => value && !Number.isNaN(Date.parse(value)) ? new Intl.DateTimeFormat('ko-KR', { timeZone: 'Asia/Seoul', dateStyle: 'short', timeStyle: 'short' }).format(new Date(value)) : '확인 대기';
+const route = () => location.hash.replace(/^#/, '') || '/';
+const menus = [['/', '대시보드'], ['/newsletters', '뉴스레터'], ['/deliveries', '발송 이력'], ['/watchlist', '관심 종목'], ['/settings', '알림 설정']];
+
+function ErrorNotice({ error }: { error: unknown }) {
+  const client = useQueryClient();
+  useEffect(() => { if (error instanceof ApiError && error.status === 401) void client.invalidateQueries({ queryKey: ['session'] }); }, [error, client]);
+  if (!error) return null;
+  const value = error as ApiError;
+  return <div className="notice" role="alert">{value.code === 'DELIVERIES_NOT_CONNECTED' ? '발송 이력은 자동 전송 기능 연결 후 확인할 수 있습니다.' : `${value.message || '조회에 실패했습니다.'} ${value.code ? `(${value.code})` : ''}`}</div>;
+}
+function Status({ value }: { value: string }) { return <span className={`badge ${value}`}>{label(value)}</span>; }
 
 export function App() {
-  const client = useQueryClient();
+  return new URLSearchParams(location.search).get('legacy') === '1' ? <LegacyApp /> : <NewsletterApp />;
+}
+function NewsletterApp() {
+  const client = useQueryClient(); const [path, setPath] = useState(route); const [error, setError] = useState<unknown>();
   const session = useQuery({ queryKey: ['session'], queryFn: () => request<Session>('/api/auth/me'), retry: false });
-  const [selected, setSelected] = useState(detailId);
-  const [logoutError, setLogoutError] = useState('');
-  const refreshSession = useCallback(() => { void session.refetch(); }, [session.refetch]);
-  useEffect(() => { const change = () => setSelected(detailId()); window.addEventListener('hashchange', change); return () => window.removeEventListener('hashchange', change); }, []);
+  useEffect(() => { const change = () => setPath(route()); window.addEventListener('hashchange', change); return () => window.removeEventListener('hashchange', change); }, []);
   const unauthorized = session.error instanceof ApiError && session.error.status === 401;
-  return <div className="app-shell">
-    <aside className="sidebar"><a className="brand" href="#/">X<span>Folio</span><small>OPERATIONS</small></a><div className="nav-caption">작업 공간</div><a className="nav-link active" href="#/"><span>▦</span> 편성 검토</a><div className="sidebar-bottom"><span className="status-dot" /> 운영자 전용<div>미국 시장 브리핑</div></div></aside>
-    <div className="workspace"><header className="topbar"><span>미국 시장 <span className="muted">/</span> 편성 관리</span><div>{session.data && !session.error && <><span className="mode">{label(session.data.mode)}</span><span className="operator">{typeof session.data.operator === 'string' ? session.data.operator : session.data.operator.display_name ?? session.data.operator.email}</span><button className="text-button" onClick={async () => { try { await request('/api/auth/logout', { method: 'POST', headers: { 'X-CSRF-Token': session.data.csrf_token } }); client.clear(); location.hash = '#/'; await session.refetch(); } catch { setLogoutError('로그아웃을 확인하지 못했습니다. 다시 시도하세요.'); } }}>로그아웃</button></>}</div></header>
-    <main>{logoutError && <Notice message={logoutError} />}{session.isPending ? <Loading text="운영자 세션을 확인하고 있습니다." /> : session.error ? <section className="login-panel"><div className="eyebrow">XFOLIO ADMIN</div><h1>{unauthorized ? '운영자 로그인' : '접속을 확인해 주세요'}</h1><p>{unauthorized ? '편성의 근거와 문안을 확인하고 승인합니다.' : session.error.message}</p>{unauthorized ? <a className="button primary" href="/api/auth/login">Google로 로그인</a> : <button className="button" onClick={() => session.refetch()}>다시 확인</button>}</section> : session.data ? selected ? <Detail id={selected} session={session.data} onAuthFailure={refreshSession} /> : <Dashboard onAuthFailure={refreshSession} /> : null}</main>
-    <footer>모든 운영 시각은 KST · 게시 결과는 X 응답 기록으로 확인합니다.</footer></div>
-  </div>;
-}
-
-function Notice({ message }: { message: string }) { return <div className="notice" role="alert">{message}</div>; }
-function Loading({ text }: { text: string }) { return <div className="loading" role="status"><span className="spinner" />{text}</div>; }
-function Badge({ status }: { status: string }) { return <span className={`badge ${status}`}>{label(status)}</span>; }
-
-function Dashboard({ onAuthFailure }: { onAuthFailure: () => void }) {
-  const [date, setDate] = useState(todayKst); const [edition, setEdition] = useState(''); const [status, setStatus] = useState('');
-  const [cursors, setCursors] = useState<(string | null)[]>([null]); const cursor = cursors[cursors.length - 1];
-  const params = new URLSearchParams({ date, limit: '20' }); if (edition) params.set('edition', edition); if (status) params.set('status', status); if (cursor) params.set('cursor', cursor);
-  const list = useQuery({ queryKey: ['drafts', date, edition, status, cursor], queryFn: () => request<{ items: DraftSummary[]; next_cursor: string | null }>(`/api/drafts?${params}`) });
-  const summary = useQuery({ queryKey: ['summary'], queryFn: () => request<Record<string, unknown>>('/api/operations/summary') });
-  useEffect(() => { if ([list.error, summary.error].some(e => e instanceof ApiError && e.status === 401)) onAuthFailure(); }, [list.error, summary.error, onAuthFailure]);
-  const updateFilter = (set: (value: string) => void, value: string) => { set(value); setCursors([null]); };
-  return <><div className="page-title"><div><div className="eyebrow">EDITORIAL DESK</div><h1>편성 검토</h1><p>확인된 근거를 검토하고, 정확한 버전의 편성 전체를 승인하세요.</p></div><button className="button" disabled={list.isFetching || summary.isFetching} onClick={() => { void list.refetch(); void summary.refetch(); }}>↻ 새로고침</button></div>
-    <section className="summary-grid" aria-label="운영 현황"><SummaryCard title="최근 수집" value={collectionLabel((summary.data?.collection as {status?: string})?.status)} description="정상 0건과 불완전 수집을 구분합니다." /><SummaryCard title="월 사용 현황" value={usageLabel(summary.data?.usage)} description="앱 관측 원장 · 계정 전체 청구액 아님" /><SummaryCard title="조치가 필요한 상태" value={alertLabel(summary.data?.alerts)} description="보류·알림 실패의 원인을 확인하세요." /></section>
-    {summary.error && <Notice message="운영 현황의 최신 조회에 실패했습니다." />}
-    <section className="panel"><div className="panel-heading"><h2>검토할 편성</h2><span className="muted">마지막 조회 {list.dataUpdatedAt ? time(new Date(list.dataUpdatedAt).toISOString()) : '—'}</span></div><div className="filters"><label>대상일<input type="date" value={date} onChange={e => updateFilter(setDate, e.target.value)} /></label><label>편성<select value={edition} onChange={e => updateFilter(setEdition, e.target.value)}><option value="">전체 편성</option><option value="AM">아침 브리핑</option><option value="PM">PM 과거 이력</option></select></label><label>상태<select value={status} onChange={e => updateFilter(setStatus, e.target.value)}><option value="">전체 상태</option>{Object.entries(labels).filter(([key]) => ['prepared','validated','scheduled','held','published','partial','unknown','failed','expired'].includes(key)).map(([key, value]) => <option key={key} value={key}>{value}</option>)}</select></label></div>
-      {list.error && <Notice message={list.error instanceof ApiError && list.error.status === 403 ? '조회 권한이 없습니다. 운영자 설정과 로그인 상태를 확인하세요.' : '편성 목록을 확인하지 못했습니다. 새로고침으로 다시 확인하세요.'} />}
-      {list.isPending ? <Loading text="편성 목록을 불러오고 있습니다." /> : list.data?.items.length ? <div className="table-wrap"><table><thead><tr><th>대상일 · 편성</th><th>미국 거래일</th><th>버전 · 뉴스</th><th>상태</th><th>발행 목표 / 마감</th><th><span className="sr-only">상세</span></th></tr></thead><tbody>{list.data.items.map(item => <tr key={item.id}><td><strong>{item.target_date}</strong><div>{item.edition === 'AM' ? '아침 브리핑' : 'PM 과거 이력'}</div></td><td>{item.market_trade_date ?? '—'}</td><td>v{item.version}<div className="muted">뉴스 {item.news_count}건</div></td><td><Badge status={item.status} />{item.hold_reason && <div className="muted">{item.hold_reason}</div>}</td><td>{time(item.scheduled_at)}<div className="muted">{time(item.expires_at)}</div></td><td><a className="detail-link" href={`#/drafts/${encodeURIComponent(item.id)}`}>검토 →</a></td></tr>)}</tbody></table></div> : !list.error && <div className="empty"><span>▤</span><h3>표시할 편성이 없습니다</h3><p>선택한 날짜와 필터를 확인하세요. 빈 목록은 수집 성공을 뜻하지 않습니다.</p></div>}
-      <div className="pagination"><button className="button" disabled={cursors.length === 1 || list.isFetching} onClick={() => setCursors(cursors.slice(0, -1))}>이전</button><span>{cursors.length} 페이지</span><button className="button" disabled={!list.data?.next_cursor || list.isFetching || !!list.error} onClick={() => setCursors([...cursors, list.data!.next_cursor])}>다음</button></div>
-    </section></>;
-}
-
-function SummaryCard({ title, value, description }: { title: string; value: unknown; description: string }) {
-  const display = value == null ? '확인 대기' : typeof value === 'string' ? label(value) : typeof value === 'number' ? String(value) : JSON.stringify(value);
-  return <article className="summary-card"><span>{title}</span><strong>{display}</strong><small>{description}</small></article>;
-}
-
-function collectionLabel(value?: string) {
-  return value ? ({ not_observed: '수집 기록 없음', complete: '수집 완료', partial: '수집 불완전', failed: '수집 실패', no_content: '정상 · 선정 뉴스 없음', not_operating: '운영일 아님' }[value] ?? value) : undefined;
-}
-
-function usageLabel(value: unknown) {
-  if (!value || typeof value !== 'object') return undefined;
-  const usage = value as {estimated_krw?: number; reserved_krw?: number; confirmed_krw?: number; monthly_limit_krw?: number};
-  return `${new Intl.NumberFormat('ko-KR').format((usage.confirmed_krw ?? 0) + (usage.reserved_krw ?? 0))}원 / ${new Intl.NumberFormat('ko-KR').format(usage.monthly_limit_krw ?? 50_000)}원`;
-}
-function alertLabel(value: unknown) {
-  if (!value || typeof value !== 'object') return undefined;
-  const alerts = value as {open?: number; failed?: number; status?: string};
-  if (alerts.status === 'not_implemented') return '알림 미연결';
-  return `미해결 ${alerts.open ?? 0} · 알림 실패 ${alerts.failed ?? 0}`;
-}
-
-function Detail({ id, session, onAuthFailure }: { id: string; session: Session; onAuthFailure: () => void }) {
-  const client = useQueryClient();
-  const detail = useQuery({ queryKey: ['draft', id], queryFn: () => request<Draft>(`/api/drafts/${encodeURIComponent(id)}`) });
-  const [reason, setReason] = useState(''); const [busy, setBusy] = useState(false); const [message, setMessage] = useState(''); const [uncertain, setUncertain] = useState<Attempt | null>(null); const [decisionBlocked, setDecisionBlocked] = useState(false);
-  const [checks, setChecks] = useState({ evidence_support: false, conditions_preserved: false, relevance_and_novelty: false });
-  const [, tick] = useState(0);
-  useEffect(() => { const timer = setInterval(() => tick(value => value + 1), 30_000); return () => clearInterval(timer); }, []);
-  useEffect(() => { setUncertain(null); setReason(''); setMessage(''); setDecisionBlocked(false); }, [id, session.csrf_token]);
-  useEffect(() => { if (detail.error instanceof ApiError && detail.error.status === 401) onAuthFailure(); }, [detail.error, onAuthFailure]);
-  async function submit(attempt: Attempt) {
-    setBusy(true); setMessage('');
-    try { await decide(attempt, session.csrf_token); setUncertain(null); setMessage('결정 요청을 확인했습니다. 최신 편성 상태와 게시 결과를 확인하세요. 이미 시작된 전송은 취소되지 않습니다.'); }
-    catch (error) { const e = error as ApiError; setUncertain(e.status === 0 ? attempt : null); setMessage(`${e.message} (${e.code})`); if (e.status === 403) setDecisionBlocked(true); if ([401, 403].includes(e.status)) onAuthFailure(); }
-    finally { await detail.refetch(); await Promise.all([client.invalidateQueries({ queryKey: ['drafts'] }), client.invalidateQueries({ queryKey: ['summary'] })]); setBusy(false); }
+  async function logout() {
+    try { await request('/api/auth/logout', { method: 'POST', headers: { 'X-CSRF-Token': session.data!.csrf_token } }); client.clear(); location.hash = '#/'; await session.refetch(); }
+    catch (e) { setError(e); }
   }
-  const draft = detail.data; const fresh = !detail.isError && !detail.isFetching && !busy && !decisionBlocked;
-  useEffect(() => { setChecks({ evidence_support: false, conditions_preserved: false, relevance_and_novelty: false }); }, [id, draft?.version, draft?.decision_revision, detail.dataUpdatedAt, detail.isError]);
-  const evidenceList = draft ? (draft.evidence ?? draft.evidence_bundles ?? draft.posts.flatMap(post => post.evidence ?? [])) : [];
-  function begin(action: 'approve' | 'hold') { if (!draft) return; void submit({ id, key: crypto.randomUUID(), body: { action, expected_version: draft.version, expected_decision_revision: draft.decision_revision, ...(action === 'hold' ? { reason: reason.trim() } : { review_checks: checks }) } }); }
-  return <><a className="back-link" href="#/">← 편성 목록</a><div className="page-title"><div><div className="eyebrow">EDITION REVIEW</div><h1>{draft?.edition === 'AM' ? '아침 브리핑' : draft ? 'PM 과거 이력' : '편성 상세'}</h1><p>{draft?.target_date ?? '근거와 상태를 확인하고 있습니다.'}{draft && <> · v{draft.version} · <Badge status={draft.status} /></>}</p></div><button className="button" disabled={detail.isFetching || busy} onClick={() => detail.refetch()}>↻ 최신 상태 확인</button></div>
-    {message && <Notice message={message} />}{detail.error && <Notice message={detail.error instanceof ApiError && detail.error.status === 403 ? '조회 권한이 없습니다. 승인 동작을 차단했습니다. 운영자 설정과 로그인 상태를 확인하세요.' : '최신 확인 실패 · 승인 동작을 차단했습니다. 다시 조회하세요.'} />}
-    {detail.isPending ? <Loading text="편성과 근거를 불러오고 있습니다." /> : draft && <><section className="edition-meta"><div><span>게시 구성</span><strong>{draft.edition === 'AM' ? 'ETF부터 이어지는 스레드' : '사건별 독립 글'}</strong></div><div><span>발행 목표 · 마감</span><strong>{time(draft.scheduled_at)} · {time(draft.expires_at)}</strong></div><div><span>근거 동결</span><strong>{time(draft.frozen_at)}</strong></div></section>
-      {draft.synthetic && <div className="preview-banner">합성 시험 자료 · 실제 게시 예약 불가</div>}
-      {draft.transport_mode === 'mock' && <div className="preview-banner">모의 송신 편성</div>}
-      <div className="review-layout"><section><div className="section-title"><h2>완성 게시글</h2><span>{draft.posts.length}개 글 · 편성 전체 검토</span></div>{draft.posts.map(post => <article className="post-card" key={post.position}><div className="post-heading"><span className="post-number">{post.position.toString().padStart(2, '0')}</span><span>{post.kind === 'etf' ? 'ETF 종가 (USD)' : post.kind === 'index' ? '두 지수 종가 (과거)' : '중요 뉴스'}</span>{post.weighted_length != null && <small>{post.weighted_length} / 280</small>}</div><p className="post-text">{post.text}</p><div className="evidence-ids">연결 근거: {post.evidence_ids.join(', ') || '없음'}</div></article>)}
-        <section className="panel evidence-panel"><h2>주장과 출처 근거</h2>{evidenceList.length ? evidenceList.map((evidence, i) => <article key={evidence.id ?? i}><strong>{evidence.source ?? evidence.id ?? evidence.evidence_id}</strong>{safeSourceUrl(evidence.url) && <a href={safeSourceUrl(evidence.url)} target="_blank" rel="noreferrer">원문 확인 ↗</a>}<p>{evidence.text ?? '허용 근거는 상세 기록에서 확인하세요.'}</p><small>발행 {time(evidence.published_at)} · 수집 {time(evidence.collected_at)}</small>{evidence.event_key && <small> · 사건 {evidence.event_key} / {evidence.fact_version ?? '버전 미상'}</small>}{evidence.claims && <pre>{JSON.stringify(evidence.claims, null, 2)}</pre>}</article>) : <p className="muted">표시 가능한 상세 근거가 없습니다. 연결 근거와 검증 결과를 확인하세요.</p>}</section>
-      </section><aside className="review-side"><section className="panel decision-panel"><div className="eyebrow">VERSION {draft.version}</div><h2>편성 결정</h2><Badge status={draft.status} /><p>이 버전의 모든 글을 예약합니다. 일부 글을 제외하려면 먼저 보류하고 CLI에서 새 버전을 만드세요.</p><div className={`validation ${draft.validation.status === 'passed' ? 'passed' : ''}`}>검증: {draft.validation.status === 'passed' ? '통과' : '확인 필요'}</div>{draft.validation.blocking_reasons.map(code => <div key={code} className="muted">{label(code)}</div>)}
-        {draft.edition === 'AM' && <fieldset className="review-confirmations"><legend>현재 버전 확인</legend><label><input type="checkbox" checked={checks.evidence_support} onChange={e => setChecks({ ...checks, evidence_support: e.target.checked })} />근거가 모든 주장을 뒷받침함</label><label><input type="checkbox" checked={checks.conditions_preserved} onChange={e => setChecks({ ...checks, conditions_preserved: e.target.checked })} />기간·수치·조건을 보존함</label><label><input type="checkbox" checked={checks.relevance_and_novelty} onChange={e => setChecks({ ...checks, relevance_and_novelty: e.target.checked })} />시장 관련성과 새 사실을 확인함</label></fieldset>}
-        {draft.mode !== 'auto' && <button className="button primary full" disabled={!canApprove(draft, fresh) || !Object.values(checks).every(Boolean) || !!uncertain || session.mode !== 'reviewed'} onClick={() => begin('approve')}>{busy ? '처리 중…' : '편성 전체 승인'}</button>}
-        <label className="reason-label">보류 사유<textarea value={reason} maxLength={300} onChange={e => setReason(e.target.value)} placeholder="수정이 필요한 조건이나 확인 사항을 적어 주세요." /></label><small className="muted">키·기사 본문·개인정보는 입력하지 마세요.</small><button className="button full" disabled={!fresh || !!uncertain || !reason.trim() || !draft.allowed_actions.includes('hold')} onClick={() => begin('hold')}>{draft.status === 'sending' ? '남은 글 중단' : ['scheduled','approved'].includes(draft.status) ? '승인 철회·보류' : '보류'}</button>
-        {uncertain && <div className="retry-panel"><p>처리 결과가 불명확합니다. 최신 상태를 확인한 뒤 같은 요청을 재전송할 수 있습니다.</p><button className="button full" disabled={!fresh} onClick={() => void submit(uncertain)}>같은 요청 다시 확인</button></div>}
-        {draft.hold_reason && <div className="hold-reason"><h3>현재 보류 사유</h3><p>{draft.hold_reason}</p></div>}
-        {draft.status === 'held' && <p className="muted">보류된 버전은 다시 승인할 수 없습니다. CLI에서 새 버전을 만들고 검증한 뒤 재승인하세요.</p>}
-      </section><section className="panel publication-panel"><h2>게시 결과</h2>{draft.publication?.posts.length ? draft.publication.posts.map((post, i) => <div key={i}>글 {post.position ?? i + 1} · {label(post.state ?? post.status ?? 'unknown')}<small>{post.x_id ? `X ID ${post.x_id}` : '확인된 X ID 없음'}</small></div>) : <p className="muted">아직 확인된 게시 결과가 없습니다.</p>}</section></aside></div></>}
-  </>;
+  return <div className="app-shell"><aside className="sidebar"><a className="brand" href="#/">X<span>Folio</span><small>NEWSLETTER</small></a><div className="nav-caption">본인용 관리자</div><nav aria-label="메뉴">{menus.map(([url, title]) => <a key={url} className={`nav-link ${path === url ? 'active' : ''}`} href={`#${url}`}>{title}</a>)}</nav><div className="sidebar-bottom">비공개 접속 · 국내 ETF · Telegram</div></aside>
+    <div className="workspace"><header className="topbar"><span>개인 뉴스레터 관리</span>{session.data && !session.error && <div><span className="operator">{typeof session.data.operator === 'string' ? session.data.operator : session.data.operator.display_name ?? session.data.operator.email}</span><button className="text-button" onClick={logout}>로그아웃</button></div>}</header>
+      <main className="newsletter-admin"><ErrorNotice error={error} />{session.isPending ? <p role="status">운영자 세션을 확인하고 있습니다.</p> : session.error ? <section className="login-panel"><h1>{unauthorized ? '운영자 로그인' : '접속을 확인해 주세요'}</h1><p>뉴스레터·종목·알림 설정을 확인합니다.</p><ErrorNotice error={unauthorized ? null : session.error} />{unauthorized ? <a className="button primary" href="/api/auth/login">Google로 로그인</a> : <button className="button" onClick={() => session.refetch()}>다시 확인</button>}</section> : session.data ? <AdminPage path={path} session={session.data} /> : null}</main>
+      <footer>모든 시각은 KST · 한국 휴장 평일/주말 미발송 · 전송 결과는 실제 응답 기록으로 확인합니다.</footer></div></div>;
+}
+
+function AdminPage({ path, session }: { path: string; session: Session }) {
+  if (path === '/settings') return <SettingsPage session={session} />;
+  if (path === '/watchlist') return <WatchlistPage session={session} />;
+  if (path.startsWith('/newsletters/') || path.startsWith('/deliveries/')) { const [kind, id] = path.slice(1).split('/'); return <Detail kind={kind} id={id} />; }
+  if (path === '/newsletters') return <EditionsPage />;
+  if (path === '/deliveries') return <DeliveriesPage />;
+  return <Dashboard />;
+}
+function Dashboard() {
+  const q = useQuery({ queryKey: ['newsletter-summary'], queryFn: () => request<Summary>('/api/newsletter-operations/summary') });
+  return <><h1>대시보드</h1><p>한국 거래일 07:50 준비 → 08:00 발송 · 08:10 마감</p><ErrorNotice error={q.error} />{q.isPending ? <p role="status">운영 상태를 조회하고 있습니다.</p> : q.data && <><div className="summary-grid"><Card title="오늘 한국 시장" value={q.data.market_open === true ? '개장' : q.data.market_open === false ? '휴장 · 발송 없음' : '개장 여부 확인 대기'} /><Card title="발송 설정" value={q.data.settings.paused ? '전체 일시 중지' : q.data.settings.morning_enabled ? '아침 활성' : '아침 비활성'} /><Card title="활성 종목" value={`${q.data.watchlist.codes.length} / 10`} /><Card title="오늘 편성" value={`${q.data.newsletters.length}건`} /></div><section className="panel"><h2>운영 확인</h2><p>시세 신선도와 비용 원장은 연결·관측 전까지 확인 대기로 표시합니다.</p><p>편성 준비는 전송 성공을 뜻하지 않습니다. <a href="#/deliveries">발송 이력 확인</a></p></section><EditionTable items={q.data.newsletters} /></>}</>;
+}
+function Card({ title, value }: { title: string; value: string }) { return <article className="summary-card"><span>{title}</span><strong>{value}</strong></article>; }
+function EditionTable({ items }: { items: Edition[] }) { return <section className="panel"><h2>뉴스레터</h2>{items.length ? <table><thead><tr><th>날짜/슬롯</th><th>상태</th><th>자료</th><th>환경</th></tr></thead><tbody>{items.map(item => <tr key={item.id}><td><a href={`#/newsletters/${encodeURIComponent(item.id)}`}>{item.target_date} · {item.slot}</a></td><td><Status value={item.status} /></td><td>가격 {item.price_count} · 뉴스 {item.news_count}</td><td>{item.synthetic ? '합성 시험' : label(item.mode)}</td></tr>)}</tbody></table> : <p>표시할 뉴스레터가 없습니다. 수집·발송 성공을 뜻하지 않습니다.</p>}</section>; }
+function EditionsPage() {
+  const [day, setDay] = useState(''); const [status, setStatus] = useState(''); const params = new URLSearchParams(); if (day) params.set('date', day); if (status) params.set('status', status);
+  const q = useQuery({ queryKey: ['newsletters', day, status], queryFn: () => request<{ items: Edition[] }>(`/api/newsletters?${params}`) });
+  return <><h1>뉴스레터</h1><div className="filters"><label>날짜 <input type="date" value={day} onChange={e => setDay(e.target.value)} /></label><label>상태 <select value={status} onChange={e => setStatus(e.target.value)}><option value="">전체</option>{['ready', 'partial', 'failed', 'skipped'].map(v => <option key={v} value={v}>{label(v)}</option>)}</select></label></div><ErrorNotice error={q.error} />{q.isPending ? <p role="status">뉴스레터를 조회하고 있습니다.</p> : q.data && <EditionTable items={q.data.items} />}</>;
+}
+function DeliveriesPage() {
+  const q = useQuery({ queryKey: ['deliveries'], queryFn: () => request<{ items: Delivery[] }>('/api/deliveries') });
+  return <><h1>발송 이력</h1><p>부분 성공·결과 불명은 자동으로 재송신하지 않습니다.</p><ErrorNotice error={q.error} />{q.isPending ? <p role="status">발송 이력을 조회하고 있습니다.</p> : q.data && <section className="panel">{q.data.items.length ? <table><thead><tr><th>날짜</th><th>환경</th><th>상태</th><th>갱신</th></tr></thead><tbody>{q.data.items.map(x => <tr key={x.id}><td><a href={`#/deliveries/${encodeURIComponent(x.id)}`}>{x.target_date} · {x.slot}</a></td><td>{label(x.transport_mode)}</td><td><Status value={x.status} /></td><td>{time(x.updated_at)}</td></tr>)}</tbody></table> : <p>발송 기록이 없습니다. 전송 성공을 뜻하지 않습니다.</p>}</section>}</>;
+}
+function Detail({ kind, id }: { kind: string; id: string }) {
+  const q = useQuery({ queryKey: [kind, id], queryFn: () => request<Edition & Delivery>(`/api/${kind}/${id}`) });
+  return <><a href={`#/${kind}`}>← 목록</a><h1>{kind === 'newsletters' ? '뉴스레터 상세' : '발송 상세'}</h1><ErrorNotice error={q.error} />{q.data && !q.error && <section className="panel"><h2>{q.data.target_date} · {q.data.slot}</h2><Status value={q.data.status} /><p>{q.data.synthetic ? '합성 시험 자료' : label(q.data.transport_mode ?? q.data.mode)}</p><p>생성 {time(q.data.created_at)} · 갱신 {time(q.data.updated_at)} · 보존 만료 {time(q.data.expires_at)}</p>{q.data.settings && <p>종목 v{q.data.watchlist_revision} · 설정 v{q.data.settings.revision}</p>}{q.data.edition_id && <a href={`#/newsletters/${q.data.edition_id}`}>원본 뉴스레터 확인</a>}<pre className="newsletter-body">{q.data.body}</pre>{q.data.reasons?.length > 0 && <p>검사·제외 사유: {q.data.reasons.join(', ')}</p>}{q.data.parts?.map((part, i) => <p key={part.position ?? i}>조각 {part.position ?? i + 1} · {label(part.status ?? 'unknown')} · 시도 {part.attempt_count ?? '확인 대기'} · message_id {part.message_id ?? '없음'} {part.error_code ?? ''}</p>)}<p>실제 전송은 응답 기록으로 확인하며 보존기한이 지난 본문은 제공하지 않습니다.</p></section>}</>;
+}
+function SettingsPage({ session }: { session: Session }) {
+  const client = useQueryClient(); const q = useQuery({ queryKey: ['notification-settings'], queryFn: () => request<Settings>('/api/notification-settings') });
+  const [busy, setBusy] = useState(false); const [error, setError] = useState<unknown>(); const [message, setMessage] = useState('');
+  async function update(changes: Partial<Settings>) {
+    if (!q.data) return; setBusy(true); setError(undefined); setMessage('');
+    try { await request('/api/notification-settings', { method: 'PATCH', headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': session.csrf_token }, body: JSON.stringify({ expected_revision: q.data.revision, ...changes }) }); setMessage('설정을 저장했습니다.'); }
+    catch (e) { setError(e); }
+    finally { await q.refetch(); await client.invalidateQueries({ queryKey: ['newsletter-summary'] }); setBusy(false); }
+  }
+  const blocked = busy || q.isFetching || q.isError || !q.data;
+  return <><h1>알림 설정</h1><p>한국 거래일 08:00 고정 · 한국 휴장 평일/주말에는 가격·뉴스 모두 미발송</p><ErrorNotice error={q.error || error} />{message && <p role="status">{message}</p>}{q.data && !q.error && <section className="panel"><p>현재 설정 v{q.data.revision}</p><label className="setting-control"><input type="checkbox" checked={q.data.morning_enabled} disabled={blocked} onChange={e => void update({ morning_enabled: e.target.checked })} />아침 08:00 알림</label><label className="setting-control"><input type="checkbox" checked={q.data.paused} disabled={blocked} onChange={e => void update({ paused: e.target.checked })} />전체 발송 일시 중지</label><label className="setting-control"><input type="checkbox" checked={false} disabled />14:00 장중 알림 · 인수 전</label><label className="setting-control"><input type="checkbox" checked={false} disabled />16:00 마감 알림 · 인수 전</label><p>재개해도 마감이 지난 뉴스레터를 몰아서 보내지 않습니다.</p></section>}</>;
+}
+function WatchlistPage({ session }: { session: Session }) {
+  const client = useQueryClient(); const q = useQuery({ queryKey: ['watchlist'], queryFn: () => request<Watchlist>('/api/watchlist') });
+  const [text, setText] = useState(''); const [query, setQuery] = useState(''); const [busy, setBusy] = useState(false); const [error, setError] = useState<unknown>(); const [message, setMessage] = useState('');
+  const search = useQuery({ queryKey: ['instruments', query], queryFn: () => request<{ items: Instrument[] }>(`/api/instruments?q=${encodeURIComponent(query)}`), enabled: !!query });
+  async function save(codes: string[]) {
+    if (!q.data) return; setBusy(true); setError(undefined); setMessage('');
+    try { await request('/api/watchlist', { method: 'PUT', headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': session.csrf_token }, body: JSON.stringify({ expected_revision: q.data.revision, codes }) }); setMessage('관심 종목을 저장했습니다.'); }
+    catch (e) { setError(e); }
+    finally { await q.refetch(); await client.invalidateQueries({ queryKey: ['newsletter-summary'] }); setBusy(false); }
+  }
+  const blocked = busy || q.isFetching || q.isError || !q.data;
+  function move(index: number, delta: number) { const codes = [...q.data!.codes]; [codes[index], codes[index + delta]] = [codes[index + delta], codes[index]]; void save(codes); }
+  return <><h1>관심 종목</h1><p>지원 확인된 국내 상장 해외 ETF를 최대10개 활성화합니다.</p><ErrorNotice error={q.error || error} />{message && <p role="status">{message}</p>}{q.data && !q.error && <section className="panel"><h2>활성 {q.data.codes.length} / 10 · v{q.data.revision}</h2><table><thead><tr><th>순서</th><th>종목</th><th>표시 순서·활성</th></tr></thead><tbody>{q.data.items.map((item, i) => <tr key={item.code}><td>{i + 1}</td><td>{item.name} <small>{item.code} · {item.currency}</small></td><td><button className="button" aria-label={`${item.name} 위로`} disabled={blocked || i === 0} onClick={() => move(i, -1)}>↑</button> <button className="button" aria-label={`${item.name} 아래로`} disabled={blocked || i === q.data!.codes.length - 1} onClick={() => move(i, 1)}>↓</button> <button className="button" disabled={blocked || q.data!.codes.length <= 1} onClick={() => void save(q.data!.codes.filter(c => c !== item.code))}>비활성화</button></td></tr>)}</tbody></table></section>}
+    <section className="panel"><h2>종목 검색·추가</h2><form onSubmit={e => { e.preventDefault(); setQuery(text.trim()); }}><label>종목명 또는 코드 <input value={text} maxLength={120} onChange={e => setText(e.target.value)} /></label> <button className="button" disabled={!text.trim()}>검색</button></form><ErrorNotice error={search.error} />{search.data && <>{!search.data.items.length && <p>검색 결과가 없습니다. 서버 종목 마스터 확인이 필요할 수 있습니다.</p>}{search.data.items.map(item => <article className="instrument-result" key={item.code}><strong>{item.name} · {item.code}</strong><p>{item.market} · {item.currency} · {item.eligible ? '지원 확인' : '지원 미확인'} · 정보 조회 {time(item.retrieved_at)}</p><button className="button" disabled={blocked || !item.eligible || q.data!.codes.includes(item.code) || q.data!.codes.length >= 10} onClick={() => void save([...q.data!.codes, item.code])}>{q.data?.codes.includes(item.code) ? '활성 종목' : '확인 후 추가'}</button></article>)}</>}</section></>;
 }

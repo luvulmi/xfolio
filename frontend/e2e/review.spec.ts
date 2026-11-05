@@ -24,14 +24,14 @@ async function mockReads(page: Page, getDraft = () => draft) {
 
 test('미인증은 Google 로그인으로 안내한다', async ({ page }) => {
   await page.route('**/api/**', route => route.fulfill({ status: 401, json: { error: { code: 'UNAUTHENTICATED' } } }));
-  await page.goto('/');
+  await page.goto('/?legacy=1');
   await expect(page.getByRole('link', { name: 'Google로 로그인' })).toHaveAttribute('href', '/api/auth/login');
   await expect(page.getByRole('button', { name: '편성 전체 승인' })).toHaveCount(0);
 });
 
 test('목록에서 상세 근거와 ETF 스레드 구성을 확인한다', async ({ page }) => {
   await mockReads(page);
-  await page.goto('/');
+  await page.goto('/?legacy=1');
   await expect(page.getByText('알림 미연결')).toBeVisible();
   await page.getByRole('link', { name: '검토 →' }).click();
   await expect(page.getByText('ETF부터 이어지는 스레드')).toBeVisible();
@@ -49,7 +49,8 @@ test('409 뒤 최신 버전은 표시하고 자동 재승인하지 않는다', a
     expect(route.request().postDataJSON()).toEqual({ action: 'approve', expected_version: 2, expected_decision_revision: 4, review_checks: { evidence_support: true, conditions_preserved: true, relevance_and_novelty: true } });
     await route.fulfill({ status: 409, json: { error: { code: 'VERSION_CONFLICT' } } });
   });
-  await page.goto('/#/drafts/browser-test-edition');
+  await page.goto('/?legacy=1#/drafts/browser-test-edition');
+  await expect(page.getByRole('checkbox')).toHaveCount(3);
   for (const box of await page.getByRole('checkbox').all()) await box.check();
   await page.getByRole('button', { name: '편성 전체 승인' }).click();
   await expect(page.getByRole('alert')).toContainText('VERSION_CONFLICT');
@@ -65,7 +66,8 @@ test('응답 불명은 최신 조회 후 동일한 키와 본문으로만 명시
     if (attempts.length === 1) return route.abort('failed');
     return route.fulfill({ json: { status: 'scheduled', replayed: true } });
   });
-  await page.goto('/#/drafts/browser-test-edition');
+  await page.goto('/?legacy=1#/drafts/browser-test-edition');
+  await expect(page.getByRole('checkbox')).toHaveCount(3);
   for (const box of await page.getByRole('checkbox').all()) await box.check();
   await page.getByRole('button', { name: '편성 전체 승인' }).click();
   await expect(page.getByRole('button', { name: '편성 전체 승인' })).toBeDisabled();

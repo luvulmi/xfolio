@@ -202,10 +202,12 @@ def test_public_origin_is_strict(origin):
     assert not config.auth_ready
 
 
-def test_openapi_has_exact_eight_routes():
+def test_openapi_preserves_legacy_and_adds_newsletter_routes():
     schema = create_app(Settings()).openapi()
-    assert len(schema["paths"]) == 8
+    assert len(schema["paths"]) == 16
     assert schema["paths"]["/api/drafts/{id}/decision"]["post"]["requestBody"]
+    assert schema["paths"]["/api/notification-settings"]["patch"]["requestBody"]
+    assert schema["paths"]["/api/watchlist"]["put"]["requestBody"]
 
 
 def test_committed_openapi_matches_runtime():

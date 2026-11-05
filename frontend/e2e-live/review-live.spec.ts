@@ -6,6 +6,8 @@ test('실제 HTTPS·FastAPI·PostgreSQL 세션으로 조회·합성 차단·보�
   await page.goto('/');
   await expect(page.getByRole('link', { name: 'Google로 로그인' })).toBeVisible();
   await page.getByRole('link', { name: 'Google로 로그인' }).click();
+  await page.waitForURL(url => url.pathname === '/' && !url.search);
+  await page.goto('/?legacy=1');
   await expect(page.getByRole('heading', { name: '편성 검토' })).toBeVisible();
   await expect(page.getByText('격리 PostgreSQL 브라우저 시험')).toBeVisible();
   const cookies = await context.cookies();
@@ -66,11 +68,13 @@ test('ETF와 공통 뉴스 4글을 세 확인 후 실제 API에서 승인하고 
   page.on('request', request => requests.push(request.url()));
   await page.goto('/');
   await page.getByRole('link', { name: 'Google로 로그인' }).click();
+  await page.waitForURL(url => url.pathname === '/' && !url.search);
+  await page.goto('/?legacy=1');
   await expect(page.getByRole('heading', { name: '편성 검토' })).toBeVisible();
   const listing = await (await page.request.get('/api/drafts')).json();
   const candidate = listing.items.find((row: { id: string }) => row.id !== 'browser-pm');
   expect(candidate).toBeDefined();
-  await page.goto(`/#/drafts/${candidate.id}`);
+  await page.goto(`/?legacy=1#/drafts/${candidate.id}`);
   await expect(page.getByText('검증: 통과')).toBeVisible();
   await expect(page.locator('.post-heading small')).toHaveCount(4);
   await expect(page.locator('.post-text').first()).toContainText('USD');

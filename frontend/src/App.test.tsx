@@ -1,7 +1,7 @@
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { App } from './App';
+import { App } from './LegacyApp';
 import type { Draft } from './api';
 
 const session = { operator: { email: 'operator@example.invalid', display_name: '시험 운영자' }, mode: 'reviewed', csrf_token: 'test-csrf' };

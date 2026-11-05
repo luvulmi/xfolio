@@ -1,4 +1,4 @@
-"""XFolio 8개 관리자 API. 환경 설정 전에는 503으로 차단한다."""
+"""XFolio 인증·legacy 검토·개인 뉴스레터 관리자 API."""
 
 import secrets
 from datetime import UTC, date, datetime, timedelta
@@ -28,7 +28,7 @@ COOKIE = "xfolio_session"
 FLOW_COOKIE = "xfolio_oidc_flow"
 
 
-def create_app(settings=None, store=None, provider=None, clock=None):
+def create_app(settings=None, store=None, provider=None, clock=None, admin_store=None):
     settings = settings or Settings.from_env()
     if store is None and settings.database_url:
         store = PostgresStore(settings.database_url)
@@ -244,6 +244,11 @@ def create_app(settings=None, store=None, provider=None, clock=None):
         session(request)
         return store.summary()
 
+    from xfolio.api.newsletter_admin import NewsletterAdminStore, install_routes
+
+    if admin_store is None and store is not None and hasattr(store, "engine"):
+        admin_store = NewsletterAdminStore(store.engine)
+    install_routes(app, session=session, clock=clock, store=admin_store)
     return app
 
 

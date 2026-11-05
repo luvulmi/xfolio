@@ -8,6 +8,7 @@ from sqlalchemy import create_engine
 from xfolio.db.domestic import metadata as domestic_metadata
 from xfolio.db.newsletter import metadata as newsletter_metadata
 from xfolio.db.newsletter_news import metadata as newsletter_news_metadata
+from xfolio.db.notification_settings import metadata as notification_settings_metadata
 from xfolio.db.schema import metadata
 
 all_metadata = [
@@ -15,6 +16,7 @@ all_metadata = [
     domestic_metadata,
     newsletter_news_metadata,
     newsletter_metadata,
+    notification_settings_metadata,
 ]
 
 connection = context.config.attributes.get("connection")
