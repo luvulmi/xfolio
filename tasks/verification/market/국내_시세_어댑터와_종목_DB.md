@@ -43,8 +43,8 @@
 
 - [공개 마스터 실제 파싱 요약](../assets/market/KIS_종목_마스터_2026-11-03/표본_요약.json): 전체2,580행→지원6자리1,772행·기타 식별자808행 제외, 기본3개 식별/검색/지원 일치. ZIP2회 조회 후 로컬 재생으로 수정 검증, 인증 시세 재조회0회. 외국 발행사 ISIN도 있으므로 `KR` 접두사만 강제하지 않는다. 수집본 전체를 Git에 복제하지 않았다.
 - 가격은 [T01 실표본](../assets/market/kis_close_2026-11-03T225345459055KST/close_probe.json)을 무통신 재생한다. 신규 가격 API/Telegram 호출과 구분한다.
-- [무통신 시험](../../../tests/test_domestic_market.py): 캐시/만료·동시 호출·휴장일/특수 마감·가격/사건 형식·오류/부분/전체 실패·비밀 비노출·공개 마스터·CLI 기본 무통신.
-- [실제 PostgreSQL 시험](../../../tests/test_domestic_postgres.py): 무작위 별도 schema에서0003 upgrade/downgrade/re-upgrade, 기본/검색·미검증 추가 보류·동시10개/CAS·직접 SQL 우회 거절·중복/정정/되돌림·rollback·90일 경계·DST·이전 버전 정리·가격 없는 감사 보존·legacy 행 보존.
+- [무통신 시험](../../../tests/market/test_domestic_market.py): 캐시/만료·동시 호출·휴장일/특수 마감·가격/사건 형식·오류/부분/전체 실패·비밀 비노출·공개 마스터·CLI 기본 무통신.
+- [실제 PostgreSQL 시험](../../../tests/market/test_domestic_postgres.py): 무작위 별도 schema에서0003 upgrade/downgrade/re-upgrade, 기본/검색·미검증 추가 보류·동시10개/CAS·직접 SQL 우회 거절·중복/정정/되돌림·rollback·90일 경계·DST·이전 버전 정리·가격 없는 감사 보존·legacy 행 보존.
 
 Docker Desktop 기동 중 사용자 PC의 `dockerInference` 런타임 오류가 발생했다. 사용자 재기동 후 엔진28.5.2와 기존 컨테이너 상태를 읽기 확인했다. 시험은 저장소의 기존 portable PostgreSQL loopback55432에서 했고 기존 Docker 컨테이너/운영 DB는 쓰지 않았다. 격리 시험 schema만 만들고 정리했다. [Docker 공식 동일 증상 보고](https://github.com/docker/desktop-feedback/issues/625).
 

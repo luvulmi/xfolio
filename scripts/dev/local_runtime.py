@@ -17,14 +17,14 @@ from alembic import command
 from alembic.config import Config
 from dotenv import dotenv_values
 
+from xfolio.ai.generation import OpenAIGenerationClient
+from xfolio.ai.workflow import GenerationLimits
 from xfolio.domestic.calendar import KST
 from xfolio.domestic.kis import KisClient, KisSettings
 from xfolio.domestic.store import DomesticStore
 from xfolio.jobs.collection import CappedWorkflowStore
-from xfolio.news_generation import OpenAIGenerationClient
-from xfolio.news_workflow import GenerationLimits
-from xfolio.newsletter_news import collect, summarize
-from xfolio.newsletter_news_store import NewsletterNewsStore
+from xfolio.news.collection import collect, summarize
+from xfolio.news.collection_store import NewsletterNewsStore
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
@@ -214,9 +214,9 @@ def collect_real():
 def paid_probe():
     from openai import OpenAI
 
-    from xfolio.bls import RELEASE_URL
     from xfolio.db.schema import usage_ledger
-    from xfolio.official_releases import _bls_item, fetch
+    from xfolio.news.providers.bls import RELEASE_URL
+    from xfolio.news.providers.official import _bls_item, fetch
 
     load_environment()
     limits = GenerationLimits.model_validate_json(
@@ -318,7 +318,7 @@ def phase(day, part, *, now=None):
 
 def preflight():
     from scripts.dev.run_api import development_settings
-    from xfolio.notification_settings import NotificationSettingsStore
+    from xfolio.newsletter.settings import NotificationSettingsStore
 
     setup()
     development_settings("https://localhost:8443")

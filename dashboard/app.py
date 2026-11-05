@@ -4,8 +4,8 @@ import os
 
 import streamlit as st
 
-from xfolio.dashboard_ui import render_preview
-from xfolio.storage import DEFAULT_DB, StorageError, configured_store
+from xfolio.legacy.dashboard_ui import render_preview
+from xfolio.legacy.storage import DEFAULT_DB, StorageError, configured_store
 
 st.set_page_config(page_title="XFolio", page_icon="\U0001f4c8")
 try:

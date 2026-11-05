@@ -128,11 +128,11 @@ uv run python scripts/experiments/finnhub_slot_probe.py --slot 2026-11-04T08:00:
 
 ### 재현과 시험 계약
 
-[개발용 스크립트](../../../scripts/experiments/finnhub_news_probe.py)와 [무통신 시험](../../../tests/test_finnhub_news_probe.py)을 추가했다. 정기 수집 worker·DB migration·송신 구현은 아니다.
+[개발용 스크립트](../../../scripts/experiments/finnhub_news_probe.py)와 [무통신 시험](../../../tests/experiments/test_finnhub_news_probe.py)을 추가했다. 정기 수집 worker·DB migration·송신 구현은 아니다.
 
 ```powershell
 uv run python scripts/experiments/finnhub_news_probe.py --live --output tasks/verification/assets/news_samples/새_관측/metadata.json
-uv run pytest tests/test_finnhub_news_probe.py -q
+uv run pytest tests/experiments/test_finnhub_news_probe.py -q
 ```
 
 실제 조회는 본인 키로 API1회, 후보 원문 확인은 HEAD 최대12회/전체·최대4회/링크, 요청 timeout15초다. API 인증 헤더는 Finnhub 요청에만 붙이고 원매체/Google 요청에 전달하지 않는다. 원시 응답·기사 본문·이미지·원제·기사 URL을 파일에 남기지 않는다. 기존 출력 파일을 덮어쓰지 않는다.

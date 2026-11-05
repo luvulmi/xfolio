@@ -2,7 +2,7 @@
 
 ## Telegram 수신 대상 준비
 
-`setup_telegram.py`는 [루트 설정 안내](../../README.md#telegram-알림-환경-설정-준비)에 따라 `@ringXFolioNotifyBot`을 검증하고 개인 대화의 수신 ID를 `.env`에 저장합니다. 기본은 무통신이며 `--run --save-chat`에서만 공식 Bot API 3회 조회와 로컬 저장을 수행합니다. 메시지 발송·webhook 변경·업데이트 확인 처리는 하지 않습니다. `tests/test_telegram_setup.py`에서 개인 대화 선택, 기존 설정 보호, 오류의 토큰 비노출을 외부 API 없이 검증합니다.
+`setup_telegram.py`는 [루트 설정 안내](../../README.md#telegram-알림-환경-설정-준비)에 따라 `@ringXFolioNotifyBot`을 검증하고 개인 대화의 수신 ID를 `.env`에 저장합니다. 기본은 무통신이며 `--run --save-chat`에서만 공식 Bot API 3회 조회와 로컬 저장을 수행합니다. 메시지 발송·webhook 변경·업데이트 확인 처리는 하지 않습니다. `tests/dev/test_telegram_setup.py`에서 개인 대화 선택, 기존 설정 보호, 오류의 토큰 비노출을 외부 API 없이 검증합니다.
 
 ## 로컬 HTTPS와 Google 인증 연결 준비
 
@@ -36,7 +36,7 @@ uv run python scripts/dev/local_https.py
 
 ## 검증 범위
 
-`tests/test_dev_https.py`는 인증서 SAN/재사용·`.cache` 제한, 외부 proxy 대상 차단, 인증서 검증을 켠 로컬 TLS, 유휴 TCP 연결과 다른 TLS 요청의 동시 처리, SPA 제공, API 쿠키/Origin/CSRF 전달과 명시적 키 재사용을 확인한다. 로컬 TLS 시험에는 Windows asyncio/socket 정책에 따라 샌드박스 밖 실행이 필요할 수 있다. 이 자동 시험은 실제 Google 인증 성공이나 실제 운영 DB 사용 성공을 뜻하지 않는다.
+`tests/dev/test_dev_https.py`는 인증서 SAN/재사용·`.cache` 제한, 외부 proxy 대상 차단, 인증서 검증을 켠 로컬 TLS, 유휴 TCP 연결과 다른 TLS 요청의 동시 처리, SPA 제공, API 쿠키/Origin/CSRF 전달과 명시적 키 재사용을 확인한다. 로컬 TLS 시험에는 Windows asyncio/socket 정책에 따라 샌드박스 밖 실행이 필요할 수 있다. 이 자동 시험은 실제 Google 인증 성공이나 실제 운영 DB 사용 성공을 뜻하지 않는다.
 
 개인키는 인증서와 함께 Git 제외 경로에 남는다. 테스트와 브라우저는 해당 개발 인증서만 명시적으로 신뢰하도록 설정할 수 있으며, 시스템 전체 인증서 검증을 끄지 않는다. 종료는 각 터미널의 `Ctrl+C`로 수행한다.
 

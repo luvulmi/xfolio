@@ -17,7 +17,7 @@
 
 - 환경 설치: `uv sync`; CLI 확인: `uv run xfolio status`.
 - 정적 검사: `uv run ruff check .`와 `uv run ruff format --check .`.
-- 기능 테스트를 추가한 뒤 `uv run pytest`를 실행하세요. 현재 지수 종가 수집의 외부 API 없는 테스트가 `tests/test_market.py`에 있습니다.
+- 기능 테스트를 추가한 뒤 `uv run pytest`를 실행하세요. 현재 지수 종가 수집의 외부 API 없는 테스트가 `tests/market/test_market.py`에 있습니다.
 - 변경 후 관련 검증을 실제로 실행하고 결과를 보고하세요.
 - PowerShell에서 Python으로 한국어 스크립트를 파이프할 때는 인코딩에 의존하지 않도록 파일 기반 스크립트나 ASCII 검사식을 사용하세요. 검증 명령을 연속 실행하면 각 명령의 종료 코드를 확인하세요.
 - Markdown은 BOM 없는 UTF-8로 저장하세요. 기존 파일에 BOM이 있으면 첫 줄 패치 전에 확인하고 UTF-8로 읽어 수정하세요.

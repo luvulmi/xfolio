@@ -409,7 +409,7 @@ class PostgresStore:
                 )
                 if not secrets.compare_digest(expected_hash, content_hash):
                     raise ApiError("VALIDATION_BLOCKED")
-                from xfolio.am_edition import am_db_validation
+                from xfolio.legacy.am_edition import am_db_validation
 
                 if am_db_validation(
                     conn, payload, row["target_date"], now, row["synthetic"]

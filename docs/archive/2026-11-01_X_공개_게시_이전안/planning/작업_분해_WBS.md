@@ -11,12 +11,12 @@
 
 | 자산 | 확인 근거 | 남은 차이 |
 | --- | --- | --- |
-| React 목록·상세·승인 | [App.tsx](../../../../frontend/src/App.tsx) | 대시보드·발행 조회·새 근거 표시 |
+| React 목록·상세·승인 | [App.tsx](../../../../frontend/src/app/App.tsx) | 대시보드·발행 조회·새 근거 표시 |
 | 인증·8API·OpenAPI | [API](../../../../src/xfolio/api/app.py) · [로그인 검증](../../../../tasks/logs/2026-10-29_Google_callback과_로그인_검증.md) | 새 조회 API·운영 도메인 검증 |
 | 8개 저장 단위·승인 트랜잭션 | [schema](../../../../src/xfolio/db/schema.py) · [store](../../../../src/xfolio/api/store.py) | worker 점유·전송 결과·알림 연결 |
-| Exa/BLS 공통 입력·AM 저장/승인 | [am_edition.py](../../../../src/xfolio/am_edition.py) · [격리 인수](../../../../tasks/logs/2026-10-31_ETF와_AM_승인_연결.md) | 허용 실자료·일반 AI 추출/생성·worker 연결 |
-| 세 ETF 수집·편성 | [etf.py](../../../../src/xfolio/etf.py) · [통합 계약](../../../../tasks/verification/integration/ETF와_공통_뉴스_AM_연결.md) | 허용 실자료 인수·운영 적용. 두 지수는 legacy 보존 |
-| worker·X·Telegram·AWS | [publish.py](../../../../src/xfolio/publish.py)는 설명만 존재, jobs 디렉터리 부재 | 새 구현·실제 연동·배포 필요 |
+| Exa/BLS 공통 입력·AM 저장/승인 | [am_edition.py](../../../../src/xfolio/legacy/am_edition.py) · [격리 인수](../../../../tasks/logs/2026-10-31_ETF와_AM_승인_연결.md) | 허용 실자료·일반 AI 추출/생성·worker 연결 |
+| 세 ETF 수집·편성 | [etf.py](../../../../src/xfolio/legacy/etf.py) · [통합 계약](../../../../tasks/verification/integration/ETF와_공통_뉴스_AM_연결.md) | 허용 실자료 인수·운영 적용. 두 지수는 legacy 보존 |
+| worker·X·Telegram·AWS | [publish.py](../../../../src/xfolio/legacy/publish.py)는 설명만 존재, jobs 디렉터리 부재 | 새 구현·실제 연동·배포 필요 |
 
 기존 시험 기록을 새 입력의 검증 완료로 계산하지 않는다. 초기 인증·DB·UI를 처음부터 만드는 시간은 다시 배정하지 않는다.
 

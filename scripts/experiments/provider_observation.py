@@ -12,10 +12,10 @@ import httpx
 from pydantic import Field, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-from xfolio.bls import BLSError, inspect_bls
-from xfolio.news import collect_news, metadata_report
-from xfolio.news_queries import NewsQuery
-from xfolio.news_store import NewsStore
+from xfolio.news.collector import collect_news, metadata_report
+from xfolio.news.providers.bls import BLSError, inspect_bls
+from xfolio.news.queries import NewsQuery
+from xfolio.news.store import NewsStore
 
 QUERIES = (
     NewsQuery("market", '("S&P 500"|Nasdaq)+(stocks|market)'),

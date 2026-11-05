@@ -46,3 +46,22 @@ npm run test:integration
 테스트 인증서는 `.cache/browser-e2e/`에 두고 시험 context에서만 자체서명 인증서를 허용합니다. OS 신뢰 저장소는 변경하지 않습니다. 이미지 `test-results/live-api-held.png`도 격리된 시험 결과입니다.
 
 새 뉴스레터의 실제 HTTPS·API·DB 연결은 같은 시험 DB 환경변수와 build 후 `npm run test:newsletter`로 확인합니다. 시험 schema에서 worker/수집 저장·비용 원장·뉴스레터/발송 상세·설정 중지를 연결하며 외부 제공처/AI/Telegram/Google은 시험 대역입니다. `test-results/t07-dashboard.png`의 실자료/live 표시는 이 분기 검사용 fixture 값이며 실제 외부 수집·송신의 관측 자료가 아닙니다. 실제 무료 조회·Telegram 통신 결과는 [T07 기록](../tasks/logs/2026-11-05_아침_뉴스레터_통합_인수.md)을 따릅니다.
+
+## 소스 위치
+
+| 경로 | 역할 |
+| --- | --- |
+| `src/main.tsx` · `src/app/App.tsx` | React 기동·현재/legacy 앱 선택 |
+| `src/features/newsletter/NewsletterApp.tsx` | 현재 관리자 세션·로그인·메뉴·로그아웃 |
+| `src/features/newsletter/pages/` | Dashboard·Newsletters·Deliveries·Detail·Watchlist·Settings 메뉴별 화면 |
+| `src/features/newsletter/components/` | 오류/상태 안내·뉴스레터 표 |
+| `src/features/newsletter/types.ts` · `format.ts` | 관리자 응답 타입·한글 상태/시각/금액 표시 |
+| `src/features/legacy/` | 이전 X 편성 검토 화면·해당 API/타입·회귀 시험 |
+| `src/shared/` | 공용 HTTP 오류/요청과 세션 타입 |
+| `src/styles/` · `src/test/` | 공용 CSS·Vitest 설정 |
+| `tests/e2e/mock/` | 모의 API 브라우저 회귀 |
+| `tests/e2e/legacy_api/` · `newsletter_api/` | 실제 HTTPS/API·격리 DB 연결 시험 |
+
+UI 단위 시험은 각 기능 폴더에 둔다. 실행 스크립트·URL·포트는 그대로이며 `.test.tsx` 경로를 직접 지정할 때는 새 위치를 사용한다. 새 메뉴는 `pages/`, 공용 통신은 `shared/`, 기존 X 전용 코드는 `legacy/`에 추가한다.
+
+HTTPS/API 브라우저 시험의 기본 포트는8447이다. 이미 사용 중이면 `XFOLIO_BROWSER_TEST_PORT`로 비어 있는 포트(예:18447)를 지정한다.3000/8000은 허용하지 않는다. 실제 관리자8443/API18443·DB55439 설정과는 별개다.

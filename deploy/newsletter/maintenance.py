@@ -25,10 +25,10 @@ LEGACY_PAYLOAD_TABLES = (
     "publication_posts",
 )
 STORES = (
-    ("xfolio.newsletter_store", "NewsletterStore", "purge_expired"),
+    ("xfolio.newsletter.store", "NewsletterStore", "purge_expired"),
     ("xfolio.domestic.store", "DomesticStore", "purge_expired_prices"),
-    ("xfolio.newsletter_news_store", "NewsletterNewsStore", "purge_expired"),
-    ("xfolio.notification_settings", "NotificationSettingsStore", "purge_expired"),
+    ("xfolio.news.collection_store", "NewsletterNewsStore", "purge_expired"),
+    ("xfolio.newsletter.settings", "NotificationSettingsStore", "purge_expired"),
     ("xfolio.jobs.outbox", "TelegramOutboxStore", "purge_expired"),
     ("xfolio.jobs.collection", "PreparationStore", "purge_expired"),
 )

@@ -17,10 +17,10 @@ from xfolio.db.schema import operations_events, usage_ledger
 from xfolio.db.telegram import attempts, outbox, parts
 from xfolio.domestic.calendar import KST
 from xfolio.jobs.telegram import SendResult, split_text
-from xfolio.news_contracts import digest
-from xfolio.newsletter import BudgetState, NewsletterError, SendContext
-from xfolio.newsletter_news import aware
-from xfolio.newsletter_store import NewsletterStore
+from xfolio.news.collection import aware
+from xfolio.news.contracts import digest
+from xfolio.newsletter.edition import BudgetState, NewsletterError, SendContext
+from xfolio.newsletter.store import NewsletterStore
 
 
 class OutboxError(ValueError):
@@ -58,7 +58,7 @@ class TelegramOutboxStore:
         self.engine, self.recipient_scope = engine, recipient_scope
         self.monthly_limit = monthly_limit
         if settings_store is None:
-            from xfolio.notification_settings import NotificationSettingsStore
+            from xfolio.newsletter.settings import NotificationSettingsStore
 
             settings_store = NotificationSettingsStore(engine)
         self.settings_store = settings_store
@@ -402,7 +402,7 @@ class TelegramOutboxStore:
                 if all(s == "confirmed" for s in states):
                     self._finish(conn, row, now=now)
             elif result.status == "retryable_failure":
-                from xfolio.newsletter import at
+                from xfolio.newsletter.edition import at
 
                 if retry_at >= at(row["target_date"], 8, 10):
                     self._finish(conn, row, now=now, failure="retry_exceeds_deadline")

@@ -1,0 +1,6 @@
+import type { Money } from './types';
+
+const names: Record<string, string> = { ready: '준비됨', partial: '일부 처리', failed: '실패', skipped: '정상 건너뜀', pending: '대기', sending: '전송 중', confirmed: '전송 확인', unknown: '결과 불명', retryable_failure: '안전한 재시도 대기', mock: '모의', live: '실자료', dry_run: '시험 실행', synthetic: '합성 시험', unverified: '출처 확인 전', provenance_unverified: '실자료 여부 확인 전', current: '기준 거래일 일치', corrected: '정정 · 등락률 보류', superseded: '최신 정정으로 대체됨', stale: '기준 거래일 불일치', missing: '자료 누락', expired: '보존 만료', invalid: '무결성 확인 실패', attention: '확인 필요', calendar_unverified: '거래일 확인 전', not_observed: '관측 기록 없음', not_measured: '원장 기록 없음', observed: '기록 확인', complete: '수집 완료', over_limit: '예산 초과', invalid_configuration: '예산 설정 확인 필요', invalid_ledger: '비용 원장 확인 필요' };
+export const label = (value: string) => names[value] ?? value;
+export const time = (value?: string) => value && !Number.isNaN(Date.parse(value)) ? new Intl.DateTimeFormat('ko-KR', { timeZone: 'Asia/Seoul', dateStyle: 'short', timeStyle: 'short' }).format(new Date(value)) : '확인 대기';
+export const money = (value: Money | undefined) => value == null ? '미측정' : `${new Intl.NumberFormat('ko-KR', { maximumFractionDigits: 4 }).format(Number(value))}원`;

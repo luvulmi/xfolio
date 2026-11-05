@@ -8,7 +8,7 @@
 
 ## 공통 구현 계약
 
-`src/xfolio/analysis.py`의 `analyze_synthetic`이 source ID·원문·필수 표현을 받아 Structured Outputs의 선정 여부·이유·한국어 요약·근거를 반환한다. 응답 완료, 출처 ID 일치, 근거의 원문 연속 부분 문자열, 필수 기간/수치, 보류 시 빈 요약, 새 숫자 금지, 한국어 포함을 기계 검사한다. 실패·API 오류는 보류하며 API 오류 본문/키를 출력하지 않는다. usage의 입력·출력·캐시 읽기·쓰기와 공시 단가로 비용을 추정한다. `store=False`·도구 없음·자동 재시도0·`reasoning.effort=none`이다.
+`src/xfolio/legacy/analysis.py`의 `analyze_synthetic`이 source ID·원문·필수 표현을 받아 Structured Outputs의 선정 여부·이유·한국어 요약·근거를 반환한다. 응답 완료, 출처 ID 일치, 근거의 원문 연속 부분 문자열, 필수 기간/수치, 보류 시 빈 요약, 새 숫자 금지, 한국어 포함을 기계 검사한다. 실패·API 오류는 보류하며 API 오류 본문/키를 출력하지 않는다. usage의 입력·출력·캐시 읽기·쓰기와 공시 단가로 비용을 추정한다. `store=False`·도구 없음·자동 재시도0·`reasoning.effort=none`이다.
 
 `xfolio ai-preview`는 기본 무통신이고 `--run` 때도 고정 가상 자료만 분석해 `build_morning_preview`로 전달한다. 모델 결과와 원문·기준 시각 검증을 통과한 뒤에도 결과는 `synthetic=true`, `can_publish=false`, `dry_run`이다. 가상 1건 실제 연결 시험은 Luna 사용량 384입력/137출력, 약 $0.0001069, 2글 미리보기 `ready`였다. 첫 글은 두 지수, 둘째 글은 가상 뉴스와 원문 링크다. 영문 가상 기관명이 한국어 문장에 남아 문안 다듬기가 필요하다. 이것은 발행 승인이나 실기사 파이프라인 완성이 아니다.
 

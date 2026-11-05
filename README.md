@@ -49,7 +49,7 @@ uv run xfolio newsletter-preview --inputs-file .cache/morning_inputs.json --cont
 uv run xfolio newsletter-preview --inputs-file .cache/morning_inputs.json --context-file .cache/morning_context.json --save --json
 ```
 
-`MorningInputs`/`SendContext` 스키마는 `xfolio.newsletter`에 정의되어 있습니다. 수신자 scope는 서버용 불투명 구분자이며 토큰/chat ID를 JSON에 넣지 않습니다. 저장에는 실행 환경의 명시적 `XFOLIO_API_DATABASE_URL`·0005 migration·동일 DB의 T02/T03 원본이 필요합니다. 신규 의존성/비밀 설정은 없습니다. 기본 합성 예시는2026-11-04 자료이고 외부 통신을 하지 않습니다. 본문/입력 파일은90일 보존 정책에 따라 Git 제외 경로에서 관리합니다.
+`MorningInputs`/`SendContext` 스키마는 `xfolio.newsletter.edition`에 정의되어 있습니다. 수신자 scope는 서버용 불투명 구분자이며 토큰/chat ID를 JSON에 넣지 않습니다. 저장에는 실행 환경의 명시적 `XFOLIO_API_DATABASE_URL`·0005 migration·동일 DB의 T02/T03 원본이 필요합니다. 신규 의존성/비밀 설정은 없습니다. 기본 합성 예시는2026-11-04 자료이고 외부 통신을 하지 않습니다. 본문/입력 파일은90일 보존 정책에 따라 Git 제외 경로에서 관리합니다.
 
 JSON의 `send_check.can_send`는 검사 결과이고 이 명령의 `can_send`는 항상 false입니다. 파일만의 검사는 `local_inputs_only`, 저장 DB 재검사까지 수행하면 `database_and_context`입니다. 실제 설정/예산/이력을 서버에서 읽어 원자 점유하는 연결·Telegram 분할/429/실제 수신은 T05/T06 후속입니다. 실패 또는 발송 검사 차단은 종료 코드1, 정상 건너뜀은0입니다. 미리보기·저장만으로 기발송 이력을 만들지 않습니다.
 
@@ -136,7 +136,7 @@ ETF 조회는 `uv run xfolio etf-close --json`입니다(실제 Yahoo 조회). �
 
 AM 진입점은 `AMInputs`와 `save_am_edition(engine, inputs, account_id=..., now=...)`입니다. 기본 `transport_mode=mock`이고 허용 fixture는 live 송신용 편성으로 승인할 수 없습니다. 필수 Exa/BLS 수집 완주·07:30 확보·ETF 1글+뉴스 0~3글을 검사하며 승인 시 원문/권리/수집/길이·세 사람 확인을 다시 대조합니다. `record_common_collection(...)`은 본문 없는 수집 메타데이터를 저장하고 기존 승인 근거의 정정을 발견하면 예약을 보류합니다. DB는 0002 migration의 4글 제약을 사용하며 아래 격리 시험을 운영 적용과 구분합니다.
 
-`uv run pytest tests/test_exa.py tests/test_bls_input.py tests/test_news_evaluation.py tests/test_news_input.py`로 키와 외부 API 없이 검사합니다. 설정은 `xfolio.exa.ExaConfig`로 만들며 기본 3질의·질의당 5결과·본문 20,000자·최대 6요청·응답비용 예산 $0.10/요청 여유 $0.02입니다. 비용 여유는 개발 가정이고 제공처 청구 상한이나 월 예산 원장을 보장하지 않습니다. 실제 단가와 권리를 검토한 뒤 실행 설정을 정합니다.
+`uv run pytest tests/news/test_exa.py tests/news/test_bls_input.py tests/news/test_news_evaluation.py tests/news/test_news_input.py`로 키와 외부 API 없이 검사합니다. 설정은 `xfolio.news.providers.exa.ExaConfig`로 만들며 기본 3질의·질의당 5결과·본문 20,000자·최대 6요청·응답비용 예산 $0.10/요청 여유 $0.02입니다. 비용 여유는 개발 가정이고 제공처 청구 상한이나 월 예산 원장을 보장하지 않습니다. 실제 단가와 권리를 검토한 뒤 실행 설정을 정합니다.
 
 호출 진입점은 `collect_exa(client=..., api_key=SecretStr(...), rights=..., window_start=..., window_end=..., run_id=...)`와 `collect_cpi_input(client=..., rights=..., window_start=..., window_end=..., run_id=...)`입니다. 실제 호출 시 서버 환경의 `EXA_API_KEY`를 `SecretStr`로 전달하며 `.env`를 자동으로 읽지 않습니다. collection 허용 검토가 없거나 만료되면 요청 전에 거절합니다. Exa는 설정과 공통 collection을 감싼 `ExaResult`, CPI는 `(collection, CPIInput 또는 None)`을 반환합니다. `evaluate_news_input(...)`는 이용 목적별 후보 검사이며 항상 사람 검토·발행 불가 결과를 반환합니다. worker/CLI 실호출 연결은 후속입니다.
 
@@ -146,8 +146,8 @@ Neon Free PostgreSQL과 [기존 비공개 Streamlit 앱](https://xfolio-yuring.s
 
 ```powershell
 uv sync --extra dashboard --extra cloud
-uv run --extra cloud python -m xfolio.cloud
-uv run --env-file .env --extra cloud python -m xfolio.cloud --run --initialize
+uv run --extra cloud python -m xfolio.legacy.cloud
+uv run --env-file .env --extra cloud python -m xfolio.legacy.cloud --run --initialize
 ```
 
 두 번째 명령은 무통신이며 세 번째부터 실제 DB에 가상 자료를 씁니다. 접속 URL은 Git에서 제외한 `.env`의 `XFOLIO_DATABASE_URL`에 설정합니다. 값과 비밀번호를 로그·채팅에 출력하지 않습니다. 운영 수집 커서·근거·승인·게시 표의 이전과 실제 예약은 후속 구현입니다.
@@ -193,7 +193,7 @@ uv run python -m xfolio.api.export_openapi
 
 OpenAPI 산출물은 [contracts/openapi.json](contracts/openapi.json), 동작 계약은 [관리자 화면·승인 API](tasks/verification/admin/관리자_화면과_승인_API.md)입니다. 합성 뉴스는 `synthetic=true`·발행 불가를 유지합니다. 조회·승인 API가 X에 전송하지 않으며 worker·실기사 입력/생성·CLI 수정·실제 게시 연결은 후속입니다.
 
-뉴스 정책 회귀 시험은 `uv run pytest tests/test_news_selection.py`로 실행합니다. 중요성/관련성/새 사실 판단은 근거를 검토한 입력을 요구하며 이 구현이 원문에서 의미를 자동 추출한 결과라고 보지 않습니다. PostgreSQL 시험에는 일회용 DB의 `XFOLIO_TEST_DATABASE_URL`을 별도로 명시합니다. 미설정 시 관련 통합 시험은 건너뛰고 메모리 시험과 구분합니다.
+뉴스 정책 회귀 시험은 `uv run pytest tests/news/test_news_selection.py`로 실행합니다. 중요성/관련성/새 사실 판단은 근거를 검토한 입력을 요구하며 이 구현이 원문에서 의미를 자동 추출한 결과라고 보지 않습니다. PostgreSQL 시험에는 일회용 DB의 `XFOLIO_TEST_DATABASE_URL`을 별도로 명시합니다. 미설정 시 관련 통합 시험은 건너뛰고 메모리 시험과 구분합니다.
 
 ## 이전 X 인증 설정
 

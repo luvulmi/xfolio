@@ -13,7 +13,7 @@ import httpx
 from pydantic import SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-from xfolio.finnhub import (
+from xfolio.news.providers.finnhub import (
     canonical_url,
     event_bucket,
     filter_rows,

@@ -33,7 +33,10 @@ from xfolio.api.store import PostgresStore
 from xfolio.db.schema import content_drafts, evidence_bundles, publication_jobs
 
 ROOT = Path(__file__).resolve().parents[2]
-ORIGIN = "https://127.0.0.1:8447"
+PORT = int(os.environ.get("XFOLIO_BROWSER_TEST_PORT", "8447"))
+if not 1024 <= PORT <= 65535 or PORT in {3000, 8000}:
+    raise ValueError("invalid_browser_test_port")
+ORIGIN = f"https://127.0.0.1:{PORT}"
 EMAIL = "browser-operator@example.invalid"
 SCHEMA = "xfolio_browser_e2e_" + secrets.token_hex(4)
 SCHEMA_RECORD = ROOT / ".cache" / "browser-e2e" / "run-schema.txt"
@@ -188,10 +191,9 @@ def seed_synthetic(store):
 
 def seed_am_workflow(store):
     """실제 AM 저장/승인의 시험 전제. 공급자·AI·X 실제 호출은 없다."""
-    sys.path.insert(0, str(ROOT / "tests"))
-    import am_fixtures
-
-    from xfolio.am_edition import save_am_edition
+    sys.path.insert(0, str(ROOT))
+    from tests.support import am_fixtures
+    from xfolio.legacy.am_edition import save_am_edition
 
     am_fixtures.CUTOFF = (TEST_CLOCK - timedelta(minutes=5)).astimezone(
         ZoneInfo("Asia/Seoul")
@@ -241,17 +243,16 @@ def certificate():
 
 def seed_newsletter_workflow(store):
     """T07: real stores/worker with test-only provider/AI/Telegram doubles."""
-    sys.path.insert(0, str(ROOT / "tests"))
-    from test_telegram_outbox_postgres import FakeLive
-    from test_worker_collection_postgres import setup
-
+    sys.path.insert(0, str(ROOT))
+    from tests.jobs.test_telegram_outbox_postgres import FakeLive
+    from tests.jobs.test_worker_collection_postgres import setup
     from xfolio.db.notification_settings import settings as notification_settings
     from xfolio.domestic.store import DomesticStore
     from xfolio.jobs.outbox import TelegramOutboxStore
     from xfolio.jobs.worker import MorningWorker
-    from xfolio.newsletter import at
-    from xfolio.newsletter_demo import demo_inputs
-    from xfolio.newsletter_store import NewsletterStore
+    from xfolio.newsletter.demo import demo_inputs
+    from xfolio.newsletter.edition import at
+    from xfolio.newsletter.store import NewsletterStore
 
     data = demo_inputs()
     DomesticStore(store.engine).bootstrap(data.frozen_at - timedelta(days=1))
@@ -306,7 +307,7 @@ def main():
         uvicorn.run(
             app,
             host="127.0.0.1",
-            port=8447,
+            port=PORT,
             ssl_keyfile=str(key_file),
             ssl_certfile=str(cert_file),
             access_log=False,

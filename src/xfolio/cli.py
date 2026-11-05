@@ -12,16 +12,16 @@ from uuid import uuid4
 import httpx
 from openai import OpenAI
 
-from xfolio.analysis import DEFAULT_MODEL, MODEL_PRICES, analyze_synthetic
-from xfolio.bls import BLSError, inspect_bls
-from xfolio.compose import NewsSelection, build_morning_preview
-from xfolio.demo import DEMO_CUTOFF, DEMO_PREPARED, demo_inputs, demo_preview
-from xfolio.market import MarketDataError, collect_index_closes, display_number
-from xfolio.news import collect_news, metadata_report
-from xfolio.news_contracts import CollectionRun, digest
-from xfolio.news_queries import FOCUSED_QUERIES
-from xfolio.news_store import NewsStore
-from xfolio.storage import DEFAULT_DB, StorageError, configured_store
+from xfolio.legacy.analysis import DEFAULT_MODEL, MODEL_PRICES, analyze_synthetic
+from xfolio.legacy.compose import NewsSelection, build_morning_preview
+from xfolio.legacy.demo import DEMO_CUTOFF, DEMO_PREPARED, demo_inputs, demo_preview
+from xfolio.legacy.market import MarketDataError, collect_index_closes, display_number
+from xfolio.legacy.storage import DEFAULT_DB, StorageError, configured_store
+from xfolio.news.collector import collect_news, metadata_report
+from xfolio.news.contracts import CollectionRun, digest
+from xfolio.news.providers.bls import BLSError, inspect_bls
+from xfolio.news.queries import FOCUSED_QUERIES
+from xfolio.news.store import NewsStore
 
 
 def main(argv: Sequence[str] | None = None) -> None:
@@ -111,12 +111,12 @@ def main(argv: Sequence[str] | None = None) -> None:
     args = parser.parse_args(argv)
 
     if args.command == "newsletter-preview":
-        from xfolio.newsletter_cli import execute
+        from xfolio.newsletter.cli import execute
 
         execute(args)
         return
     if args.command == "newsletter-news":
-        from xfolio.newsletter_news_cli import execute
+        from xfolio.news.cli import execute
 
         execute(args)
         return
@@ -162,7 +162,7 @@ def main(argv: Sequence[str] | None = None) -> None:
         if report["state"] != "snapshot_parsed":
             parser.exit(1, "예정 발표가 아직 확인되지 않아 보류합니다.\n")
     elif args.command == "etf-close":
-        from xfolio.etf import collect_etf_closes, etf_post_text
+        from xfolio.legacy.etf import collect_etf_closes, etf_post_text
 
         try:
             snapshot = collect_etf_closes()

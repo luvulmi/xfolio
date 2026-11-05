@@ -8,7 +8,7 @@ from pathlib import Path
 from openai import OpenAI
 
 from scripts.experiments.news_summary_probe import SAMPLES
-from xfolio.analysis import MODEL_PRICES, PROMPT_VERSION, analyze_synthetic
+from xfolio.legacy.analysis import MODEL_PRICES, PROMPT_VERSION, analyze_synthetic
 
 MAX_COST_USD = 0.05
 OUTPUT = Path("tasks/verification/assets/ai_compare/mini_luna_20261025.jsonl")

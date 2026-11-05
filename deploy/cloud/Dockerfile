@@ -10,4 +10,4 @@ WORKDIR /app
 COPY --from=builder /app/.venv /app/.venv
 ENV PATH="/app/.venv/bin:$PATH" PYTHONUNBUFFERED=1 PYTHONDONTWRITEBYTECODE=1
 USER 10001:10001
-ENTRYPOINT ["python", "-m", "xfolio.cloud"]
+ENTRYPOINT ["python", "-m", "xfolio.legacy.cloud"]

@@ -38,9 +38,9 @@ live 전체 성공은 T03 뉴스confirmed, live 부분/불명은 보수적으로
 
 `list_deliveries(now=...,limit=50)`는 JSON 목록, `get_delivery(id,now=...)`는 조각/시도와 유효 본문을 반환한다. token/lease는 숨긴다. 메타데이터는 생성+365일이며 T04 본문은 원본90일/더 이른 만료부터None이다. `purge_expired(now=...)`가 outbox와하위 시도를cascade 삭제하고 자기 worker 상태 기록도 만료 삭제한다.
 
-- [무통신 시험](../../../tests/test_telegram_worker.py): UTF-16분할·원문 보존, receipt/429 shape/timeout·비밀 비노출, 휴장 수집전 차단·시각·KST예약·기본mock.
-- [격리 DB 시험](../../../tests/test_telegram_outbox_postgres.py):0007 업/다운/스냅샷·경쟁claim·mock/live분리·중복·현재중지/개장/예산/마감·429/부분·unknown/재시작·90/365일.
-- [수집 설정·CLI 시험](../../../tests/test_worker_collection.py): 서버 환경만읽기·명시단가/키거절·live준비/예약자원구성·기본mock보존.
-- [수집 연결 격리 DB 시험](../../../tests/test_worker_collection_postgres.py):07:50고정/늦은변경/잠금유예·중복/중단·실제T02/T03/T04저장·AI비용원장·휴장·정상0/partial/failed·unknown제외·이전호동결시각·90일준비claim보존.
+- [무통신 시험](../../../tests/jobs/test_telegram_worker.py): UTF-16분할·원문 보존, receipt/429 shape/timeout·비밀 비노출, 휴장 수집전 차단·시각·KST예약·기본mock.
+- [격리 DB 시험](../../../tests/jobs/test_telegram_outbox_postgres.py):0007 업/다운/스냅샷·경쟁claim·mock/live분리·중복·현재중지/개장/예산/마감·429/부분·unknown/재시작·90/365일.
+- [수집 설정·CLI 시험](../../../tests/jobs/test_worker_collection.py): 서버 환경만읽기·명시단가/키거절·live준비/예약자원구성·기본mock보존.
+- [수집 연결 격리 DB 시험](../../../tests/jobs/test_worker_collection_postgres.py):07:50고정/늦은변경/잠금유예·중복/중단·실제T02/T03/T04저장·AI비용원장·휴장·정상0/partial/failed·unknown제외·이전호동결시각·90일준비claim보존.
 
 실제본인수신·정시수집·운영재시작·AWS·T09오후 슬롯은 이번 검증 근거가 아니다.

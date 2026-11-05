@@ -12,10 +12,10 @@ from xfolio.domestic.calendar import KST, local_calendar
 from xfolio.jobs.collection import CollectionError
 from xfolio.jobs.outbox import OutboxError, TelegramOutboxStore, dispatch
 from xfolio.jobs.telegram import MockTelegramTransport, TelegramTransport, split_text
-from xfolio.newsletter import NewsletterError, at, build_morning, fingerprint
-from xfolio.newsletter_demo import demo_inputs
-from xfolio.newsletter_news import aware
-from xfolio.newsletter_news_store import NewsletterNewsStore
+from xfolio.news.collection import aware
+from xfolio.news.collection_store import NewsletterNewsStore
+from xfolio.newsletter.demo import demo_inputs
+from xfolio.newsletter.edition import NewsletterError, at, build_morning, fingerprint
 
 
 class MorningWorker:
@@ -206,7 +206,7 @@ def main(argv=None):
             import sqlalchemy as sa
 
             from xfolio.db.domestic import calendar_days
-            from xfolio.newsletter_store import NewsletterStore
+            from xfolio.newsletter.store import NewsletterStore
 
             def calendar(day, now):
                 with db.engine.connect() as conn:

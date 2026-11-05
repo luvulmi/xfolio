@@ -10,8 +10,8 @@ from pathlib import Path
 from openai import OpenAI
 from pydantic import BaseModel, ConfigDict
 
-from xfolio.analysis import usage_cost_usd
-from xfolio.compose import weighted_length_estimate
+from xfolio.legacy.analysis import usage_cost_usd
+from xfolio.legacy.compose import weighted_length_estimate
 
 MODEL = "gpt-5.4-mini"
 OUTPUT = Path(

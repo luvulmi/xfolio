@@ -35,7 +35,7 @@
 
 ### 무통신 시험과 판정 경계
 
-[시험 코드](../../../tests/test_kis_market_probe.py)는 `httpx.MockTransport`·합성 키/응답을 사용한다. 실표본 재생 시험도 보존 JSON만 읽으며 외부 통신하지 않는다.
+[시험 코드](../../../tests/experiments/test_kis_market_probe.py)는 `httpx.MockTransport`·합성 키/응답을 사용한다. 실표본 재생 시험도 보존 JSON만 읽으며 외부 통신하지 않는다.
 
 | 시험 | 확인한 동작 | 자료 구분 |
 | --- | --- | --- |

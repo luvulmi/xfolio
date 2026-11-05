@@ -18,8 +18,8 @@ from xfolio.domestic.calendar import KST
 from xfolio.domestic.kis import KisClient, KisSettings
 from xfolio.domestic.store import DomesticStore
 from xfolio.jobs.telegram import TelegramTransport
-from xfolio.newsletter_news import collect
-from xfolio.newsletter_news_store import NewsletterNewsStore
+from xfolio.news.collection import collect
+from xfolio.news.collection_store import NewsletterNewsStore
 
 ROOT = Path(__file__).resolve().parents[2]
 

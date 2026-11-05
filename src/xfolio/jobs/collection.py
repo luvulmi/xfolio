@@ -10,6 +10,8 @@ from pathlib import Path
 import httpx
 import sqlalchemy as sa
 
+from xfolio.ai.generation import OpenAIGenerationClient
+from xfolio.ai.workflow import GenerationLimits, SQLWorkflowStore, WorkflowError
 from xfolio.db.domestic import instruments, watchlist
 from xfolio.db.newsletter import editions
 from xfolio.db.newsletter_news import deliveries, items
@@ -20,13 +22,11 @@ from xfolio.domestic.calendar import KST
 from xfolio.domestic.kis import KisClient, KisSettings
 from xfolio.domestic.models import Instrument
 from xfolio.domestic.store import DomesticStore
-from xfolio.news_generation import OpenAIGenerationClient
-from xfolio.news_workflow import GenerationLimits, SQLWorkflowStore, WorkflowError
-from xfolio.newsletter import MorningInputs, MorningSettings, at, fingerprint
-from xfolio.newsletter_news import NewsError, aware, collect, summarize
-from xfolio.newsletter_news_store import NewsletterNewsStore
-from xfolio.newsletter_store import NewsletterStore
-from xfolio.notification_settings import NotificationSettingsStore
+from xfolio.news.collection import NewsError, aware, collect, summarize
+from xfolio.news.collection_store import NewsletterNewsStore
+from xfolio.newsletter.edition import MorningInputs, MorningSettings, at, fingerprint
+from xfolio.newsletter.settings import NotificationSettingsStore
+from xfolio.newsletter.store import NewsletterStore
 
 
 class CollectionError(ValueError):

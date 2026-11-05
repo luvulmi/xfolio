@@ -10,7 +10,7 @@ from pathlib import Path
 
 import httpx
 
-from xfolio.news_queries import FOCUSED_QUERIES
+from xfolio.news.queries import FOCUSED_QUERIES
 
 SPEC = importlib.util.spec_from_file_location(
     "marketaux_experiment", Path(__file__).with_name("marketaux_incremental_probe.py")

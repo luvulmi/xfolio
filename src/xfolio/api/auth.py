@@ -11,7 +11,7 @@ from authlib.jose import JsonWebKey, jwt
 from pydantic import BaseModel
 
 from xfolio.api.store import ApiError
-from xfolio.cloud import operator_allowed
+from xfolio.legacy.cloud import operator_allowed
 
 
 class Settings(BaseModel):

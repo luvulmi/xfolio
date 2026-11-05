@@ -16,18 +16,18 @@ from alembic import command
 from alembic.config import Config
 from fastapi.testclient import TestClient
 
-from xfolio.api.app import COOKIE, create_app
-from xfolio.api.auth import Settings
-from xfolio.api.store import PostgresStore
-from xfolio.bls import RELEASE_URL, fetch_html, parse_release
-from xfolio.db.schema import content_drafts, publication_jobs, usage_ledger
-from xfolio.news_edition import assemble_bls_pm, record_bls_collection
-from xfolio.news_workflow import (
+from xfolio.ai.workflow import (
     GenerationLimits,
     PermissionReview,
     SQLWorkflowStore,
     generate_and_store,
 )
+from xfolio.api.app import COOKIE, create_app
+from xfolio.api.auth import Settings
+from xfolio.api.store import PostgresStore
+from xfolio.db.schema import content_drafts, publication_jobs, usage_ledger
+from xfolio.legacy.news_edition import assemble_bls_pm, record_bls_collection
+from xfolio.news.providers.bls import RELEASE_URL, fetch_html, parse_release
 
 
 class SimulatedGenerator:

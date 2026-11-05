@@ -12,9 +12,9 @@ Free 프로젝트의 PostgreSQL 접속 URL을 `.env`의 `XFOLIO_DATABASE_URL`에
 
 ```powershell
 uv sync --extra cloud --extra dashboard
-uv run --extra cloud python -m xfolio.cloud
-uv run --env-file .env --extra cloud python -m xfolio.cloud --run --initialize
-uv run --env-file .env --extra cloud python -m xfolio.cloud --run
+uv run --extra cloud python -m xfolio.legacy.cloud
+uv run --env-file .env --extra cloud python -m xfolio.legacy.cloud --run --initialize
+uv run --env-file .env --extra cloud python -m xfolio.legacy.cloud --run
 ```
 
 첫 명령은 의존성 설치, 두 번째는 무통신 계획이다. `--run`부터 DB를 사용한다. 초기화는 가상 표 하나만 만들고 기존 데이터를 삭제하지 않는다. 성공 결과에는 UTC 관측 시각·왕복·중복 방지 판정을 출력하고 접속 URL·비밀번호·자료 payload는 출력하지 않는다.
@@ -22,7 +22,7 @@ uv run --env-file .env --extra cloud python -m xfolio.cloud --run
 기존 **가상 미리보기 표만** 이전하려면 원본이 있는지 확인하고 다음을 실행한다. 실뉴스·수집 커서 등 다른 표의 이전은 후속 작업이다.
 
 ```powershell
-uv run --env-file .env --extra cloud python -m xfolio.cloud --run --migrate-sqlite data/xfolio.sqlite3
+uv run --env-file .env --extra cloud python -m xfolio.legacy.cloud --run --migrate-sqlite data/xfolio.sqlite3
 ```
 
 SQLite 원본은 read-only로 열고 복사 실패 시 대상 삽입은 트랜잭션으로 롤백한다. 원본을 삭제하거나 운영 전환을 자동 확정하지 않는다. 앱 접속 역할에는 초기화 후 해당 표의 필요한 SELECT·INSERT만 부여하는 것을 권장한다. 운영 DB 역할·권한은 실제 배포 전에 확인한다.

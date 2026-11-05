@@ -1,26 +1,21 @@
 # Python 애플리케이션
 
-기능별 모듈의 역할을 정리한 현재 코드 안내다. 모듈이 존재한다는 사실과 실제 외부 연동·운영 완료를 구분한다. 전체 기준은 [프로젝트 안내](../../README.md)와 [문서 목록](../../docs/README.md)을 따른다.
+2026-11-05 기능별 패키지 구조다. 루트에는 `cli.py`, `__main__.py`, `__init__.py`만 두며 실행 명령은 기존 `uv run xfolio ...`를 유지한다. 파일이 있다는 사실과 실제 운영 인수는 구분한다. [전체 구조](../../docs/프로젝트_구조.md) · [테스트](../../tests/README.md)
 
-| 경계 | 현재 파일 | 역할 |
-| --- | --- | --- |
-| 실행 진입 | `cli.py`, `__main__.py` | CLI 상태·조회·미리보기·시험 명령 |
-| 아침 뉴스레터 | `newsletter.py`, `newsletter_store.py`, `newsletter_cli.py`, `newsletter_demo.py`, `db/newsletter.py` | T04 가격+뉴스0~3건·준비/부분/실패/휴장 건너뜀·발송 직전 검사·0005 불변/90일 저장. 송신/worker는 T06 |
-| 공용 알림 설정 | `notification_settings.py`, `db/notification_settings.py` | T05 관리자 쓰기·worker 읽기, revision/감사·0006. 오후 활성화는 T09 인수 전 차단 |
-| 자동 실행·전송 | `jobs/worker.py`, `jobs/collection.py`, `jobs/outbox.py`, `jobs/telegram.py`, `db/telegram.py` | T06 KIS→뉴스/공식 요약→편성 연결·07:50 설정 고정·90일 준비 claim·비용 원장·기본 모의 예약·점유/분할/불명·0007/365일 메타. 실제 정시/유료 인수 후속 |
-| 국내 시장 | `domestic/`, `db/domestic.py` | KIS 원종가/토큰·거래일·마스터/검색·종목/버전·90일 DB, 관리자 라우트/worker는 후속 |
-| 개인 뉴스레터 뉴스 | `newsletter_news.py`, `newsletter_news_cli.py`, `finnhub.py`, `official_releases.py`, `newsletter_news_store.py`, `db/newsletter_news.py` | T03 Finnhub·BLS CPI/BEA GDP/PCE/Board FOMC·근거 요약·전체0~3건·성공 전달 제외/90일 만료. 실제 유료 요약·worker 송신은 후속 |
-| 시장 수집 | `etf.py`, `market.py`, `models.py` | 제품 SPY/QQQ/DIA USD Close·배당/분할·수정치와 legacy 두 지수 모델 |
-| 뉴스 수집 | `news.py`, `news_models.py`, `news_queries.py`, `bls.py` | 기존 Marketaux 수집 실험과 BLS CPI 근거 파서 |
-| 공통 뉴스 입력 | `news_input.py`, `exa.py`, `bls_input.py` | Exa/BLS 출처·시각·본문·권리·개정·수집 상태와 수집기. MockTransport 인수, 허용 실호출 검증 후속 |
-| AM 편성 | `am_edition.py` | ETF 1글+뉴스 0~3글·수집/근거 저장·입력 검토 감사·승인 재검사·정정 보류. 송신은 후속 |
-| 공통 근거 검사 | `news_evaluation.py` | 수치/범위·회계기준·조건·시각·권리·사건 중복·승인 근거 변화 보류. 항상 사람 검토 필요 |
-| 뉴스 처리 | `news_contracts.py`, `news_selection.py`, `news_generation.py`, `news_validation.py`, `news_workflow.py`, `news_edition.py` | 근거 계약·선정·AI 생성·검증·편성. 범용 기사 자동 추출 완료를 뜻하지 않음 |
-| 저장 | `storage.py`, `postgres.py`, `news_store.py`, `db/` | 기존 미리보기/근거 저장과 운영 schema |
-| 관리자 API | `api/` | FastAPI·Google 인증·뉴스레터/발송 이력·종목/설정 API. legacy 검토/승인도 별도 보존 |
-| 가상 시험 | `demo.py`, `compose.py`, `analysis.py`, `cloud.py`, `dashboard_ui.py` | 가상 입력·미리보기·기존 Streamlit/클라우드 시험 지원 |
-| 게시 | `publish.py` | 설명만 있는 미구현 진입점 |
+| 패키지 | 책임·주요 파일 |
+| --- | --- |
+| `domestic/` | 국내 ETF. `kis.py` 시세·토큰, `calendar.py` 거래일, `catalogue.py` 마스터/검색, `models.py` 계약, `store.py` 저장, `cli.py` 조회 |
+| `news/` | `collection.py` 현재4출처 수집·중복/중요도/요약 연결, `importance.py` 중요도, `collection_store.py` 기발송·90일 저장, `cli.py` 진단. `contracts.py`·`input.py`·`evaluation.py`·`selection.py`는 공통 근거/입력과 기존 검토 계약 |
+| `news/providers/` | `finnhub.py` 일반 뉴스, `official.py` BLS/BEA/Board 자체 발표, `bls.py` CPI 파서. `exa.py`·`bls_input.py`는 이전 공통 입력 어댑터 |
+| `ai/` | `generation.py` OpenAI 어댑터/토큰 상한, `workflow.py` 단가·예산 예약·생성 결과 계약, `validation.py` 기존 사실/문형·길이 검사 |
+| `newsletter/` | `edition.py` 가격+뉴스 아침 편성·발송 직전 검사, `store.py` 불변 편성/90일, `settings.py` 공용 알림 설정/revision/감사, `cli.py`·`demo.py` 무통신 편성 시험 |
+| `jobs/` | `collection.py`07:50 설정/종목 고정·실수집·준비 claim, `worker.py` 예약/단계 실행, `outbox.py` 원자 점유·재시작/중복·429/불명, `telegram.py` 분할/송신 |
+| `api/` | FastAPI·Google 세션/CSRF·관리자 종목/설정·비용/신선도·뉴스레터/발송 이력. 기존 X 검토 API도 보존 |
+| `db/` | SQLAlchemy schema. 실제 DB 변경 이력은 [migrations](../../migrations/README.md) |
+| `legacy/` | 기존 미국 ETF/지수(`etf.py`, `market.py`, `models.py`), X AM/PM 편성, 합성 분석/미리보기, SQLite/PostgreSQL 미리보기 저장·Streamlit/클라우드 시험 자산 |
 
-`jobs/`의 실제 제공처 준비/예약 연결은 구현·격리 검증했다. 기본은 모의 실행이며 live 준비에는 서버 키·명시적 DB·인수 플래그·유효한 단가 limits 파일이 필요하다. 본인 정시 수신·유료 요약·운영 인수는 후속이다. 현재 일반 뉴스는 Finnhub, 공식 발표는 BLS·BEA·Board 직접 수집이다. 기존 Exa/Marketaux/X 경로는 이전 구현 자산으로 보존한다.
+기본 연결은 `domestic`·`news` → `newsletter` → `jobs`이며 `api`는 저장된 결과와 설정을 조회·수정한다. `db`는 저장 schema, `ai`는 생성·예산 계약이다. 일반 뉴스의 제목·링크와 공식 발표의 근거 요약을 구분한다. [중요도 단일 기준](../../docs/뉴스_중요도_기준.md)
 
-코드 파일은 import와 CLI 호환성을 위해 현재 위치를 유지한다. 검증 방법은 [테스트 안내](../../tests/README.md), 프론트는 [관리자 앱](../../frontend/README.md), DB 변경은 [migration 안내](../../migrations/README.md)를 참고한다.
+`news/collector.py`·`models.py`·`queries.py`·`store.py`는 이전 Marketaux 수집/메타데이터·근거 저장을 보존한다. 현재 운영 후보는 `news/collection.py`에서 확인한다. 기존 CLI와 API 경로는 유지하며 Python 내부 import는 새 패키지를 사용한다. 예: `xfolio.news_importance` → `xfolio.news.importance`, `xfolio.newsletter_store` → `xfolio.newsletter.store`.
+
+실제 로컬은 HTTPS8443/API18443/DB55439다. 준비/송신의 기본 모드는 모의이며 live는 명시적 서버 설정·본인 수신자·유효 단가/예산이 필요하다. 실제 유료1건 진단·11/6 예약 준비와 정시 수신·AWS 운영 인수는 [수행 기록](../../tasks/logs/2026-11-05_뉴스_중요도와_로컬_실행.md)에서 구분한다.

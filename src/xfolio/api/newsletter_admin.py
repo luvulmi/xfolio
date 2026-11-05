@@ -27,14 +27,14 @@ from xfolio.db.schema import operations_events, usage_ledger
 from xfolio.domestic.calendar import KST, completed_sessions
 from xfolio.domestic.models import CloseQuote, DomesticError
 from xfolio.domestic.store import DomesticStore
-from xfolio.newsletter import MorningSettings, NewsletterError, at
-from xfolio.newsletter_news import aware
-from xfolio.newsletter_store import NewsletterStore
-from xfolio.notification_settings import (
+from xfolio.news.collection import aware
+from xfolio.newsletter.edition import MorningSettings, NewsletterError, at
+from xfolio.newsletter.settings import (
     NotificationSettingsError,
     NotificationSettingsStore,
     record_audit,
 )
+from xfolio.newsletter.store import NewsletterStore
 
 
 class SettingsChange(StrictModel):

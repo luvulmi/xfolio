@@ -2,9 +2,9 @@
 
 import streamlit as st
 
-from xfolio.cloud import operator_allowed
-from xfolio.dashboard_ui import render_preview
-from xfolio.storage import StorageError
+from xfolio.legacy.cloud import operator_allowed
+from xfolio.legacy.dashboard_ui import render_preview
+from xfolio.legacy.storage import StorageError
 
 st.set_page_config(page_title="XFolio", page_icon="📈")
 
@@ -48,7 +48,7 @@ if st.sidebar.button("로그아웃"):
     st.stop()
 
 try:
-    from xfolio.postgres import PostgresPreviewStore
+    from xfolio.legacy.postgres import PostgresPreviewStore
 
     render_preview(
         PostgresPreviewStore(url), storage_label="가상 초안 저장소: PostgreSQL"

@@ -7,8 +7,8 @@ from pathlib import Path
 
 import httpx
 
-from xfolio.newsletter_news import collect
-from xfolio.newsletter_news_cli import Settings
+from xfolio.news.cli import Settings
+from xfolio.news.collection import collect
 
 
 def main():
