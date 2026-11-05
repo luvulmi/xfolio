@@ -17,6 +17,7 @@ from xfolio.finnhub import (
 )
 from xfolio.news_contracts import Contract, digest
 from xfolio.news_generation import estimate_input_tokens
+from xfolio.news_importance import Importance, assess
 from xfolio.news_workflow import GenerationLimits, GenerationResponse
 
 PROVIDERS = ("Finnhub", "BLS", "BEA", "Board")
@@ -65,9 +66,14 @@ class NewsItem(Contract):
     summary_ko: str | None = None
     permission_reference: str
     synthetic: bool = False
+    importance: Importance | None = None
 
     @model_validator(mode="after")
     def validate_scope(self):
+        if self.importance is not None and self.importance != assess(
+            self.title, official=self.kind == "official"
+        ):
+            raise ValueError("importance_rule_mismatch")
         if self.published_at > self.retrieved_at:
             raise ValueError("publication_after_retrieval")
         if self.provider == "Finnhub":
@@ -115,7 +121,8 @@ class NewsItem(Contract):
 
     def metadata(self):
         # 근거 원문과 허용 문형은 메모리에만 둔다.
-        return self.model_dump(mode="json", exclude={"facts"})
+        # 실행마다 계산되는 중요도는 수집 run에 보관해 기존 기사 버전을 바꾸지 않는다.
+        return self.model_dump(mode="json", exclude={"facts", "importance"})
 
 
 class SourceResult(Contract):
@@ -180,19 +187,38 @@ class NewsResult(Contract):
         return self.status == "complete" and not self.selected
 
     def report(self):
-        return {
+        value = {
             "run_id": self.run_id,
             "as_of": self.as_of.isoformat(),
             "finished_at": self.finished_at.isoformat(),
             "status": self.status,
             "normal_zero": self.normal_zero,
-            "selected": [x.metadata() for x in self.selected],
+            "selected": [
+                x.metadata()
+                | (
+                    {"importance": x.importance.model_dump(mode="json")}
+                    if x.importance
+                    else {}
+                )
+                for x in self.selected
+            ],
             "sources": [
                 s.model_dump(mode="json", exclude={"items"}) for s in self.sources
             ],
             "excluded": self.excluded,
             "can_send": False,
         }
+        if any(i.importance for i in self.selected):
+            value["selection_importance"] = [
+                {
+                    "provider": i.provider,
+                    "source_id": i.source_id,
+                    "importance": i.importance.model_dump(mode="json"),
+                }
+                for i in self.selected
+                if i.importance
+            ]
+        return value
 
 
 def collect_finnhub(client, *, api_key, as_of, clock=lambda: datetime.now(UTC)):
@@ -245,6 +271,10 @@ def collect_finnhub(client, *, api_key, as_of, clock=lambda: datetime.now(UTC)):
             excluded["invalid_row"] += len(invalid)
         items, calls, errors = [], 1, []
         head_calls = 0
+        # 링크 확인 상한도 중요도순으로 사용한다.
+        candidates.sort(
+            key=lambda r: (-assess(r["headline"]).score, -r["datetime"], r["id"])
+        )
         for row in candidates:
             result = resolve_link(
                 client, row["url"], row["source"], min(4, 12 - head_calls)
@@ -407,11 +437,19 @@ def integrate(
             ):
                 excluded["before_last_success"] += 1
                 continue
-            eligible.append(item)
-    # 24h 우선, 동일 사건에서는 공식 발표 우선, 이후 최신순·안정 ID.
+            eligible.append(
+                item.model_copy(
+                    update={
+                        "importance": assess(
+                            item.title, official=item.kind == "official"
+                        )
+                    }
+                )
+            )
+    # 중요도 우선. 같은 점수에서 공식 출처·최신 시각·안정 ID를 사용한다.
     eligible.sort(
         key=lambda i: (
-            i.published_at < as_of - timedelta(hours=24),
+            -i.importance.score,
             i.kind != "official",
             -i.published_at.timestamp(),
             i.source_id,

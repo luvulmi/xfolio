@@ -220,8 +220,8 @@ def build_morning(
             original is not None
             and item.provider not in failed_sources
             and news.status != "failed"
-            and original.model_dump(exclude={"summary_ko"})
-            == item.model_dump(exclude={"summary_ko"})
+            and original.model_dump(exclude={"summary_ko", "importance"})
+            == item.model_dump(exclude={"summary_ko", "importance"})
             and item.retrieved_at >= cutoff
             and not seen.intersection(item.keys)
             and not fatal

@@ -72,6 +72,30 @@ def test_migration_upgrade_downgrade_preserves_domestic_and_legacy(store):
         )
 
 
+def test_importance_is_per_run_and_preserves_legacy_item_identity(store):
+    db, _ = store
+    ranked = integrated(link())
+    legacy = ranked.model_copy(
+        update={
+            "run_id": "legacy-before-importance",
+            "selected": tuple(
+                i.model_copy(update={"importance": None}) for i in ranked.selected
+            ),
+        }
+    )
+    old_ids = db.save_result(legacy, now=NOW)
+    new_ids = db.save_result(ranked, now=NOW)
+    assert old_ids == new_ids
+    with db.engine.connect() as conn:
+        saved = conn.execute(sa.select(items)).mappings().one()
+        audit = conn.scalar(sa.select(runs.c.payload).where(runs.c.id == ranked.run_id))
+    assert "importance" not in saved["payload"]
+    assert (
+        audit["selection_importance"][0]["importance"]["score"]
+        == ranked.selected[0].importance.score
+    )
+
+
 def test_preview_not_sent_confirmed_only_recipient_scope_and_idempotence(store):
     db, _ = store
     item = link()

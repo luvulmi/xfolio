@@ -11,8 +11,8 @@ import httpx
 
 PUBLISHERS = {"cnbc": "cnbc.com", "reuters": "reuters.com"}
 US_MARKET = re.compile(
-    r"\b(?:u\.?s\.?\s+(?:stocks?|equit(?:y|ies)|markets?|econom\w*|inflation|jobs?|voters?|midterms?|treasur\w*)|"
-    r"united states|wall street|s&p\s*500|nasdaq|dow jones|federal reserve|fomc)\b",
+    r"\b(?:u\.?s\.?\s+(?:stocks?|equit(?:y|ies)|markets?|econom\w*|inflation|jobs?|voters?|midterms?|treasur\w*|cpi|pce|gdp|banks?|banking|unemployment|payrolls?)|"
+    r"united states|wall street|s&p\s*500|nasdaq|dow jones|federal reserve|fomc|fed(?=.*\b(?:rates?|monetary)\b))\b",
     re.IGNORECASE,
 )
 US_COMPANY = re.compile(
