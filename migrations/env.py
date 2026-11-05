@@ -10,6 +10,7 @@ from xfolio.db.newsletter import metadata as newsletter_metadata
 from xfolio.db.newsletter_news import metadata as newsletter_news_metadata
 from xfolio.db.notification_settings import metadata as notification_settings_metadata
 from xfolio.db.schema import metadata
+from xfolio.db.telegram import metadata as telegram_metadata
 
 all_metadata = [
     metadata,
@@ -17,6 +18,7 @@ all_metadata = [
     newsletter_news_metadata,
     newsletter_metadata,
     notification_settings_metadata,
+    telegram_metadata,
 ]
 
 connection = context.config.attributes.get("connection")
