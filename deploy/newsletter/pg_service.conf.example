@@ -1,0 +1,15 @@
+[xfolio_backup]
+host=NEON_HOST
+port=5432
+dbname=xfolio
+user=BACKUP_ROLE
+sslmode=verify-full
+sslrootcert=/etc/ssl/certs/ca-certificates.crt
+
+[xfolio_restore]
+host=ISOLATED_RESTORE_HOST
+port=5432
+dbname=xfolio_restore
+user=RESTORE_ROLE
+sslmode=verify-full
+sslrootcert=/etc/ssl/certs/ca-certificates.crt

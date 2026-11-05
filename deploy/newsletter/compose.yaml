@@ -1,0 +1,122 @@
+name: xfolio-newsletter
+
+x-logging: &logging
+  driver: journald
+  options:
+    tag: "xfolio-newsletter/{{.Name}}"
+
+x-runtime: &runtime
+  image: xfolio-newsletter-runtime:local
+  build:
+    context: ../..
+    dockerfile: deploy/newsletter/Dockerfile
+    target: runtime
+  init: true
+  read_only: true
+  tmpfs:
+    - /tmp:size=64m,mode=1777
+  security_opt:
+    - no-new-privileges:true
+  cap_drop:
+    - ALL
+  logging: *logging
+
+services:
+  api:
+    <<: *runtime
+    env_file:
+      - path: ${XFOLIO_API_ENV_FILE:-./api.env}
+        required: false
+    environment:
+      XFOLIO_MODE: dry_run
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/openapi.json', timeout=3).close()"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+
+  web:
+    image: xfolio-newsletter-web:local
+    build:
+      context: ../..
+      dockerfile: deploy/newsletter/Dockerfile
+      target: web
+    ports:
+      - "127.0.0.1:8088:8080"
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: unless-stopped
+    read_only: true
+    tmpfs:
+      - /config:size=8m,uid=10001,gid=10001
+      - /data:size=8m,uid=10001,gid=10001
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    logging: *logging
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:8080/healthz"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  worker:
+    <<: *runtime
+    profiles: ["worker"]
+    command: ["python", "-m", "xfolio.jobs.worker", "--schedule"]
+    env_file:
+      - path: ${XFOLIO_WORKER_ENV_FILE:-./worker.env}
+        required: false
+    environment:
+      XFOLIO_WORKER_LIVE_ACCEPTED: "false"
+    restart: unless-stopped
+
+  maintenance:
+    <<: *runtime
+    profiles: ["maintenance"]
+    command: ["python", "/app/deploy/newsletter/maintenance.py", "plan"]
+    env_file:
+      - path: ${XFOLIO_MAINTENANCE_ENV_FILE:-./maintenance.env}
+        required: false
+    restart: "no"
+
+  backup:
+    image: postgres:17-alpine
+    profiles: ["backup"]
+    user: "10001:10001"
+    entrypoint: ["pg_dump"]
+    command: ["--format=custom", "--no-owner", "--no-acl", "--dbname=service=xfolio_backup"]
+    environment:
+      PGSERVICEFILE: /run/secrets/pg_service
+      PGPASSFILE: /run/secrets/pgpass
+    secrets:
+      - source: pg_service
+        target: pg_service
+        uid: "10001"
+        gid: "10001"
+        mode: 0400
+      - source: pgpass
+        target: pgpass
+        uid: "10001"
+        gid: "10001"
+        mode: 0400
+    read_only: true
+    tmpfs:
+      - /tmp:size=64m,mode=1777
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    # pg_dump stdout가 journald/컨테이너 로그에 복제되지 않게 한다.
+    logging:
+      driver: none
+
+secrets:
+  pg_service:
+    file: ${XFOLIO_PG_SERVICE_FILE:-./pg_service.conf}
+  pgpass:
+    file: ${XFOLIO_PGPASS_FILE:-./pgpass}
