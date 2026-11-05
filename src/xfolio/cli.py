@@ -132,7 +132,8 @@ def main(argv: Sequence[str] | None = None) -> None:
             "국내 KIS 원종가·거래일·종목/90일 가격 DB: T02 구현. "
             "Finnhub·BLS/BEA/Board 뉴스 통합·공식 요약 연결·기발송 DB: T03 구현. "
             "가격+뉴스 아침 편성·저장·발송 직전 검사: T04 구현. "
-            "유료 공식 요약·제품 정시 편성/수신·worker·AWS 운영: 후속. "
+            "관리자5메뉴·공용 설정/0006·모의 worker/outbox/0007·로컬 배포 구성: 첫 구현. "
+            "실제 수집 예약 연결·유료 공식 요약·제품 정시 수신·AWS 운영: 후속. "
             "일반 기사 AI는 초기 범위 제외, X는 이전 이력."
         )
     elif args.command == "bls-check":
