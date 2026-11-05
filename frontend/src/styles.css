@@ -116,6 +116,8 @@ footer { font-size: 10px; color: #a0afb4; padding: 20px 42px; text-align: right;
 @media (max-width: 1100px) { .sidebar { width: 175px; flex-basis: 175px; padding-inline: 14px; } .workspace { margin-left: 175px; } main { padding-inline: 25px; } .topbar { padding-inline: 25px; } .summary-grid { gap: 10px; } .summary-card { padding: 17px; } .summary-card strong { font-size: 14px; } .review-layout { grid-template-columns: minmax(0,1fr) 260px; gap: 15px; } }
 @media (max-width: 800px) { .sidebar { display: none; } .workspace { margin-left: 0; } .review-layout { display: flex; flex-direction: column; } .review-layout > section, .review-side { width: 100%; } .summary-grid { grid-template-columns: 1fr; } .summary-card { padding: 17px 20px; } .summary-card strong { margin: 6px 0; } .edition-meta { grid-template-columns: 1fr; gap: 12px; } .topbar .operator { display: none; } h1 { font-size: 23px; } .page-title { align-items: flex-start; } main { padding: 28px 18px 45px; } .topbar { padding-inline: 18px; } .panel-heading { padding: 20px; } .panel-heading .muted { display: none; } .filters { padding-inline: 20px; } .login-panel { padding: 28px; } }
 /* 개인용 뉴스레터 관리자 */
+.newsletter-admin .table-scroll { overflow-x: auto; }
+.newsletter-admin .table-scroll table { min-width: 650px; }
 .newsletter-admin .panel { padding: 22px; margin: 18px 0; }
 .newsletter-admin .panel h2 { margin: 0 0 18px; font-size: 18px; }
 .setting-control { display: flex; gap: 12px; align-items: center; margin: 18px 0; }

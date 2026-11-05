@@ -1,21 +1,34 @@
 """뉴스레터 관리자 읽기·설정 API. 외부 수집/송신과 DDL 실행 없음."""
 
+import os
+import re
 from contextlib import nullcontext
-from datetime import date
+from datetime import date, datetime
+from decimal import Decimal, InvalidOperation
 from typing import Annotated
 
 import sqlalchemy as sa
 from fastapi import Query, Request
-from pydantic import Field, StrictBool
+from pydantic import Field, StrictBool, ValidationError
 
 from xfolio.api.models import StrictModel
 from xfolio.api.store import ApiError
-from xfolio.db.domestic import calendar_days, instruments, watchlist
+from xfolio.db.domestic import (
+    calendar_days,
+    instruments,
+    market_runs,
+    price_snapshots,
+    watchlist,
+)
 from xfolio.db.newsletter import editions
-from xfolio.domestic.calendar import KST
-from xfolio.domestic.models import DomesticError
+from xfolio.db.newsletter_news import items as news_items
+from xfolio.db.newsletter_news import runs as news_runs
+from xfolio.db.schema import operations_events, usage_ledger
+from xfolio.domestic.calendar import KST, completed_sessions
+from xfolio.domestic.models import CloseQuote, DomesticError
 from xfolio.domestic.store import DomesticStore
-from xfolio.newsletter import MorningSettings, NewsletterError
+from xfolio.newsletter import MorningSettings, NewsletterError, at
+from xfolio.newsletter_news import aware
 from xfolio.newsletter_store import NewsletterStore
 from xfolio.notification_settings import (
     NotificationSettingsError,
@@ -173,7 +186,9 @@ class NewsletterAdminStore:
         return result
 
     def summary(self, *, now):
+        now = aware(now)
         today = now.astimezone(KST).date()
+        current_watchlist = self.get_watchlist()
         with self.engine.connect() as conn:
             opened = conn.scalar(
                 sa.select(calendar_days.c.is_open).where(
@@ -182,14 +197,353 @@ class NewsletterAdminStore:
                     calendar_days.c.retrieved_at <= now,
                 )
             )
+            if today.weekday() >= 5:
+                opened = False
+            budget = self._budget(conn, now)
+            prices = self._price_freshness(conn, now, current_watchlist)
+            news = self._news_collection(conn, now)
+            worker = (
+                conn.execute(
+                    sa.select(operations_events)
+                    .where(
+                        operations_events.c.kind.in_(
+                            ("newsletter_worker", "newsletter_prepare")
+                        ),
+                        operations_events.c.created_at <= now,
+                        sa.or_(
+                            operations_events.c.expires_at.is_(None),
+                            operations_events.c.expires_at > now,
+                        ),
+                    )
+                    .order_by(
+                        operations_events.c.created_at.desc(), operations_events.c.id
+                    )
+                    .limit(1)
+                )
+                .mappings()
+                .first()
+            )
+        recent = self.list_deliveries(now=now, limit=10)
         return {
             "target_date": today,
+            "checked_at": now,
             "market_open": opened,
             "settings": self.get_settings(),
-            "watchlist": self.get_watchlist(),
+            "watchlist": current_watchlist,
             "newsletters": self.list_newsletters(now=now, day=today),
-            "budget": {"status": "not_connected"},
-            "price_freshness": {"status": "not_observed"},
+            "budget": budget,
+            "price_freshness": prices,
+            "news_collection": news,
+            "deliveries": {
+                "status": "observed" if recent else "not_observed",
+                "recent": recent,
+                "attention": [
+                    r
+                    for r in recent
+                    if r["status"]
+                    in {"failed", "partial", "unknown", "retryable_failure"}
+                ],
+                "scope": "latest_10_retained_deliveries",
+            },
+            "worker": {
+                "stage": "preparation"
+                if worker["kind"] == "newsletter_prepare"
+                else "dispatch",
+                "status": worker["payload"].get("status")
+                if worker["payload"].get("status")
+                in ("running", "ready", "partial", "complete", "failed", "skipped")
+                else "unknown",
+                "reason": self._safe_code(worker["payload"]["reason"])
+                if worker["payload"].get("reason") is not None
+                else None,
+                "recorded_at": worker["created_at"],
+            }
+            if worker
+            else {"status": "not_observed"},
+        }
+
+    @staticmethod
+    def _safe_code(value):
+        return (
+            value
+            if isinstance(value, str) and re.fullmatch(r"[a-zA-Z0-9_:-]{1,100}", value)
+            else "unavailable_error_code"
+        )
+
+    @staticmethod
+    def _budget(conn, now):
+        month = now.astimezone(KST).strftime("%Y-%m")
+        rows = conn.execute(
+            sa.select(
+                usage_ledger.c.state,
+                sa.func.sum(usage_ledger.c.amount_krw),
+                sa.func.count(),
+            )
+            .where(usage_ledger.c.month == month)
+            .group_by(usage_ledger.c.state)
+        ).all()
+        totals = dict.fromkeys(
+            ("estimated", "reserved", "confirmed", "released"), Decimal(0)
+        )
+        for state, amount, _count in rows:
+            totals[state] = amount
+        raw_limit = os.environ.get("XFOLIO_MONTHLY_BUDGET_KRW", "50000")
+        try:
+            limit = Decimal(raw_limit)
+            if not limit.is_finite() or not 0 < limit <= 50000:
+                raise ValueError
+        except (InvalidOperation, ValueError):
+            limit = None
+        ledger_valid = all(
+            value.is_finite() and value >= 0 for value in totals.values()
+        )
+        committed = (
+            totals["confirmed"] + totals["reserved"] + totals["estimated"]
+            if ledger_valid
+            else None
+        )
+        return {
+            "month": month,
+            "status": "invalid_configuration"
+            if limit is None
+            else "invalid_ledger"
+            if not ledger_valid
+            else "over_limit"
+            if committed > limit
+            else "observed"
+            if rows
+            else "not_measured",
+            "limit_krw": limit,
+            "limit_source": "server_configuration"
+            if "XFOLIO_MONTHLY_BUDGET_KRW" in os.environ
+            else "policy_default",
+            **{
+                f"{state}_krw": value if ledger_valid else None
+                for state, value in totals.items()
+            },
+            "committed_krw": committed,
+            "remaining_krw": max(Decimal(0), limit - committed)
+            if limit is not None and committed is not None
+            else None,
+            "record_count": sum(row[2] for row in rows),
+            "scope": "recorded_usage_ledger_only",
+            "billing_reconciled": False,
+        }
+
+    def _price_freshness(self, conn, now, current):
+        today = now.astimezone(KST).date()
+        calendar = {
+            r["trade_date"]: r["is_open"]
+            for r in conn.execute(
+                sa.select(calendar_days).where(
+                    calendar_days.c.observed_on == today,
+                    calendar_days.c.retrieved_at <= now,
+                )
+            ).mappings()
+        }
+        try:
+            previous, latest = completed_sessions(now, calendar)
+        except DomesticError as exc:
+            return {
+                "status": "calendar_unverified",
+                "reason": self._safe_code(str(exc)),
+                "items": [],
+                "reference_at": now,
+            }
+        run = (
+            conn.execute(
+                sa.select(market_runs)
+                .where(
+                    market_runs.c.watchlist_revision == current["revision"],
+                    market_runs.c.finished_at <= now,
+                )
+                .order_by(market_runs.c.finished_at.desc(), market_runs.c.id)
+                .limit(1)
+            )
+            .mappings()
+            .first()
+        )
+        result = {
+            "status": "not_observed",
+            "expected_trade_date": latest.trade_date,
+            "comparison_trade_date": previous.trade_date,
+            "reference_at": now,
+            "items": [],
+        }
+        if run is None:
+            return result
+        provenance = self._run_provenance(conn, now, "market_run_id", run["id"])
+        observations = {o["code"]: o for o in run["observations"]}
+        for code in current["codes"]:
+            observation = observations.get(code)
+            row = (
+                conn.execute(
+                    sa.select(price_snapshots).where(
+                        price_snapshots.c.id == observation["snapshot_id"]
+                    )
+                )
+                .mappings()
+                .one_or_none()
+                if observation
+                else None
+            )
+            item = {"code": code, "status": "missing", "provenance": provenance}
+            if row is None:
+                result["items"].append(item)
+                continue
+            if row["expires_at"] <= now:
+                item["status"] = "expired"
+                result["items"].append(item)
+                continue
+            try:
+                quote = CloseQuote.model_validate(row["payload"])
+                retrieved_at = aware(
+                    datetime.fromisoformat(observation["retrieved_at"])
+                )
+                if (
+                    quote.code != code
+                    or quote.content_hash != row["content_hash"]
+                    or quote.latest.trade_date != row["trade_date"]
+                    or quote.latest.price_as_of != row["price_as_of"]
+                    or quote.latest.scheduled_close != row["scheduled_close"]
+                    or not row["first_stored_at"] <= now
+                    or not run["started_at"] <= retrieved_at <= run["finished_at"]
+                ):
+                    raise ValueError
+                item.update(
+                    trade_date=row["trade_date"],
+                    comparison_trade_date=quote.previous.trade_date,
+                    price_as_of=row["price_as_of"],
+                    scheduled_close=row["scheduled_close"],
+                    retrieved_at=retrieved_at,
+                    version=row["version"],
+                    change_available=row["change_pct"] is not None,
+                    delay_status="not_measured",
+                    source="KIS",
+                )
+                max_version = conn.scalar(
+                    sa.select(sa.func.max(price_snapshots.c.version)).where(
+                        price_snapshots.c.code == code,
+                        price_snapshots.c.trade_date == row["trade_date"],
+                        price_snapshots.c.first_stored_at <= now,
+                    )
+                )
+                item["status"] = (
+                    "superseded"
+                    if row["version"] != max_version
+                    else "stale"
+                    if row["trade_date"] != latest.trade_date
+                    or quote.previous.trade_date != previous.trade_date
+                    or quote.latest.scheduled_close != latest.scheduled_close
+                    or quote.previous.scheduled_close != previous.scheduled_close
+                    else "corrected"
+                    if row["version"] > 1
+                    else "current"
+                )
+            except (ValidationError, ValueError, KeyError, TypeError):
+                item = {"code": code, "status": "invalid", "provenance": provenance}
+            result["items"].append(item)
+        statuses = [item["status"] for item in result["items"]]
+        result.update(
+            status="synthetic"
+            if provenance == "synthetic"
+            else "provenance_unverified"
+            if provenance != "live"
+            else "current"
+            if all(s == "current" for s in statuses)
+            else "attention",
+            collection_status=run["status"],
+            run_id=run["id"],
+            finished_at=run["finished_at"],
+            provenance=provenance,
+        )
+        return result
+
+    @staticmethod
+    def _run_provenance(conn, now, field, run_id):
+        row = (
+            conn.execute(
+                sa.select(editions)
+                .where(
+                    editions.c.payload[field].astext == run_id,
+                    editions.c.created_at <= now,
+                    editions.c.expires_at > now,
+                )
+                .order_by(editions.c.created_at.desc())
+                .limit(1)
+            )
+            .mappings()
+            .first()
+        )
+        if row is None:
+            return "unverified"
+        try:
+            edition = NewsletterStore._decode(row)
+        except (NewsletterError, ValidationError):
+            return "unverified"
+        return (
+            "synthetic"
+            if edition.synthetic
+            else "live"
+            if edition.mode == "live"
+            else "dry_run"
+        )
+
+    @staticmethod
+    def _news_collection(conn, now):
+        run = (
+            conn.execute(
+                sa.select(news_runs)
+                .where(news_runs.c.finished_at <= now, news_runs.c.expires_at > now)
+                .order_by(news_runs.c.finished_at.desc(), news_runs.c.id)
+                .limit(1)
+            )
+            .mappings()
+            .first()
+        )
+        if run is None:
+            return {"status": "not_observed", "sources": []}
+        payload = run["payload"]
+        selected = payload.get("selected", [])
+        metadata = (
+            conn.execute(
+                sa.select(news_items.c.payload).where(
+                    news_items.c.id.in_(selected), news_items.c.expires_at > now
+                )
+            )
+            .scalars()
+            .all()
+        )
+        current = run["as_of"] == at(now.astimezone(KST).date(), 7, 50)
+        return {
+            "status": run["status"],
+            "current": current,
+            "run_id": run["id"],
+            "as_of": run["as_of"],
+            "finished_at": run["finished_at"],
+            "normal_zero": run["status"] == "complete" and len(selected) == 0,
+            "selected_count": len(selected),
+            "retained_selected_count": len(metadata),
+            "synthetic": any(row.get("synthetic") is True for row in metadata),
+            "provenance": NewsletterAdminStore._run_provenance(
+                conn, now, "news_run_id", run["id"]
+            ),
+            "sources": [
+                {
+                    "provider": source.get("provider"),
+                    "status": source.get("status"),
+                    "errors": [
+                        NewsletterAdminStore._safe_code(error)
+                        for error in source.get("errors", [])
+                    ],
+                }
+                for source in payload.get("sources", [])
+            ],
+            "excluded": {
+                NewsletterAdminStore._safe_code(key): count
+                for key, count in payload.get("excluded", {}).items()
+                if type(count) is int and count >= 0
+            },
         }
 
 

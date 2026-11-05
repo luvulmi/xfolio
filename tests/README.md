@@ -6,6 +6,8 @@
 
 `test_newsletter_deploy.py`는 T08 유지보수 도구의 무통신 만료/복원 조건을, `test_parallel_newsletter_postgres.py`는 실제 격리 PostgreSQL에서 T05 중지→T06 전송 차단/이력·mock/live 분리·본문 만료와 T08 삭제 후 재개 검사를 연결합니다. 로컬 구성/시험은 실제 AWS 운영·07:50→08:00 본인 수신을 대신하지 않습니다.
 
+11/5 추가: `test_newsletter_dashboard_postgres.py`는 실제 원장/시세·뉴스·준비/송신 장애를, `test_worker_collection.py`·`test_worker_collection_postgres.py`는 KIS→뉴스/요약→편성/outbox 연결·07:50 설정 고정·재시작/중복·서버 예산을 검사합니다. `test_newsletter_acceptance_postgres.py`는 실제 API 설정 변경부터 수집/요약/송신/이력과90일 준비기록 삭제·복원 gate까지 연결합니다. 외부 제공처·유료 AI·Telegram은 시험 대역입니다. `frontend`의 `npm run test:newsletter`는 실제 HTTPS·API·격리DB로 같은 흐름의 화면을 확인합니다.
+
 `test_newsletter.py`는 T04 가격+뉴스 전체0~3건·최대10종목·정상/부분/실패/휴장 건너뜀·07:50/08:00/08:10·권한/요약/예산/수신자/설정 버전·불명 재송신 금지를 검사합니다. `test_newsletter_postgres.py`는0005·원본 대조·멱등/동시 생성·불변·90일·직전 가격 정정/종목 변경/뉴스confirmed/unknown을 실제 격리 PostgreSQL에서 검사합니다. 신뢰 서버의 설정/예산 조회·outbox 원자 점유·실제 송신은 T05/T06 후속입니다.
 
 `test_newsletter_news.py`는 T03 Finnhub/공식4출처·근거 요약·시각/권리·24/96h·중복·정상0건/부분/실패·일반 뉴스 AI 차단·예산/응답불명을 검사합니다. `test_newsletter_news_postgres.py`는 명시적 격리 PostgreSQL에서0004 업/다운·최초 저장/만료·confirmed만 기발송 제외·수신자 분리·본문 미보관을 검증합니다. 실제 유료 AI·제품07:50/08:00·Telegram 수신 인수와 구분합니다.

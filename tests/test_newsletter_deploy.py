@@ -27,6 +27,14 @@ def database(*, missing=None):
             )
     for name in TOOLS["LEGACY_PAYLOAD_TABLES"]:
         sa.Table(name, metadata, sa.Column("id", sa.Integer, primary_key=True))
+    if missing != "operations_events":
+        sa.Table(
+            "operations_events",
+            metadata,
+            sa.Column("id", sa.Integer, primary_key=True),
+            sa.Column("kind", sa.String),
+            sa.Column("expires_at", sa.DateTime(timezone=True)),
+        )
     metadata.create_all(engine)
     return engine, metadata
 
@@ -38,6 +46,7 @@ def test_plan_does_not_create_engine_or_read_secret(monkeypatch, capsys):
     assert data["database_accessed"] is False
     assert data["retention_days"]["telegram_outbox"] == 365
     assert data["retention_days"]["newsletter_editions"] == 90
+    assert data["operations_event_retention_days"] == {"newsletter_prepare": 90}
     assert "secret" not in json.dumps(data)
 
 
@@ -91,8 +100,9 @@ def test_restore_gate_detects_expiry_at_exact_boundary_and_legacy_data():
     assert result["legacy_payload_rows"]["content_drafts"] == 1
 
 
-def test_missing_new_schema_cannot_pass_restore_gate():
-    engine, _ = database(missing="telegram_outbox")
+@pytest.mark.parametrize("missing", ["telegram_outbox", "operations_events"])
+def test_missing_new_schema_cannot_pass_restore_gate(missing):
+    engine, _ = database(missing=missing)
     with pytest.raises(TOOLS["MaintenanceError"], match="newsletter_schema_incomplete"):
         TOOLS["verify"](engine, now=NOW)
 
@@ -115,6 +125,21 @@ def test_purge_calls_owned_services_then_requires_clean_restore_gate(monkeypatch
         names[2:4],
         names[4:5],
         names[5:6],
+        ("operations_events",),
+    )
+    with engine.begin() as conn:
+        conn.execute(
+            metadata.tables["operations_events"].insert(),
+            [
+                {"id": 1, "kind": "newsletter_prepare", "expires_at": NOW},
+                {"id": 2, "kind": "auth_session", "expires_at": NOW},
+            ],
+        )
+    assert (
+        TOOLS["verify"](engine, now=NOW)["expired_rows"][
+            "operations_events.newsletter_prepare"
+        ]
+        == 1
     )
     services = {}
     for (module, cls_name, method), tables in zip(TOOLS["STORES"], service_tables):
@@ -126,9 +151,10 @@ def test_purge_calls_owned_services_then_requires_clean_restore_gate(monkeypatch
                 with self.engine.begin() as conn:
                     for name in table_names:
                         table = metadata.tables[name]
-                        count += conn.execute(
-                            table.delete().where(table.c.expires_at <= now)
-                        ).rowcount
+                        condition = table.c.expires_at <= now
+                        if name == "operations_events":
+                            condition &= table.c.kind == "newsletter_prepare"
+                        count += conn.execute(table.delete().where(condition)).rowcount
                 return count
 
             def init(self, shared_engine):
@@ -146,4 +172,13 @@ def test_purge_calls_owned_services_then_requires_clean_restore_gate(monkeypatch
     assert called == [cls_name for _, cls_name, _ in TOOLS["STORES"]]
     assert result["can_resume"] is True
     assert not any(result["expired_rows"].values())
-    assert sum(result["deleted"].values()) == len(TOOLS["RETENTION"])
+    assert sum(result["deleted"].values()) == len(TOOLS["RETENTION"]) + 1
+    with engine.connect() as conn:
+        assert (
+            conn.scalar(
+                sa.select(sa.func.count()).select_from(
+                    metadata.tables["operations_events"]
+                )
+            )
+            == 1
+        )

@@ -44,3 +44,5 @@ npm run test:integration
 브라우저 API 응답을 모의하지 않고 실제 FastAPI·PostgresStore·서버 세션을 호출합니다. Google의 외부 요청 경계는 테스트 provider로 대체하며 가격/기사/생성 입력도 격리 fixture 전제이므로 실제 Google JWT·공급자·AI 성공을 뜻하지 않습니다. HTTPS Secure/HttpOnly 쿠키, PM 신규 승인 차단/보류·CSRF/Origin·로그아웃과 AM ETF+뉴스 4글의 세 확인·DB 예약·철회를 검증합니다. 송신 모드는 mock이며 X·Telegram 연동은 수행하지 않습니다.
 
 테스트 인증서는 `.cache/browser-e2e/`에 두고 시험 context에서만 자체서명 인증서를 허용합니다. OS 신뢰 저장소는 변경하지 않습니다. 이미지 `test-results/live-api-held.png`도 격리된 시험 결과입니다.
+
+새 뉴스레터의 실제 HTTPS·API·DB 연결은 같은 시험 DB 환경변수와 build 후 `npm run test:newsletter`로 확인합니다. 시험 schema에서 worker/수집 저장·비용 원장·뉴스레터/발송 상세·설정 중지를 연결하며 외부 제공처/AI/Telegram/Google은 시험 대역입니다. `test-results/t07-dashboard.png`의 실자료/live 표시는 이 분기 검사용 fixture 값이며 실제 외부 수집·송신의 관측 자료가 아닙니다. 실제 무료 조회·Telegram 통신 결과는 [T07 기록](../tasks/logs/2026-11-05_아침_뉴스레터_통합_인수.md)을 따릅니다.

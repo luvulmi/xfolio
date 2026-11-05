@@ -1,8 +1,8 @@
-# T06 자동 실행·Telegram 첫 구현 계약
+# T06 자동 실행·실제 수집·Telegram 계약
 
-- 기준: 2026-11-04, Asia/Seoul
-- 상태: 첫 구현·무통신/격리 DB 검증. 전체 T06 및 실제 운영 인수 전.
-- 관련: [계획](../../plans/자동_실행과_Telegram_전송.md) · [공통 계약](병렬_개발_공통_계약.md) · [결과](../../logs/2026-11-04_자동_실행과_Telegram_전송.md)
+- 기준: 2026-11-05, Asia/Seoul
+- 상태: 서버 수집 연결·무통신/격리 DB 검증 완료. 실제 정시 수신·운영 인수 전.
+- 관련: [계획](../../plans/자동_실행과_Telegram_전송.md) · [공통 계약](병렬_개발_공통_계약.md) · [11/4 첫 구현](../../logs/2026-11-04_자동_실행과_Telegram_전송.md) · [11/5 수집 연결](../../logs/2026-11-05_자동_수집과_아침_준비_연결.md)
 
 ## 입력과 실행 경계
 
@@ -12,7 +12,17 @@
 
 `--live --once --phase send`는 명시 서버 설정과 기존 live 편성만 사용하는 송신 경로다. 이번 작업에서 실행하지 않았다. `XFOLIO_WORKER_LIVE_ACCEPTED=true`·명시 `XFOLIO_WORKER_DATABASE_URL`·`XFOLIO_TELEGRAM_BOT_TOKEN`·양수 단일 `XFOLIO_TELEGRAM_CHAT_ID`가 필요하다. `XFOLIO_RECIPIENT_SCOPE` 기본self, `XFOLIO_MONTHLY_BUDGET_KRW` 최대50000이다. 비밀은 `.env`에서 자동 읽거나 화면/로그에 노출하지 않는다. Telegram receipt의 chat.id/type=private도 대조한다.
 
-**실제 T02/T03 수집 adapter·유료 공식 요약을 자동 구성하는 연결은 미완료**다. 따라서 `--live --phase prepare`와 `--live --schedule`은 `live_collection_adapter_not_accepted`로 차단한다. 주입 가능한 준비/송신 골격과 실제 제공처 자동 수집 완성은 구분한다. 환경 변수의 acceptance 문자열만으로 실제 운영 인수가 끝났다고 보지 않는다.
+`--live --phase prepare`와 `--live --schedule`은11/5부터 `LiveCollectionResources`로 KIS/Finnhub/공식 발표·OpenAI와 공통 DB를 구성한다. 서버 환경의 `KIS_APP_KEY`, `KIS_APP_SECRET`, 선택 `KIS_BASE_URL`, `FINNHUB_API_KEY`, `OPENAI_API_KEY`, **`XFOLIO_GENERATION_LIMITS_FILE`**이 추가로 필요하다. limits는 기존 `GenerationLimits` JSON이며 유효한 단가·출처·만료와 요청 토큰 상한이 있어야 한다. 키/단가/명시limits가 없으면 외부 호출 전에 실패하며 무료 결과나 추정 단가로 공식 요약을 성공 처리하지 않는다. 단독send에는 기존 준비편성/전송 설정만 필요하다. 환경의 acceptance 문자열은 운영 인수 완료를 뜻하지 않는다.
+
+## 07:50 고정·단일 준비·실제 수집
+
+`jobs/collection.py`의 `PreparationStore.claim(day)`는07:50 이상07:51 미만에 시작하는1분 유예를 허용한다. 설정/관심종목/종목정보 행을 하나의 DB 트랜잭션에서 잠그고 revision·순서·전체 설정을 고정한다. 설정/관심목록의 `updated_at`, 종목정보의 `retrieved_at`이07:50 이후면 그날 준비를 보류한다. DB 잠금을 기다린 후 유예가 지났어도 보류한다.07:50 이전의 호출은 준비claim을 만들지 않아 정상 예약을 가로막지 않는다. 시각은 신뢰하는 실제clock이며 과거 입력을 실제 현재호로 소급하지 않는다.
+
+외부 요청 전에 `operations_events(kind=newsletter_prepare, scope=수신자, unique_key=대상일)`를 저장한다. 같은 날짜의 두 프로세스가 준비해도 외부수집·AI요약은 한 번만 실행한다. 중단된running이나실패는 자동으로 다시 수집/요약하지 않는다. 저장완료는 기존 결과를 반환한다. 이 claim은 가격/기사 본문 없이 설정·종목메타·참조ID만90일 보관하며 `PreparationStore.purge_expired(now=...)`로 삭제한다.
+
+`LiveMorningPreparation.prepare()`는 고정 이후 **KIS 휴장 확인→KIS 종가/T02 저장→T03 Finnhub+공식 발표/허용 요약→T03 저장→T04 원본 대조/편성 저장→live outbox**를 연결한다. 휴장일에는 휴장 확인 이후 가격·뉴스·AI 호출이 없다. 주말에는 휴장 조회도 건너뛴다. 출처/요약 실패는 기존 T03 집계와 T04 partial/failed에 남기며 정상 0건을 구분한다. 이전 confirmed 호의 뉴스 동결 시각을 다음 선정의 last_success로 쓰고, confirmed/unknown 뉴스 키는 제외한다.
+
+AI는 기존 `summarize`·`OpenAIGenerationClient`와 `SQLWorkflowStore` 계보의 `CappedWorkflowStore`를 사용한다. 기존 `usage_ledger`와 같은 예산 잠금에서 전체 reserved/estimated/confirmed를 합산해 최대 50000원과 서버의 더 낮은 한도를 검사한다. 08:10 이후 새 요약 요청은 차단한다. 실제 유료 호출과 정시 관측은 별도 실행 근거가 필요하다.
 
 ## 영속 상태와 경쟁
 
@@ -30,5 +40,7 @@ live 전체 성공은 T03 뉴스confirmed, live 부분/불명은 보수적으로
 
 - [무통신 시험](../../../tests/test_telegram_worker.py): UTF-16분할·원문 보존, receipt/429 shape/timeout·비밀 비노출, 휴장 수집전 차단·시각·KST예약·기본mock.
 - [격리 DB 시험](../../../tests/test_telegram_outbox_postgres.py):0007 업/다운/스냅샷·경쟁claim·mock/live분리·중복·현재중지/개장/예산/마감·429/부분·unknown/재시작·90/365일.
+- [수집 설정·CLI 시험](../../../tests/test_worker_collection.py): 서버 환경만읽기·명시단가/키거절·live준비/예약자원구성·기본mock보존.
+- [수집 연결 격리 DB 시험](../../../tests/test_worker_collection_postgres.py):07:50고정/늦은변경/잠금유예·중복/중단·실제T02/T03/T04저장·AI비용원장·휴장·정상0/partial/failed·unknown제외·이전호동결시각·90일준비claim보존.
 
 실제본인수신·정시수집·운영재시작·AWS·T09오후 슬롯은 이번 검증 근거가 아니다.

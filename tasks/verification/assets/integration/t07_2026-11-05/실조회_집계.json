@@ -1,0 +1,61 @@
+{
+  "mode": "diagnostic",
+  "synthetic": false,
+  "scheduled_acceptance": false,
+  "market": {
+    "status": "complete",
+    "quote_count": 3,
+    "stored_snapshots": 3,
+    "errors": {},
+    "started_at": "2026-11-05T00:22:59.987637+00:00",
+    "finished_at": "2026-11-05T00:23:11.383054+00:00",
+    "trade_dates": [
+      "2026-11-04"
+    ],
+    "market_open_today": true
+  },
+  "news": {
+    "status": "complete",
+    "normal_zero": true,
+    "selected_count": 0,
+    "stored_items": 0,
+    "as_of": "2026-11-05T00:23:11.837888+00:00",
+    "finished_at": "2026-11-05T00:23:16.658464+00:00",
+    "sources": [
+      {
+        "provider": "Finnhub",
+        "status": "complete",
+        "requests": 11,
+        "errors": []
+      },
+      {
+        "provider": "BLS",
+        "status": "complete",
+        "requests": 1,
+        "errors": []
+      },
+      {
+        "provider": "BEA",
+        "status": "complete",
+        "requests": 1,
+        "errors": []
+      },
+      {
+        "provider": "Board",
+        "status": "complete",
+        "requests": 1,
+        "errors": []
+      }
+    ],
+    "paid_ai_calls": 0
+  },
+  "telegram": {
+    "status": "confirmed",
+    "send_calls": 1,
+    "message_id": "5",
+    "error_code": null,
+    "private_verified": true
+  },
+  "finished_at": "2026-11-05T00:23:19.411795+00:00",
+  "test_schema_removed": true
+}

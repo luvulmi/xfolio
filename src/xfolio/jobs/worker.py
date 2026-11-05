@@ -9,6 +9,7 @@ from decimal import Decimal, InvalidOperation
 from sqlalchemy.exc import SQLAlchemyError
 
 from xfolio.domestic.calendar import KST, local_calendar
+from xfolio.jobs.collection import CollectionError
 from xfolio.jobs.outbox import OutboxError, TelegramOutboxStore, dispatch
 from xfolio.jobs.telegram import MockTelegramTransport, TelegramTransport, split_text
 from xfolio.newsletter import NewsletterError, at, build_morning, fingerprint
@@ -29,10 +30,12 @@ class MorningWorker:
         outbox_store,
         transport,
         clock=lambda: datetime.now(UTC),
+        preparation=None,
     ):
         self.calendar, self.collect_inputs = calendar, collect_inputs
         self.newsletter_store, self.outbox_store = newsletter_store, outbox_store
         self.transport, self.clock = transport, clock
+        self.preparation = preparation
 
     def _state(self, day, now, status, reason):
         if self.outbox_store is not None:
@@ -42,6 +45,8 @@ class MorningWorker:
         return {"status": status, "reason": reason}
 
     def prepare(self):
+        if self.preparation is not None:
+            return self.preparation.prepare()
         now = aware(self.clock())
         day = now.astimezone(KST).date()
         if day.weekday() >= 5:
@@ -68,10 +73,12 @@ class MorningWorker:
     def send(self):
         now = aware(self.clock())
         day = now.astimezone(KST).date()
-        if day.weekday() >= 5 or self.calendar(day, now) is not True:
+        if day.weekday() >= 5:
             return self._state(day, now, "skipped", "market_closed_or_unverified")
         if not at(day, 8) <= now < at(day, 8, 10):
             return self._state(day, now, "skipped", "outside_send_window")
+        if self.calendar(day, now) is not True:
+            return self._state(day, now, "skipped", "market_closed_or_unverified")
         self.outbox_store.recover_stale(now=now)
         edition_key = fingerprint(
             [self.outbox_store.recipient_scope, day.isoformat(), "morning"]
@@ -79,6 +86,8 @@ class MorningWorker:
         edition = self.newsletter_store.get(edition_key, now=now)
         if edition is None:
             return self._state(day, now, "failed", "edition_missing_or_expired")
+        if edition.status not in {"ready", "partial"}:
+            return {"status": "skipped", "reason": "edition_not_prepared"}
         key = self.outbox_store.enqueue(edition.key, now=now, mode=self.transport.mode)
         row = dispatch(self.outbox_store, key, self.transport, clock=self.clock)
         return {
@@ -173,14 +182,12 @@ def main(argv=None):
     )
     parser.add_argument("--phase", choices=("prepare", "send"), default="send")
     args = parser.parse_args(argv)
-    db, transport = None, None
+    db, transport, collection_resources = None, None, None
     try:
         worker = MockWorker()
         if args.live:
             if os.environ.get("XFOLIO_WORKER_LIVE_ACCEPTED") != "true":
                 raise OutboxError("live_acceptance_required")
-            if args.phase == "prepare" or args.schedule:
-                raise OutboxError("live_collection_adapter_not_accepted")
             url = os.environ.get("XFOLIO_WORKER_DATABASE_URL", "")
             if not url:
                 raise OutboxError("explicit_worker_database_required")
@@ -211,12 +218,28 @@ def main(argv=None):
                         )
                     )
 
+            preparation = None
+            if args.phase == "prepare" or args.schedule:
+                from xfolio.jobs.collection import (
+                    LiveCollectionResources,
+                    LiveCollectionSettings,
+                )
+
+                collection_resources = LiveCollectionResources(
+                    db.engine,
+                    settings=LiveCollectionSettings.from_env(),
+                    outbox_store=outbox_store,
+                )
+                preparation = collection_resources.preparation
+                calendar = preparation.calendar
+
             worker = MorningWorker(
                 calendar=calendar,
                 collect_inputs=None,
                 newsletter_store=NewsletterStore(db.engine),
                 outbox_store=outbox_store,
                 transport=transport,
+                preparation=preparation,
             )
         if args.schedule:
             create_scheduler(worker).start()
@@ -236,7 +259,7 @@ def main(argv=None):
                 {
                     "status": "failed",
                     "reason": str(exc)
-                    if isinstance(exc, (OutboxError, NewsletterError))
+                    if isinstance(exc, (OutboxError, NewsletterError, CollectionError))
                     else "worker_configuration_or_storage_error",
                     "can_send": False,
                 }
@@ -244,6 +267,8 @@ def main(argv=None):
         )
         return 1
     finally:
+        if collection_resources:
+            collection_resources.close()
         if transport:
             transport.close()
         if db:

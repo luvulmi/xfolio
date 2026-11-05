@@ -2,11 +2,11 @@
 
 XFolio는 국내 상장 해외 ETF와 미국 공식 경제·정책 발표를 정리해 본인 Telegram으로 자동 전달하는 개인용 뉴스레터 프로젝트입니다. 기본3종목·활성총10종목, **월~금 중 한국 거래일08:00 아침1회**가 기본 목표이며 한국 휴장 평일/주말에는 가격·뉴스 알림을 모두 발송하지 않습니다. 한국 거래일14:00·16:00 알림은 모두 선택 기능이며 기본 꺼짐입니다. [프로젝트 기획서](docs/프로젝트_기획서.md) · [현재 요구사항](docs/요구사항.md) · [관리자 화면](docs/specifications/관리자_화면_구조.md) · [새 WBS](docs/planning/작업_분해_WBS.md)
 
-2026-11-04 현재 뉴스 범위는 일반 뉴스 제목·링크 + BLS·BEA·Federal Reserve Board 자체 발표 AI 요약입니다. 일반 뉴스는 Finnhub Free general을 본인 개인용으로 채택했으며 별도 이메일 확인 없이 개인 이용 기준을 적용합니다. 공식 발표는 직접 수집하고 Exa는 초기 필수 경로에서 제외합니다. 관리자는 AWS Lightsail + Tailscale로 본인 PC·휴대폰에만 제공하는 목표입니다. 국내 시세·거래일·종목/가격 DB는 T02, 뉴스 수집·공식 요약 연결·기발송 DB는 T03에서 구현·격리 검증했습니다. T04 아침 편성·발송 직전 검사·0005 저장도 구현·격리 검증했습니다. T05 관리자5메뉴/설정, T06 모의 예약/outbox, T08 로컬 배포 구성은 첫 구현·통합 검증했으며 실제 수집 예약·본인 정시 수신·AWS 운영은 후속입니다. KIS는11/3 실전 인증·기본3종목의11/2·11/3 비수정 종가와 주말 휴장 응답을 확인했습니다. 본인 AWS/비공개 관리자·본인1명 Telegram 경유·가격90일 보관은11/3 사용자 결정으로 허용해 T01 완료로 인수했습니다. 공급자 별도 명시 허가 취득과 구분합니다. [검증·T02 계약](tasks/verification/market/국내_ETF_API_표본_검증.md)
+2026-11-05 현재 뉴스 범위는 일반 뉴스 제목·링크 + BLS·BEA·Federal Reserve Board 자체 발표 AI 요약입니다. 일반 뉴스는 Finnhub Free general을 본인 개인용으로 채택했으며 별도 이메일 확인 없이 개인 이용 기준을 적용합니다. 공식 발표는 직접 수집하고 Exa는 초기 필수 경로에서 제외합니다. 관리자는 AWS Lightsail + Tailscale로 본인 PC·휴대폰에만 제공하는 목표입니다. T01~T04의 국내 시세·뉴스·편성 기반에 T05 관리자5메뉴/비용/신선도와 T06 실제 수집·설정 고정·예약/outbox를 연결했습니다. T07의 격리 통합 시험·무료 제공처 실조회·본인 Telegram 진단 통신을 확인했으며 제품07:50→08:00 정시 수신·유료 요약·AWS 운영은 별도 인수입니다. [11/5 결과](tasks/logs/2026-11-05_아침_뉴스레터_통합_인수.md). KIS 본인 AWS/비공개 관리자·본인1명 Telegram 경유·가격90일 보관은11/3 사용자 결정으로 허용해 T01 완료로 인수했습니다. 공급자 별도 명시 허가 취득과 구분합니다. [검증·T02 계약](tasks/verification/market/국내_ETF_API_표본_검증.md)
 
 이전 X/미국 ETF 구현·시험 자산은 아래의 별도 절에 보존합니다. KIS 도구의 기본 실행 `uv run python scripts/experiments/kis_market_probe.py`는 공개 마스터 식별 전용입니다. 인증 종가 모드는 아래처럼 명시적으로 선택합니다.
 
-Finnhub Free 시장뉴스는 **본인 개인용 채택**입니다. 11/4 무료 수동 조회에서 직접 기사주소3건을 선정했고 경유 HEAD 요청 상한으로 수집은 partial입니다. 필터/중복/경유 처리·DB는 무통신/격리 시험으로 검증했으며 정기 worker는 미연결입니다. 제품07:50/08:00 정시 확보·송신은 기술 인수 전입니다. 루트 `.env`의 `FINNHUB_API_KEY` 값은 공유하지 않습니다. [기존 실측·조건](tasks/verification/news/Finnhub_시장뉴스_표본과_개인_전달.md) · [T03 실조회](tasks/verification/assets/news_samples/t03_2026-11-04/README.md)
+Finnhub Free 시장뉴스는 **본인 개인용 채택**입니다. 11/4 수동 조회는 직접 기사주소3건 선정/수집partial, 11/5 수동 진단은4출처complete·선정 정상0건이었습니다. worker 연결은 구현·격리 검증했으며 제품07:50/08:00 정시 확보·송신은 별도 관측이 필요합니다. 루트 `.env`의 `FINNHUB_API_KEY` 값은 공유하지 않습니다. [기존 실측·조건](tasks/verification/news/Finnhub_시장뉴스_표본과_개인_전달.md) · [T03 실조회](tasks/verification/assets/news_samples/t03_2026-11-04/README.md) · [T07 진단](tasks/verification/assets/integration/t07_2026-11-05/README.md)
 
 ## T05·T06·T08 병렬 개발과 로컬 실행
 
@@ -27,7 +27,9 @@ uv run python deploy/newsletter/maintenance.py plan
 
 APScheduler3.x가 신규 의존성이며 `uv sync --locked`로 설치합니다. DB 변경은0005→0006 알림 설정/감사→0007 Telegram outbox 단일 계보입니다. 실행 환경의 `XFOLIO_MIGRATION_DATABASE_URL`을 명시하고 대상 DB를 확인한 뒤 `uv run alembic upgrade head`로 적용합니다. API/worker 기동은 migration을 자동 실행하지 않습니다. [변경 이력](migrations/README.md)을 따릅니다.
 
-첫 worker 구현은 모의 예약·서버 DB 편성의 점유/검사·분할·429·부분 성공/불명 처리입니다. 실제 T02/T03 수집 어댑터의 예약 연결과 본인07:50→08:00 수신은 후속입니다. 현재 `--live` 준비/예약은 차단하며 모의 성공을 실제 발송으로 집계하지 않습니다. 실제 전송 경로는 명시적인 서버 인수 설정과 본인 수신자를 요구합니다. 운영 준비 전에는 활성화하지 않습니다.
+worker는 T02 KIS→T03 뉴스/공식 요약→T04 편성→outbox를 연결합니다. `--live --phase prepare`는07:50~07:51 미만에 설정/종목을 고정하며, `--live --schedule`은07:50 준비와08시 전송을 예약합니다. 날짜별DB claim으로 중복·중단 후 자동 재수집을 막고 전송 직전 중지/종목 변경·거래일·예산·08:10 마감을 다시 검사합니다. 기본 모의 실행은 유지합니다.
+
+실행 서버에 `XFOLIO_WORKER_LIVE_ACCEPTED=true`, 명시적worker DB·본인 Telegram 설정·KIS/Finnhub/OpenAI 키와 `XFOLIO_GENERATION_LIMITS_FILE`을 주입해야 실제 준비/예약을 사용할 수 있습니다. worker는 `.env`를 자동으로 읽지 않습니다. limits JSON 형식은 아래 T03 안내와 같으며 유효한 단가·근거·만료시각이 없으면 실행을 거절합니다. 준비 snapshot은90일 보존하며 유지보수 도구가 만료 삭제/복원 검사를 수행합니다. 유료 요약·정시 수신·AWS 운영 완료를 뜻하지 않습니다.
 
 Docker API/worker와 React/Caddy 구성, Tailscale Serve·비밀 주입·정지/복구·백업/만료 삭제는 [비공개 배포 안내](deploy/newsletter/README.md)를 따릅니다. `127.0.0.1:8088`만 게시하고 API/DB/worker 포트는 게시하지 않습니다. T08 운영 인수는 실제 Lightsail/Neon·PC/휴대폰·공개 차단·정시 실행·삭제/복원·월 비용 확인 후 완료합니다.
 

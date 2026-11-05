@@ -7,7 +7,7 @@
 | 실행 진입 | `cli.py`, `__main__.py` | CLI 상태·조회·미리보기·시험 명령 |
 | 아침 뉴스레터 | `newsletter.py`, `newsletter_store.py`, `newsletter_cli.py`, `newsletter_demo.py`, `db/newsletter.py` | T04 가격+뉴스0~3건·준비/부분/실패/휴장 건너뜀·발송 직전 검사·0005 불변/90일 저장. 송신/worker는 T06 |
 | 공용 알림 설정 | `notification_settings.py`, `db/notification_settings.py` | T05 관리자 쓰기·worker 읽기, revision/감사·0006. 오후 활성화는 T09 인수 전 차단 |
-| 자동 실행·전송 | `jobs/worker.py`, `jobs/outbox.py`, `jobs/telegram.py`, `db/telegram.py` | T06 첫 구현: 기본 모의 예약·DB 점유·분할·429/불명·0007·365일 메타. 실제 제공처 준비/정시 인수 후속 |
+| 자동 실행·전송 | `jobs/worker.py`, `jobs/collection.py`, `jobs/outbox.py`, `jobs/telegram.py`, `db/telegram.py` | T06 KIS→뉴스/공식 요약→편성 연결·07:50 설정 고정·90일 준비 claim·비용 원장·기본 모의 예약·점유/분할/불명·0007/365일 메타. 실제 정시/유료 인수 후속 |
 | 국내 시장 | `domestic/`, `db/domestic.py` | KIS 원종가/토큰·거래일·마스터/검색·종목/버전·90일 DB, 관리자 라우트/worker는 후속 |
 | 개인 뉴스레터 뉴스 | `newsletter_news.py`, `newsletter_news_cli.py`, `finnhub.py`, `official_releases.py`, `newsletter_news_store.py`, `db/newsletter_news.py` | T03 Finnhub·BLS CPI/BEA GDP/PCE/Board FOMC·근거 요약·전체0~3건·성공 전달 제외/90일 만료. 실제 유료 요약·worker 송신은 후속 |
 | 시장 수집 | `etf.py`, `market.py`, `models.py` | 제품 SPY/QQQ/DIA USD Close·배당/분할·수정치와 legacy 두 지수 모델 |
@@ -21,6 +21,6 @@
 | 가상 시험 | `demo.py`, `compose.py`, `analysis.py`, `cloud.py`, `dashboard_ui.py` | 가상 입력·미리보기·기존 Streamlit/클라우드 시험 지원 |
 | 게시 | `publish.py` | 설명만 있는 미구현 진입점 |
 
-`jobs/`는 모의 예약과 outbox 첫 구현이며 실제 제공처 자동 준비·본인 정시 수신·운영 인수는 후속이다. 현재 일반 뉴스는 Finnhub, 공식 발표는 BLS·BEA·Board 직접 수집이다. 기존 Exa/Marketaux/X 경로는 이전 구현 자산으로 보존한다.
+`jobs/`의 실제 제공처 준비/예약 연결은 구현·격리 검증했다. 기본은 모의 실행이며 live 준비에는 서버 키·명시적 DB·인수 플래그·유효한 단가 limits 파일이 필요하다. 본인 정시 수신·유료 요약·운영 인수는 후속이다. 현재 일반 뉴스는 Finnhub, 공식 발표는 BLS·BEA·Board 직접 수집이다. 기존 Exa/Marketaux/X 경로는 이전 구현 자산으로 보존한다.
 
 코드 파일은 import와 CLI 호환성을 위해 현재 위치를 유지한다. 검증 방법은 [테스트 안내](../../tests/README.md), 프론트는 [관리자 앱](../../frontend/README.md), DB 변경은 [migration 안내](../../migrations/README.md)를 참고한다.

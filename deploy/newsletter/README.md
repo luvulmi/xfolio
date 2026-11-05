@@ -28,7 +28,9 @@ export XFOLIO_PG_SERVICE_FILE=/etc/xfolio/pg_service.conf
 export XFOLIO_PGPASS_FILE=/etc/xfolio/pgpass
 ```
 
-T06 진입점은 `python -m xfolio.jobs.worker`이며 기본 모의 실행이다. `--once`는 합성 무통신1회, `--schedule`은 기본 모의 예약이다. 이 구성은 `XFOLIO_WORKER_LIVE_ACCEPTED=false`를 고정하며 `--live`를 넣지 않는다. 실제 제공처 자동 준비 어댑터/예산원장/개인 수신/정시 통합을 인수한 뒤 별도 검토한 운영 override로만 live를 활성화한다. 오후14/16시는 T09 인수 전 기본OFF를 유지한다.
+T06 진입점은 `python -m xfolio.jobs.worker`이며 기본 모의 실행이다. `--once`는 합성 무통신1회, `--schedule`은 기본 모의 예약이다. 이 구성은 `XFOLIO_WORKER_LIVE_ACCEPTED=false`를 고정하며 `--live`를 넣지 않는다. 실제 수집/예산원장/설정 고정 연결은11/5 구현·격리 검증했다. 실제 정시 수신·유료 요약·운영 인수 뒤 별도 검토한 운영 override로 live를 활성화한다. 오후14/16시는 T09 인수 전 기본OFF를 유지한다.
+
+live 준비/예약에는 `worker.env.example`의 KIS/Finnhub/OpenAI 키와 `XFOLIO_GENERATION_LIMITS_FILE`이 필요하다. `GenerationLimits` JSON의 현재 단가·근거·timezone 포함 유효기간을 직접 검토한다([형식](../../README.md#t03-뉴스-수집공식-발표-요약)). env_file은 파일 내용을 컨테이너에 복사하지 않는다. 운영 override에서 호스트 `/etc/xfolio/generation_limits.json`을 `/run/secrets/generation_limits.json`으로 읽기 전용 bind mount하고 uid10001의 읽기 권한을 확인해야 한다. 이미지/Git에 넣지 않는다. 기본 Compose에는 이 mount와 live 활성화를 추가하지 않았다. worker는 `.env` 자동 로딩 없이 주입한 환경만 읽는다.
 
 ## 비공개 접속과 인증 인수
 
@@ -51,7 +53,7 @@ docker compose -f deploy/newsletter/compose.yaml --profile maintenance run --rm 
 
 ## 보존·정기 삭제·복원 gate
 
-`maintenance.py plan`은 DB에 연결하지 않는다. `verify`는 명시한 유지보수 DB만 읽고, `purge --execute`만 만료 행을 삭제한다. 설정/발송 결과 metadata는365일, 가격/뉴스/편성은90일 또는 원본의 더 이른 만료를 따른다. 삭제는 각 저장 서비스의 계약을 호출한다. 현재 singleton 설정은 삭제하지 않는다. 외부 DB에는 `sslmode=verify-full`을 요구하며 이미지의 시스템 CA 경로를 사용한다.
+`maintenance.py plan`은 DB에 연결하지 않는다. `verify`는 명시한 유지보수 DB만 읽고, `purge --execute`만 만료 행을 삭제한다. 설정/발송 결과 metadata는365일, 가격/뉴스/편성·준비 snapshot은90일 또는 원본의 더 이른 만료를 따른다. `operations_events`에서는 `kind=newsletter_prepare`만90일 검사·삭제하며 다른kind의 보존을 변경하지 않는다. 삭제는 각 저장 서비스의 계약을 호출한다. 현재 singleton 설정은 삭제하지 않는다. 외부 DB에는 `sslmode=verify-full`을 요구하며 이미지의 시스템 CA 경로를 사용한다.
 
 ```sh
 docker compose -f deploy/newsletter/compose.yaml --profile maintenance run --rm maintenance

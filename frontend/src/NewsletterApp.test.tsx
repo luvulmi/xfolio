@@ -13,8 +13,46 @@ it('기본화면은5메뉴·휴장 미발송과 미관측 상태를 표시한다
   mount(); await screen.findByRole('heading', { name: '대시보드' });
   expect(screen.getByRole('navigation', { name: '메뉴' }).querySelectorAll('a')).toHaveLength(5);
   expect(await screen.findByText('휴장 · 발송 없음')).toBeInTheDocument();
-  expect(screen.getByText(/시세 신선도와 비용 원장은 연결/)).toBeInTheDocument();
+  expect(screen.getByText(/원장 기록 없음은 실비 0원을 뜻하지/)).toBeInTheDocument();
   expect(screen.queryByRole('button', { name: '편성 전체 승인' })).not.toBeInTheDocument();
+});
+
+it('대시보드는원장상태·가격시각·뉴스실패·실제송신불명을DB응답대로표시한다', async () => {
+  const body = { market_open: true, settings, watchlist: { codes: ['360750'] }, newsletters: [],
+    budget: { status: 'over_limit', month: '2026-11', confirmed_krw: '800', reserved_krw: '300', estimated_krw: '100', committed_krw: '1200', remaining_krw: '0', limit_krw: '1000', record_count: 3, limit_source: 'server_configuration' },
+    price_freshness: { status: 'attention', provenance: 'live', expected_trade_date: '2026-11-04', comparison_trade_date: '2026-11-03', items: [{ code: '360750', status: 'superseded', provenance: 'live', trade_date: '2026-11-04', price_as_of: null, retrieved_at: '2026-11-05T07:51:00+09:00', scheduled_close: '2026-11-04T15:30:00+09:00', version: 1, change_available: false }] },
+    news_collection: { status: 'partial', current: true, as_of: '2026-11-05T07:50:00+09:00', selected_count: 1, retained_selected_count: 1, synthetic: false, provenance: 'live', sources: [{ provider: 'Finnhub', status: 'failed', errors: ['request_budget_exhausted'] }] },
+    deliveries: { status: 'observed', attention: [{ id: 'd1' }], recent: [{ id: 'd1', target_date: '2026-11-05', slot: 'morning', status: 'unknown', transport_mode: 'live', updated_at: '2026-11-05T08:00:00+09:00' }] },
+    worker: { status: 'skipped', reason: 'market_closed', recorded_at: '2026-11-05T08:00:00+09:00' } };
+  vi.stubGlobal('fetch', vi.fn(async (path: string) => path === '/api/auth/me' ? json(session) : json(body)));
+  mount(); expect(await screen.findByText('예산 초과')).toBeInTheDocument();
+  expect(screen.getByText('800원')).toBeInTheDocument();
+  expect(screen.getByText('최신 정정으로 대체됨')).toBeInTheDocument();
+  expect(screen.getByText('미제공')).toBeInTheDocument();
+  expect(screen.getByText(/제공 지연 미측정/)).toBeInTheDocument();
+  expect(screen.getByText(/Finnhub · 실패 request_budget_exhausted/)).toBeInTheDocument();
+  expect(screen.getByText('결과 불명')).toBeInTheDocument();
+  expect(screen.getByRole('status')).toHaveTextContent('확인이 필요한 발송 1건');
+  expect(screen.getByRole('link', { name: '2026-11-05 · morning' })).toHaveAttribute('href', '#/deliveries/d1');
+});
+
+it('08시전준비진행상태를발송단계와구분해표시한다', async () => {
+  vi.stubGlobal('fetch', vi.fn(async (path: string) => path === '/api/auth/me' ? json(session) : json({ market_open: true, settings, watchlist: { codes: ['360750'] }, newsletters: [], worker: { stage: 'preparation', status: 'running', reason: null, recorded_at: '2026-11-05T07:50:00+09:00' } })));
+  mount();
+  expect(await screen.findByText(/준비·수집 진행 중/)).toBeInTheDocument();
+  expect(screen.queryByText(/발송 worker/)).not.toBeInTheDocument();
+});
+
+it('대시보드재조회실패시이전상태를정상으로유지하지않는다', async () => {
+  let calls = 0;
+  vi.stubGlobal('fetch', vi.fn(async (path: string) => {
+    if (path === '/api/auth/me') return json(session);
+    calls++; return calls === 1 ? json({ market_open: true, settings, watchlist: { codes: ['360750'] }, newsletters: [] }) : json({ error: { code: 'STORAGE_UNAVAILABLE' } }, 503);
+  }));
+  mount(); await screen.findByText('아침 활성');
+  fireEvent.click(screen.getByRole('button', { name: '최신 상태 확인' }));
+  await screen.findByRole('alert');
+  expect(screen.queryByText('아침 활성')).not.toBeInTheDocument();
 });
 
 it('설정 변경에 현재revision과CSRF를 보내고 오후는 비활성화한다', async () => {

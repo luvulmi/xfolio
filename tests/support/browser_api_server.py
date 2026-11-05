@@ -239,13 +239,58 @@ def certificate():
     return key_file, cert_file
 
 
+def seed_newsletter_workflow(store):
+    """T07: real stores/worker with test-only provider/AI/Telegram doubles."""
+    sys.path.insert(0, str(ROOT / "tests"))
+    from test_telegram_outbox_postgres import FakeLive
+    from test_worker_collection_postgres import setup
+
+    from xfolio.db.notification_settings import settings as notification_settings
+    from xfolio.domestic.store import DomesticStore
+    from xfolio.jobs.outbox import TelegramOutboxStore
+    from xfolio.jobs.worker import MorningWorker
+    from xfolio.newsletter import at
+    from xfolio.newsletter_demo import demo_inputs
+    from xfolio.newsletter_store import NewsletterStore
+
+    data = demo_inputs()
+    DomesticStore(store.engine).bootstrap(data.frozen_at - timedelta(days=1))
+    with store.engine.begin() as conn:
+        conn.execute(
+            notification_settings.update().values(
+                updated_at=data.frozen_at - timedelta(days=1)
+            )
+        )
+    service, clock, _calls, _ai = setup((store.engine, data))
+    prepared = service.prepare()
+    if prepared["status"] != "ready":
+        raise ValueError("newsletter_browser_seed_failed")
+    clock[0] = at(data.target_date, 8)
+    worker = MorningWorker(
+        calendar=service.calendar,
+        collect_inputs=None,
+        preparation=service,
+        newsletter_store=NewsletterStore(store.engine),
+        outbox_store=TelegramOutboxStore(store.engine),
+        transport=FakeLive(),
+        clock=lambda: clock[0],
+    )
+    if worker.send()["status"] != "confirmed":
+        raise ValueError("newsletter_browser_delivery_seed_failed")
+    return at(data.target_date, 8, 1)
+
+
 def main():
     if not (ROOT / "frontend" / "dist" / "index.html").exists():
         raise ValueError("run npm run build in frontend first")
     admin, store = prepare_database()
     try:
-        seed_synthetic(store)
-        seed_am_workflow(store)
+        clock = TEST_CLOCK
+        if os.environ.get("XFOLIO_BROWSER_TEST_NEWSLETTER") == "true":
+            clock = seed_newsletter_workflow(store)
+        else:
+            seed_synthetic(store)
+            seed_am_workflow(store)
         settings = Settings(
             origin=ORIGIN,
             google_client_id="browser-provider-double",
@@ -254,9 +299,7 @@ def main():
             cursor_secret=secrets.token_urlsafe(32),
             mode="reviewed",
         )
-        app = create_app(
-            settings, store, GoogleProviderDouble(), clock=lambda: TEST_CLOCK
-        )
+        app = create_app(settings, store, GoogleProviderDouble(), clock=lambda: clock)
         app.mount("/", StaticFiles(directory=ROOT / "frontend" / "dist", html=True))
         key_file, cert_file = certificate()
         SCHEMA_RECORD.write_text(SCHEMA, encoding="ascii")

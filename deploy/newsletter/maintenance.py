@@ -17,6 +17,7 @@ RETENTION = {
     "notification_setting_audit": 365,
     "telegram_outbox": 365,
 }
+EVENT_RETENTION = {"newsletter_prepare": 90}
 LEGACY_PAYLOAD_TABLES = (
     "evidence_bundles",
     "content_drafts",
@@ -29,6 +30,7 @@ STORES = (
     ("xfolio.newsletter_news_store", "NewsletterNewsStore", "purge_expired"),
     ("xfolio.notification_settings", "NotificationSettingsStore", "purge_expired"),
     ("xfolio.jobs.outbox", "TelegramOutboxStore", "purge_expired"),
+    ("xfolio.jobs.collection", "PreparationStore", "purge_expired"),
 )
 
 
@@ -41,6 +43,7 @@ def plan():
         "mode": "plan",
         "database_accessed": False,
         "retention_days": RETENTION,
+        "operations_event_retention_days": EVENT_RETENTION,
         "operating_logs_days": 30,
         "backup_max_days": 7,
         "raw_official_text_persisted": False,
@@ -80,7 +83,7 @@ def verify(engine, *, now):
     now = utc_now(now)
     with engine.connect() as conn:
         names = set(sa.inspect(conn).get_table_names())
-        missing = sorted(set(RETENTION) - names)
+        missing = sorted((set(RETENTION) | {"operations_events"}) - names)
         if missing:
             raise MaintenanceError("newsletter_schema_incomplete")
         expired = {}
@@ -92,6 +95,15 @@ def verify(engine, *, now):
                 sa.select(sa.func.count())
                 .select_from(table)
                 .where(table.c.expires_at <= now)
+            )
+        events = sa.Table("operations_events", sa.MetaData(), autoload_with=conn)
+        if not {"kind", "expires_at"} <= set(events.c.keys()):
+            raise MaintenanceError("retention_contract_incomplete")
+        for kind in EVENT_RETENTION:
+            expired[f"operations_events.{kind}"] = conn.scalar(
+                sa.select(sa.func.count())
+                .select_from(events)
+                .where(events.c.kind == kind, events.c.expires_at <= now)
             )
         legacy = {}
         for name in LEGACY_PAYLOAD_TABLES:

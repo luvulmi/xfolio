@@ -1,5 +1,7 @@
 # 검증 원본과 그림
 
+- [T07 무료실조회·본인Telegram진단](integration/t07_2026-11-05/README.md) — 11/5 ETF3종목·뉴스4출처complete/정상0건·시험메시지1회. 유료AI/정시수신 인수 아님
+
 - [T04 합성 아침 뉴스레터5종](integration/t04_morning_2026-11-04/README.md) — 정상3건/0건·부분/전체 실패·휴장 건너뜀, 실제 시세/뉴스/AI/Telegram 호출 없음
 
 - [T03 무료 수집·공식 발표 파싱](news_samples/t03_2026-11-04/README.md) — 11/4 무료4출처 수동 조회·공식4표본 해시/집계. 유료 AI·제품 정시·Telegram 송신 없음
