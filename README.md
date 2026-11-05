@@ -162,7 +162,7 @@ Python 의존성은 `uv sync`, 프론트는 Node.js 22에서 설치합니다.
 
 ```powershell
 uv sync
-uv run uvicorn xfolio.api.app:app --host 127.0.0.1 --port 8000
+uv run uvicorn xfolio.api.app:app --host 127.0.0.1 --port 18443
 ```
 
 별도 터미널에서 다음을 실행합니다.
@@ -175,7 +175,7 @@ npm test -- --run
 npm run build
 ```
 
-Vite의 `/api` 요청은 로컬 `127.0.0.1:8000`으로 전달합니다. 설정이 없는 API는 503으로 차단됩니다. 로그인 성공·운영 데이터·승인 결과를 가짜로 만드는 개발 로그인 경로는 제공하지 않습니다. 실제 Google 로그인에는 같은 origin의 HTTPS 진입점과 등록된 callback이 필요합니다. 단순 HTTP 개발 서버에서는 Secure 세션 쿠키를 사용하는 전체 로그인 흐름을 완료할 수 없습니다.
+Vite의 `/api` 요청은 로컬 `127.0.0.1:18443`으로 전달합니다. 설정이 없는 API는 503으로 차단됩니다. 로그인 성공·운영 데이터·승인 결과를 가짜로 만드는 개발 로그인 경로는 제공하지 않습니다. 실제 Google 로그인에는 같은 origin의 HTTPS 진입점과 등록된 callback이 필요합니다. 단순 HTTP 개발 서버에서는 Secure 세션 쿠키를 사용하는 전체 로그인 흐름을 완료할 수 없습니다. 실제 로컬 DB·Google 관리자 실행은 [로컬 실사용 안내](scripts/dev/README.md#실제-로컬-db와-관리자)를 따릅니다.
 
 `.env.example`의 `XFOLIO_API_DATABASE_URL`(API/worker 역할), `XFOLIO_PUBLIC_ORIGIN`(경로 없는 HTTPS origin), Google client ID/secret, 허용 이메일 목록(`XFOLIO_ALLOWED_EMAILS`, 쉼표 구분), `XFOLIO_API_CURSOR_SECRET`(무작위 32자 이상)을 준비합니다. `XFOLIO_MODE` 기본은 `dry_run`입니다. 비밀 파일은 자동으로 읽지 않으며 필요하면 `uv run --env-file .env uvicorn ...`처럼 명시합니다. 브라우저에는 이 환경변수들을 넣지 않습니다.
 

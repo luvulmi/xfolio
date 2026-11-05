@@ -1,0 +1,68 @@
+{
+  "collection": {
+    "status": "collected",
+    "market_status": "complete",
+    "prices": 3,
+    "trade_dates": [
+      "2026-11-04"
+    ],
+    "news_status": "complete",
+    "selected": 0,
+    "sources": [
+      {
+        "provider": "Finnhub",
+        "status": "complete",
+        "errors": []
+      },
+      {
+        "provider": "BLS",
+        "status": "complete",
+        "errors": []
+      },
+      {
+        "provider": "BEA",
+        "status": "complete",
+        "errors": []
+      },
+      {
+        "provider": "Board",
+        "status": "complete",
+        "errors": []
+      }
+    ],
+    "synthetic": false,
+    "paid_calls": 0,
+    "send_calls": 0
+  },
+  "paid_probe": {
+    "status": "verified",
+    "model": "gpt-6-luna",
+    "usage": {
+      "input_tokens": 619,
+      "output_tokens": 319
+    },
+    "estimated_krw": "0.6914",
+    "source": "BLS",
+    "published_at": "2026-10-14T12:30:00+00:00",
+    "source_url": "https://www.bls.gov/news.release/cpi.htm",
+    "summary": "미국 BLS의 2026년 9월 CPI-U는 전월 대비(계절조정) 0.6% 상승했다. 미국 BLS의 2026년 9월 CPI-U는 전년 동월 대비(비계절조정) 3.7% 상승했다.",
+    "claims_checked": 2,
+    "diagnostic_only": true,
+    "send_calls": 0
+  },
+  "preflight": {
+    "status": "ready",
+    "private_recipient_verified": true,
+    "google_configuration": true,
+    "max_summary_cost_krw": "9.9000",
+    "monthly_cap_krw": "100",
+    "send_calls": 0,
+    "paid_calls": 0,
+    "checked_at": "2026-11-05T02:14:19.979365+00:00"
+  },
+  "local_ports": {
+    "https": 8443,
+    "api": 18443,
+    "postgres": 55439
+  }
+}

@@ -28,7 +28,7 @@ uv run python scripts/dev/local_https.py
 
 브라우저에서 `https://localhost:8443`으로 연다. 자기서명 개발 인증서이므로 브라우저 경고가 표시된다. 이 프로세스는 인증서를 OS에 설치하지 않는다. 인증서 파일만 준비하려면 `uv run python scripts/dev/local_https.py --cert-only`를 사용한다. 포트를 바꾸면 API 시작 시 `--origin https://localhost:새포트`와 proxy의 `--port 새포트`를 함께 바꾼다.
 
-기본 프록시 대상은 `http://127.0.0.1:8000`이며 외부 호스트를 대상으로 지정할 수 없다. API access log와 HTTPS proxy request log를 끄므로 callback code/state·쿠키가 요청 로그에 남지 않는다. 기존 앱의 server-side 세션·CSRF·허용 운영자 검사를 그대로 사용한다. API 연결 실패는 502, 설정 미완료는 API의 503으로 표시한다.
+기본 프록시 대상은 `http://127.0.0.1:18443`이며 외부 호스트를 대상으로 지정할 수 없다. API access log와 HTTPS proxy request log를 끄므로 callback code/state·쿠키가 요청 로그에 남지 않는다. 기존 앱의 server-side 세션·CSRF·허용 운영자 검사를 그대로 사용한다. API 연결 실패는 502, 설정 미완료는 API의 503으로 표시한다.
 
 ## Google 콘솔에서 별도로 확인할 것
 
@@ -39,3 +39,24 @@ uv run python scripts/dev/local_https.py
 `tests/test_dev_https.py`는 인증서 SAN/재사용·`.cache` 제한, 외부 proxy 대상 차단, 인증서 검증을 켠 로컬 TLS, 유휴 TCP 연결과 다른 TLS 요청의 동시 처리, SPA 제공, API 쿠키/Origin/CSRF 전달과 명시적 키 재사용을 확인한다. 로컬 TLS 시험에는 Windows asyncio/socket 정책에 따라 샌드박스 밖 실행이 필요할 수 있다. 이 자동 시험은 실제 Google 인증 성공이나 실제 운영 DB 사용 성공을 뜻하지 않는다.
 
 개인키는 인증서와 함께 Git 제외 경로에 남는다. 테스트와 브라우저는 해당 개발 인증서만 명시적으로 신뢰하도록 설정할 수 있으며, 시스템 전체 인증서 검증을 끄지 않는다. 종료는 각 터미널의 `Ctrl+C`로 수행한다.
+
+## 실제 로컬 DB와 관리자
+
+11/5 사용자 요청에 따른 지속 개발 환경이다. PostgreSQL17의 `C:/Program Files/PostgreSQL/17/bin`과 Python 의존성을 사용한다. `.env`에 KIS/Finnhub/OpenAI·Telegram·실제 Google client ID/secret/허용 이메일을 등록한다. Google callback은 `https://localhost:8443/api/auth/callback`이다. `.env`를 명시적으로 메모리로 읽으며 시험 fixture·가짜 로그인은 쓰지 않는다.
+
+```powershell
+uv run python scripts/dev/local_runtime.py setup
+uv run python scripts/dev/local_runtime.py preflight
+uv run python scripts/dev/local_runtime.py collect
+```
+
+`setup`은 전용 loopback55439 `xfolio_local` DB·SCRAM 암호·Alembic head·기본3종목을 준비하며 기존 데이터를 지우지 않는다. 비밀은 Git 제외 `.cache/local_runtime/runtime.json`에 둔다. `collect`는 실제 무료 가격/뉴스를 DB에 저장하며 유료 요약·송신은 하지 않는다. `preflight`는 실제 private 수신 대상을 조회하지만 메시지는 보내지 않는다. 별도 터미널2개로 아래를 실행한다.
+
+```powershell
+uv run python scripts/dev/local_runtime.py api
+uv run python scripts/dev/local_runtime.py https
+```
+
+접속은 **https://localhost:8443**, API는 **127.0.0.1:18443**이다. 3000/8000은 이 실행에서 사용하지 않는다. 개발 인증서 경고를 확인하고 Google 허용 계정으로 로그인한다. 설정·관심종목 변경은 이 DB에 저장되고 worker가 같은 DB를 읽는다. 종료는 두 터미널 `Ctrl+C`, DB 종료는 `pg_ctl -D C:/pro/xfolio/.cache/local_runtime/postgres/data stop -m fast`다. DB 파일을 지우지 않는다. 백그라운드 실행 시 `.cache/local_runtime/services.json`과 포트의 실제 프로세스를 확인해 이 앱의 프로세스만 종료한다.
+
+11/6 시험은 `schedule_local_acceptance.ps1`로 Windows에07:35 DB확인·07:50 준비·08:00 전송을 각1회 등록했다. `run_local_phase.ps1`와 Python의 날짜/시각 가드가11/6 이외·늦은 실행을 차단한다. 예약 action에는 비밀을 넣지 않는다. PC를 켜고 Windows 로그인·인터넷을 유지한다. Codex08:05 결과 확인에는 앱도 필요하다. 유료 요약은 Git 제외 `generation_limits.json`의 유효 단가와100원 로컬 월 한도 내에서 공식 적격 발표에만 적용한다. `paid` 진단은1회 attempt marker가 있으며 이미11/5 성공했으므로 다시 실행하지 않는다. 내일 로그는 `.cache/local_runtime/2026-11-06_{prepare,send}.log`다. [구현·실측·제약](../../tasks/logs/2026-11-05_뉴스_중요도와_로컬_실행.md).

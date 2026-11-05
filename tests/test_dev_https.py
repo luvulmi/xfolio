@@ -112,6 +112,9 @@ class FakeApi(BaseHTTPRequestHandler):
     def log_message(self, *args):
         return
 
+    do_PATCH = do_POST
+    do_PUT = do_POST
+
 
 def test_verified_https_serves_spa_and_preserves_session_csrf(tmp_path, capsys):
     (tmp_path / "index.html").write_text("<h1>XFolio test</h1>", encoding="utf-8")
@@ -163,6 +166,26 @@ def test_verified_https_serves_spa_and_preserves_session_csrf(tmp_path, capsys):
                 "origin": origin,
                 "csrf": "test-csrf",
             }
+            for method, path in (
+                ("PATCH", "/api/newsletter/settings"),
+                ("PUT", "/api/newsletter/watchlist"),
+            ):
+                conn.request(
+                    method,
+                    path,
+                    body=json.dumps({"revision": 1}),
+                    headers={
+                        "Content-Type": "application/json",
+                        "Origin": origin,
+                        "X-CSRF-Token": "test-csrf",
+                    },
+                )
+                data = json.loads(conn.getresponse().read())
+                assert data == {
+                    "body": {"revision": 1},
+                    "origin": origin,
+                    "csrf": "test-csrf",
+                }
             conn.close()
     assert "not-for-logs" not in capsys.readouterr().err
 

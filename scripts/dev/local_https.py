@@ -123,7 +123,7 @@ class DevHTTPSServer(ThreadingHTTPServer):
 
 
 class DevHandler(SimpleHTTPRequestHandler):
-    api_target = "http://127.0.0.1:8000"
+    api_target = "http://127.0.0.1:18443"
 
     def log_message(self, format, *args):
         # OAuth code/state, cookie, 키, 요청 본문을 access log에 남기지 않는다.
@@ -151,6 +151,9 @@ class DevHandler(SimpleHTTPRequestHandler):
             self.send_error(405)
             return
         self.proxy()
+
+    do_PATCH = do_POST
+    do_PUT = do_POST
 
     def proxy(self):
         target = validate_target(self.api_target)
@@ -204,7 +207,7 @@ class DevHandler(SimpleHTTPRequestHandler):
 
 
 def make_server(
-    port=8443, api_target="http://127.0.0.1:8000", static_dir=None, cert_dir=CERT_DIR
+    port=8443, api_target="http://127.0.0.1:18443", static_dir=None, cert_dir=CERT_DIR
 ):
     validate_target(api_target)
     static_dir = Path(static_dir or ROOT / "frontend" / "dist").resolve()
@@ -224,7 +227,7 @@ def make_server(
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--port", type=int, default=8443)
-    parser.add_argument("--api-target", default="http://127.0.0.1:8000")
+    parser.add_argument("--api-target", default="http://127.0.0.1:18443")
     parser.add_argument("--cert-only", action="store_true")
     args = parser.parse_args()
     if args.cert_only:

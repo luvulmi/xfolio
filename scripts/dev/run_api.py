@@ -60,7 +60,7 @@ def development_settings(origin, use_streamlit_auth=False, secrets_path=None):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--origin", default="https://localhost:8443")
-    parser.add_argument("--port", type=int, default=8000)
+    parser.add_argument("--port", type=int, default=18443)
     parser.add_argument("--use-streamlit-auth", action="store_true")
     args = parser.parse_args()
     try:
