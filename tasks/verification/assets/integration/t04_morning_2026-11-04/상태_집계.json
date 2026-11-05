@@ -1,0 +1,72 @@
+[
+  {
+    "file": "정상_3건.txt",
+    "status": "ready",
+    "prices": 3,
+    "news": 3,
+    "reasons": [],
+    "synthetic": true,
+    "can_send": false
+  },
+  {
+    "file": "정상_0건.txt",
+    "status": "ready",
+    "prices": 3,
+    "news": 0,
+    "reasons": [],
+    "synthetic": true,
+    "can_send": false
+  },
+  {
+    "file": "부분_실패.txt",
+    "status": "partial",
+    "prices": 2,
+    "news": 3,
+    "reasons": [
+      "price_unavailable:379810:provider_unavailable",
+      "news_collection_partial",
+      "news_source_failed:BLS"
+    ],
+    "synthetic": true,
+    "can_send": false
+  },
+  {
+    "file": "전체_실패.txt",
+    "status": "failed",
+    "prices": 0,
+    "news": 0,
+    "reasons": [
+      "no_usable_content",
+      "price_unavailable:360750:provider_unavailable",
+      "price_unavailable:379810:provider_unavailable",
+      "price_unavailable:458730:provider_unavailable",
+      "all_prices_unavailable",
+      "news_collection_failed",
+      "news_source_failed:Finnhub",
+      "news_source_failed:BLS",
+      "news_source_failed:BEA",
+      "news_source_failed:Board"
+    ],
+    "synthetic": true,
+    "can_send": false
+  },
+  {
+    "file": "휴장_건너뜀.txt",
+    "status": "skipped",
+    "prices": 0,
+    "news": 0,
+    "reasons": [
+      "market_closed",
+      "no_usable_content",
+      "price_unavailable:360750:price_session_or_time_invalid",
+      "price_unavailable:379810:price_session_or_time_invalid",
+      "price_unavailable:458730:price_session_or_time_invalid",
+      "all_prices_unavailable",
+      "news_candidate_unverified:BEA:ef6010fb18a2",
+      "news_candidate_unverified:Finnhub:1d7c350f170a",
+      "news_candidate_unverified:Finnhub:6b01c344dbe5"
+    ],
+    "synthetic": true,
+    "can_send": false
+  }
+]

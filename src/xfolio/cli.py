@@ -28,6 +28,22 @@ def main(argv: Sequence[str] | None = None) -> None:
     parser = argparse.ArgumentParser(description="XFolio 개발용 명령")
     commands = parser.add_subparsers(dest="command", required=True)
     commands.add_parser("status", help="현재 구현 상태 확인")
+    morning = commands.add_parser(
+        "newsletter-preview",
+        help="T04 아침 가격+뉴스 편성·검사. 기본 무통신 합성 미리보기",
+    )
+    morning.add_argument(
+        "--scenario", choices=("news", "zero", "partial", "failed"), default="news"
+    )
+    morning.add_argument("--json", action="store_true")
+    morning.add_argument("--inputs-file", type=Path)
+    morning.add_argument("--context-file", type=Path)
+    morning.add_argument("--prepared-at", type=datetime.fromisoformat)
+    morning.add_argument(
+        "--save",
+        action="store_true",
+        help="T02/T03 저장 원본과 대조 후 명시 API DB에 편성 저장",
+    )
     newsletter = commands.add_parser(
         "newsletter-news", help="T03 뉴스 수집·요약 통합. 기본 무통신"
     )
@@ -94,6 +110,11 @@ def main(argv: Sequence[str] | None = None) -> None:
     ai.add_argument("--model", choices=tuple(MODEL_PRICES), default=DEFAULT_MODEL)
     args = parser.parse_args(argv)
 
+    if args.command == "newsletter-preview":
+        from xfolio.newsletter_cli import execute
+
+        execute(args)
+        return
     if args.command == "newsletter-news":
         from xfolio.newsletter_news_cli import execute
 
@@ -110,6 +131,7 @@ def main(argv: Sequence[str] | None = None) -> None:
             "지수·CPI PM 이력과 가상 미리보기: 보존. "
             "국내 KIS 원종가·거래일·종목/90일 가격 DB: T02 구현. "
             "Finnhub·BLS/BEA/Board 뉴스 통합·공식 요약 연결·기발송 DB: T03 구현. "
+            "가격+뉴스 아침 편성·저장·발송 직전 검사: T04 구현. "
             "유료 공식 요약·제품 정시 편성/수신·worker·AWS 운영: 후속. "
             "일반 기사 AI는 초기 범위 제외, X는 이전 이력."
         )
