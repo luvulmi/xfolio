@@ -28,7 +28,7 @@
 | Finnhub 선정·필터·개인 전달 조건 | [실측·판정·한계](verification/news/Finnhub_시장뉴스_표본과_개인_전달.md) — 본인 개인용 채택, 100건→관련9건→직접 기사주소3건. 이메일 필수 아님·08시 실관측 예약 |
 | 뉴스 링크·공식 발표·비공개 관리자 기획 | [기획서·Telegram 예시](../docs/프로젝트_기획서.md) · [HTML 시연](../docs/specifications/assets/관리자_와이어프레임.html) · [11/2 결정](discussions/2026-11-02_공식_발표와_비공개_관리자.md) · [비공개 배포](../docs/research/비공개_배포.md) |
 | 개인 Telegram 권한 조사 | [공식 근거·판정·미발송 문의](../docs/research/데이터_이용_조건.md) · [11/2 결과](logs/2026-11-02_개인_Telegram_권한_조사.md) |
-| 5주차 발표 초안 | [개인용 Telegram 뉴스레터 전환](presentations/5주차_개인용_뉴스레터_전환.md) — 11/1 기준, 발표 전 실제 개발 결과 갱신 |
+| 5주차 발표 준비 | [아침 뉴스레터 구현](presentations/5주차_개인용_뉴스레터_전환.md) · [5분 대본·시연·예상 질문](presentations/5주차_발표_대본.md) · [준비 기록](logs/2026-11-05_5주차_발표_준비.md) — 11/8 발표·11/5 실제 구현/검증 반영, 11/6 정시 수신 결과는 발표 전 갱신 |
 | 개인용 뉴스레터 전환 | [작업](plans/개인용_뉴스레터_전환.md) · [확정 결정](discussions/2026-11-01_개인용_Telegram_뉴스레터_전환.md) · [API 표본](verification/market/국내_ETF_API_표본_검증.md) · [결과](logs/2026-11-01_개인용_뉴스레터_전환.md) |
 | 11/1 4주차 발표 | [화면 자료](presentations/4주차_개발_계획_김유림.md) · [대본](presentations/4주차_발표_대본.md) · [준비 체크리스트](plans/11월_1일_발표와_서비스_준비.md) |
 | 관리자 화면 정의 | [초기 3메뉴·상세 구성](../docs/specifications/관리자_화면_구조.md) · [인수 항목](verification/admin/관리자_화면과_승인_API.md) · [10/31 보완 결과](logs/2026-10-31_관리자_화면_정의_보완.md) |

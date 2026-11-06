@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="410" viewBox="0 0 1280 410" role="img" aria-labelledby="title desc">
+  <title id="title">5주차 아침 뉴스레터 구현 흐름</title>
+  <desc id="desc">가격과 뉴스 수집, worker 검사와 편성, PostgreSQL과 outbox 저장, Telegram 전송을 연결했다. 관리자 설정과 이력은 API를 통해 같은 DB를 사용한다. 11월 5일 구현과 격리 검증을 마쳤으며 실제 정시 수신과 AWS 운영은 검증 전이다.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#60748b"/></marker>
+  </defs>
+  <rect width="1280" height="410" rx="20" fill="#f2f5f9"/>
+  <g font-family="Malgun Gothic, Apple SD Gothic Neo, sans-serif">
+    <text x="32" y="42" fill="#172d46" font-size="24" font-weight="700">아침 한 번 · 수집에서 발송 결과까지</text>
+    <text x="32" y="72" fill="#52657b" font-size="17">11/5 기준 · 구현·격리 검증 완료 / 실제 정시 수신·AWS 운영 검증 전</text>
+    <g fill="#ffffff" stroke="#ced8e5" stroke-width="2">
+      <rect x="32" y="103" width="266" height="160" rx="14"/>
+      <rect x="349" y="103" width="266" height="160" rx="14"/>
+      <rect x="666" y="103" width="266" height="160" rx="14"/>
+      <rect x="983" y="103" width="265" height="160" rx="14"/>
+    </g>
+    <g stroke="#60748b" stroke-width="3" marker-end="url(#arrow)">
+      <path d="M 303 181 H 340"/>
+      <path d="M 620 181 H 657"/>
+      <path d="M 937 181 H 974"/>
+    </g>
+    <g font-size="22" font-weight="700" fill="#193b65">
+      <text x="52" y="140">01 수집</text>
+      <text x="369" y="140">02 검사·편성</text>
+      <text x="686" y="140">03 저장·발송 대기열</text>
+      <text x="1003" y="140">04 Telegram</text>
+    </g>
+    <g font-size="18" fill="#263c54">
+      <text x="52" y="179">KIS · 국내 ETF 종가</text>
+      <text x="52" y="209">Finnhub · 제목/링크</text>
+      <text x="52" y="239">BLS·BEA·Board 발표</text>
+      <text x="369" y="179">07:50 설정·종목 고정</text>
+      <text x="369" y="209">공식 요약·뉴스 최대 3건</text>
+      <text x="369" y="239">거래일·중복·예산 검사</text>
+      <text x="686" y="179">PostgreSQL · outbox</text>
+      <text x="686" y="209">편성·비용·실행 상태</text>
+      <text x="686" y="239">재시작·결과 불명 기록</text>
+      <text x="1003" y="179">본인 1:1 · 08:00</text>
+      <text x="1003" y="209">시험 메시지 수락 확인</text>
+      <text x="1003" y="239" fill="#986017">정시 수신은 11/6 관측</text>
+    </g>
+    <path d="M 799 303 V 270" fill="none" stroke="#60748b" stroke-width="2.5" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+    <rect x="349" y="310" width="583" height="65" rx="12" fill="#e2ebf8"/>
+    <text x="370" y="337" font-size="20" font-weight="700" fill="#193b65">관리자 · React → FastAPI → 공통 DB</text>
+    <text x="370" y="362" font-size="17" fill="#263c54">종목·알림 설정 / 뉴스레터·발송 이력 / 비용·자료 최신 여부</text>
+    <text x="32" y="331" font-size="17" fill="#52657b">한국 거래일만 실행</text>
+    <text x="32" y="358" font-size="17" fill="#52657b">휴장 평일·주말 미발송</text>
+    <text x="983" y="331" font-size="17" fill="#52657b">14시·16시 기본 꺼짐</text>
+    <text x="983" y="358" font-size="17" fill="#52657b">AWS 운영 인수 후속</text>
+  </g>
+</svg>
