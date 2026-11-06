@@ -16,7 +16,7 @@ from xfolio.db.newsletter_news import items as news_items
 from xfolio.db.schema import operations_events, usage_ledger
 from xfolio.db.telegram import attempts, outbox, parts
 from xfolio.domestic.calendar import KST
-from xfolio.jobs.telegram import SendResult, split_text
+from xfolio.jobs.telegram import SendResult, slice_entities, split_text, text_units
 from xfolio.news.collection import aware
 from xfolio.news.contracts import digest
 from xfolio.newsletter.edition import (
@@ -570,6 +570,7 @@ class TelegramOutboxStore:
                 row["edition_id"], now=now
             )
             result["body"] = edition.body if edition else None
+            result["entities"] = edition.entities if edition else ()
         return result
 
     def list_deliveries(self, *, now, limit=50):
@@ -663,7 +664,10 @@ def dispatch(store, key, transport, *, clock):
     if not row["body"]:
         raise NewsletterError("edition_missing_or_expired")
     text_parts = split_text(row["body"])
+    offset = 0
     for part, text in zip(row["parts"], text_parts, strict=True):
+        entities = slice_entities(row.get("entities", ()), offset, text_units(text))
+        offset += text_units(text)
         if part["status"] == "confirmed":
             continue
         attempt = store.start_part(key, part["position"], token, now=clock())
@@ -673,7 +677,11 @@ def dispatch(store, key, transport, *, clock):
             result = SendResult("failed", error_code="message_content_mismatch")
         else:
             try:
-                result = transport.send(text)
+                result = (
+                    transport.send(text, entities=entities)
+                    if entities
+                    else transport.send(text)
+                )
             except Exception:  # noqa: BLE001 -- adapter 예외도 성공 여부를 확정할 수 없다.
                 # The request may have reached Telegram; never auto-retry this case.
                 result = SendResult("unknown", error_code="transport_interrupted")

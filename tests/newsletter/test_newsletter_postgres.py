@@ -20,7 +20,13 @@ from xfolio.db.newsletter_news import deliveries, items
 from xfolio.db.schema import publication_jobs
 from xfolio.domestic.store import DomesticStore
 from xfolio.news.collection_store import NewsletterNewsStore
-from xfolio.newsletter.edition import MorningInputs, NewsletterError, at
+from xfolio.newsletter.edition import (
+    MorningInputs,
+    NewsletterError,
+    at,
+    build_morning,
+    fingerprint,
+)
 from xfolio.newsletter.store import NewsletterStore
 
 
@@ -61,6 +67,40 @@ def seed(db, *, data=None, now=PREPARED):
     return MorningInputs.model_validate(
         data.model_dump() | {"market_run_id": saved["run_id"]}
     )
+
+
+def test_legacy_edition_without_entities_preserves_body_and_hash(store):
+    db, _ = store
+    data = seed(db)
+    edition = build_morning(data, now=PREPARED)
+    payload = edition.model_dump(mode="json", exclude={"entities"})
+    payload["body"] = "legacy body https://example.org/original"
+    content_hash = fingerprint(payload)
+    with db.engine.begin() as conn:
+        conn.execute(
+            editions.insert().values(
+                id=edition.key,
+                recipient_scope=edition.recipient_scope,
+                target_date=edition.target_date,
+                slot=edition.slot,
+                status=edition.status,
+                input_hash=edition.input_hash,
+                content_hash=content_hash,
+                created_at=edition.created_at,
+                expires_at=edition.expires_at,
+                payload=payload,
+            )
+        )
+    reread = db.get(edition.key, now=SEND)
+    assert reread.body == payload["body"] and reread.entities == ()
+    assert db.save(data, now=SEND).body == payload["body"]
+    with db.engine.connect() as conn:
+        assert (
+            conn.scalar(
+                sa.select(editions.c.content_hash).where(editions.c.id == edition.key)
+            )
+            == content_hash
+        )
 
 
 def test_0005_snapshot_upgrade_downgrade_and_preserve_existing_rows(store):

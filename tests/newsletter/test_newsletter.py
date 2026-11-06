@@ -8,8 +8,10 @@ from decimal import Decimal
 import pytest
 from pydantic import ValidationError
 
+from xfolio.ai.title_translation import TranslatedTitle
 from xfolio.cli import main
 from xfolio.domestic.models import Collection
+from xfolio.jobs.telegram import validate_entities
 from xfolio.news.collection import NewsResult, SourceResult, integrate
 from xfolio.newsletter.demo import demo_inputs
 from xfolio.newsletter.edition import (
@@ -81,19 +83,26 @@ def test_price_and_general_official_total_three_plain_text_and_provenance():
         3,
     )
     assert result.slot == "morning" and result.codes == ("360750", "379810", "458730")
-    assert (
-        "기준 거래일 2026-11-03" in result.body
-        and "비교 거래일 2026-11-02" in result.body
-    )
-    assert "25,100원 / +0.40%" in result.body
-    assert (
-        "가격 기준시각: 미제공" in result.body
-        and "조회 2026-11-04 07:51" in result.body
-    )
-    assert "달력 예정 마감" in result.body and "지연 여부 미확인" in result.body
-    assert result.body.count("AI 요약:") == 1 and result.body.count("https://") == 3
+    assert result.body.startswith("☀️ XFolio | 11.04(수) 08:00")
+    assert "국내 ETF 종가 · 11.03 정규장 기준" in result.body
+    assert "25,100원 | +0.40%" in result.body
+    assert result.body.count("가격 출처 KIS · 조회 07:51 KST") == 1
+    assert "달력 예정 마감" not in result.body
+    assert result.body.count("AI 요약:") == 1
+    assert result.body.count("원문 보기") == 3 and "https://" not in result.body
+    links = [e for e in result.entities if e["type"] == "text_link"]
+    assert [e["url"] for e in links] == [i.url for i in inputs(live=True).news.selected]
+    validate_entities(result.body, result.entities)
+    for link in links:
+        raw = result.body.encode("utf-16-le")
+        assert (
+            raw[link["offset"] * 2 : (link["offset"] + link["length"]) * 2].decode(
+                "utf-16-le"
+            )
+            == "원문 보기"
+        )
     assert "Synthetic US stocks earnings report 1" in result.body
-    assert "출처 CNBC · 발행" in result.body and "2.5%" in result.body
+    assert "CNBC · 11.04" in result.body and "2.5%" in result.body
     assert result.frozen_at.utcoffset() == result.created_at.utcoffset() == timedelta(0)
     assert not result.settings.intraday_enabled and not result.settings.close_enabled
     assert check_send(result, context()).can_send
@@ -115,6 +124,45 @@ def test_normal_zero_partial_and_both_failures_are_distinct():
     failed = edition(scenario="failed")
     assert failed.status == "failed" and "no_usable_content" in failed.reasons
     assert not check_send(failed, context()).can_send
+
+
+def test_translated_headlines_keep_originals_links_and_selection_keys():
+    import re
+
+    data = inputs(live=True)
+    translations = tuple(
+        TranslatedTitle(
+            source_id=i.source_id,
+            content_version=i.content_version,
+            title=i.title,
+            title_ko="가상 한국어 제목 "
+            + " ".join(re.findall(r"\d+(?:[.,]\d+)*%?", i.title)),
+        )
+        for i in data.news.selected
+    )
+    result = build_morning(data, now=PREPARED, title_translations=translations)
+    assert result.status == "ready" and result.title_translations == translations
+    assert (
+        result.news_keys == edition().news_keys
+        and result.input_hash == edition().input_hash
+    )
+    for translated in translations:
+        assert f"{translated.title_ko}\n({translated.title})" in result.body
+    validate_entities(result.body, result.entities)
+    assert result.body.count("AI 요약:") == 1 and result.body.count("원문 보기") == 3
+    failed = build_morning(data, now=PREPARED, title_translations=())
+    assert (
+        failed.status == "partial" and "title_translation_unavailable" in failed.reasons
+    )
+    assert failed.body.count("제목 번역 확인 불가") == 3
+    assert (
+        failed.news_item_ids == result.news_item_ids
+        and check_send(failed, context()).can_send
+    )
+    invalid_time = build_morning(
+        data, now=at(DAY, 8, 11), title_translations=translations
+    )
+    assert invalid_time.status == "failed" and not invalid_time.title_translations
 
 
 def test_news_failed_with_good_prices_still_prepared_and_price_failure_with_news():
@@ -163,7 +211,7 @@ def test_monday_or_korean_weekday_holiday_uses_last_completed_session(day):
         assert result.market_open is False
     else:
         assert result.status == "ready"
-        assert "2026-11-06" in result.body
+        assert "11.06 정규장 기준" in result.body
 
 
 @pytest.mark.parametrize(

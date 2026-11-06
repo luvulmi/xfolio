@@ -122,6 +122,8 @@ Windows sandbox에서 기본 `uv` cache/pytest 임시 폴더 쓰기가 막히면
 
 ## 폴더 안내
 
+11/6부터 아침 worker는 선정된 뉴스 최대 3건의 제목을 한국어로 묶음 번역하고 영어 원제를 다음 줄 괄호에 표시합니다. 기사 본문을 수집하거나 번역하지 않으며 공식 발표의 기존 AI 요약은 유지합니다. 기존 `OPENAI_API_KEY`·`XFOLIO_GENERATION_LIMITS_FILE`·월 비용 원장을 사용하며 추가 설정이나 의존성은 없습니다. 번역 실패/예산 초과 시 원제와 `제목 번역 확인 불가`를 표시합니다. [번역 작업/검증](tasks/plans/아침_뉴스레터_편성과_검사.md#116-뉴스-제목-한국어-번역). 기본 편성 코드는 08:00이며 현재 로컬 Windows 예약은 11/6 단발 시험용으로, 반복 예약과 AWS 운영은 별도 인수입니다.
+
 [프로젝트 구조](docs/프로젝트_구조.md) · [기준 문서](docs/README.md) · [현재 작업](tasks/README.md) · [Python 모듈](src/xfolio/README.md) · [개발/실험 도구](scripts/README.md)
 
 ## 2026-10-31 이전 X 개발·실행 자산

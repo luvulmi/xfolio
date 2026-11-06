@@ -12,9 +12,11 @@ import sqlalchemy as sa
 from alembic import command
 from alembic.config import Config
 
+from tests.ai.test_title_translation import FakeTitleAI
 from tests.jobs.test_worker_collection import config
 from tests.news.test_newsletter_news import FakeAI
 from tests.support.paths import ROOT
+from xfolio.ai.title_translation import translate_titles
 from xfolio.ai.workflow import WorkflowError
 from xfolio.db.domestic import watchlist
 from xfolio.db.newsletter import editions
@@ -185,6 +187,48 @@ def test_concurrent_preparation_claims_only_one_external_collection(db):
         results = list(pool.map(lambda _: service.prepare(), range(2)))
     assert calls.count("market") == calls.count("news") == 1
     assert sum(bool(r.get("reused")) for r in results) == 1
+
+
+def test_live_selected_title_translation_is_saved_and_charged_only_once(db):
+    service, clock, _calls, _ai = setup(db)
+    ai = FakeTitleAI()
+    service.title_translator = lambda selected: translate_titles(
+        selected,
+        client=ai,
+        store=CappedWorkflowStore(db[0], service.settings.monthly_limit),
+        limits=service.settings.limits,
+        now=clock[0],
+    )
+    result = service.prepare()
+    assert result["status"] == "ready"
+    stored = NewsletterStore(db[0]).get(result["edition_id"], now=clock[0])
+    assert len(stored.title_translations) == stored.news_count == 3
+    assert stored.body.startswith("☀️ XFolio | 11.04(수) 08:00")
+    assert "가상 한국어 제목" in stored.body
+    assert service.prepare()["reused"] and len(ai.calls) == 1
+    with db[0].connect() as conn:
+        purposes = conn.scalars(
+            sa.select(usage_ledger.c.payload["purpose"].astext)
+        ).all()
+    assert (
+        purposes.count("news_title_translation") == 1
+        and purposes.count("news_generation") == 1
+    )
+
+
+def test_title_translation_failure_still_prepares_prices_and_original_news(db):
+    service, clock, _calls, _ai = setup(db)
+
+    def failed(_):
+        raise WorkflowError("MONTHLY_BUDGET_EXCEEDED")
+
+    service.title_translator = failed
+    result = service.prepare()
+    assert result["status"] == "partial"
+    stored = NewsletterStore(db[0]).get(result["edition_id"], now=clock[0])
+    assert stored.price_count == stored.news_count == 3
+    assert "title_translation_unavailable" in stored.reasons
+    assert stored.body.count("제목 번역 확인 불가") == 3
 
 
 def test_holiday_has_no_prices_news_or_paid_calls(db):

@@ -8,6 +8,7 @@ from typing import Literal
 
 from pydantic import AwareDatetime, Field, model_validator
 
+from xfolio.ai.title_translation import TranslatedTitle
 from xfolio.domestic.calendar import KST, completed_sessions
 from xfolio.domestic.models import (
     Collection,
@@ -18,6 +19,7 @@ from xfolio.domestic.models import (
 )
 from xfolio.news.collection import NewsResult, aware
 from xfolio.news.contracts import digest
+from xfolio.newsletter.presentation import PriceRow, StoryRow, render_morning
 
 
 class NewsletterError(ValueError):
@@ -138,6 +140,9 @@ class MorningEdition(Contract):
     price_snapshot_ids: tuple[str, ...] = ()
     expires_at: AwareDatetime
     body: str
+    entities: tuple[dict, ...] = ()
+    title_translations: tuple[TranslatedTitle, ...] = ()
+    title_translation_requested: bool = False
 
     @property
     def key(self):
@@ -153,11 +158,12 @@ def build_morning(
     corrected_codes=(),
     source_expires_at=None,
     schedule=None,
+    title_translations=None,
 ):
     """검사 제외 사유를 남기고 정상 자료를 보존한다. ready는 실제 전송 허가가 아니다."""
     inputs = MorningInputs.model_validate_json(inputs.model_dump_json())
     now = aware(now)
-    cutoff, _send_at, deadline = schedule_times(
+    cutoff, send_at, deadline = schedule_times(
         inputs.target_date, inputs.recipient_scope, schedule
     )
     reasons, fatal = [], []
@@ -191,19 +197,11 @@ def build_morning(
     if market_open is False:
         fatal.append("market_closed")
 
-    lines = [
-        f"XFolio 아침 뉴스레터 · {inputs.target_date.isoformat()}",
-        f"뉴스 발행 기준: {stamp(cutoff)}",
-    ]
-    if inputs.mode == "dry_run" or inputs.synthetic:
-        lines.append("시험 미리보기")
-    lines.extend(["", "국내 ETF · 비수정 정규장 종가 / KRW"])
     quotes = {q.code: q for q in market.quotes}
-    accepted_prices = []
+    accepted_prices, price_rows = [], []
     expiries = [now + timedelta(days=90)]
     for instrument in inputs.instruments:
         code, q = instrument.code, quotes.get(instrument.code)
-        label = f"{one_line(instrument.name)} ({code})"
         valid = q is not None and sessions is not None and not fatal
         if valid:
             valid = (
@@ -216,36 +214,16 @@ def build_morning(
         if not valid:
             reason = market.errors.get(code, "price_session_or_time_invalid")
             reasons.append(f"price_unavailable:{code}:{reason}")
-            lines.append(f"- {label}: 종가 확인 불가")
+            price_rows.append(PriceRow(instrument.name, None))
             continue
         accepted_prices.append(q)
+        price_rows.append(PriceRow(instrument.name, q, code in corrected_codes))
         expiries.append(q.retrieved_at + timedelta(days=90))
         change = None if code in corrected_codes else q.change_pct
-        change_text = f"{change:+.2f}%" if change is not None else "등락률 확인 불가"
         if change is None:
             reasons.append(f"price_change_unverified:{code}")
-        price_text = f"{q.latest.close:,.4f}".rstrip("0").rstrip(".")
-        lines.append(f"- {label}: {price_text}원 / {change_text}")
-        lines.append(
-            f"  기준 거래일 {q.latest.trade_date} · 비교 거래일 {q.previous.trade_date} · 출처 KIS"
-        )
-        lines.append(
-            f"  가격 기준시각: {stamp(q.latest.price_as_of) if q.latest.price_as_of else '미제공'} · 조회 {stamp(q.retrieved_at)}"
-        )
-        lines.append(
-            f"  달력 예정 마감 {stamp(q.latest.scheduled_close)} · 제공 지연 여부 미확인"
-        )
-        if code in corrected_codes:
-            lines.append("  정정 가격: 등락률 재검토 필요")
-        elif q.change_reason == "price_change_excludes_distribution":
-            lines.append("  분배락: 분배금을 포함하지 않은 가격 변동률")
-        elif q.change_reason == "raw_price_change_actions_uninterpreted":
-            lines.append("  원종가 수치 기준 대조 · 분배락/기업행사 해석 미확인")
-        elif q.change_pct is None:
-            lines.append("  분할/가격 비교 기준 확인 필요")
     if not accepted_prices:
         reasons.append("all_prices_unavailable")
-        lines.append("가격 데이터 장애: 정상 종가를 확보하지 못했습니다.")
 
     selected, seen = [], set()
     source_items = {(s.provider, i.source_id): i for s in news.sources for i in s.items}
@@ -287,30 +265,10 @@ def build_morning(
         selected.append(item)
         expiries.append(item.retrieved_at + timedelta(days=90))
 
-    lines.extend(["", f"뉴스 · {len(selected)}건"])
-    for n, item in enumerate(selected, 1):
-        old = (
-            " · 24시간 이전 발행 보완"
-            if item.published_at < cutoff - timedelta(hours=24)
-            else ""
-        )
-        lines.append(f"{n}. {one_line(item.title)}")
-        if item.kind == "official":
-            lines.append(f"   AI 요약: {one_line(item.summary_ko)}")
-        lines.append(
-            f"   출처 {one_line(item.publisher)} · 발행 {stamp(item.published_at)}{old}"
-        )
-        lines.append(item.url)
     if news.status == "failed":
         reasons.append("news_collection_failed")
-        lines.append("뉴스 수집 실패: 제공처 자료를 확인하지 못했습니다.")
     elif news.status == "partial":
         reasons.append("news_collection_partial")
-        lines.append("뉴스 수집 일부 실패: 확인된 자료만 포함했습니다.")
-    if not selected and news.normal_zero:
-        lines.append("적격 뉴스 없음")
-    elif not selected and news.status == "complete":
-        lines.append("검사를 통과한 뉴스 없음")
     for source in news.sources:
         if source.status != "complete":
             reasons.append("news_source_" + source.status + ":" + source.provider)
@@ -320,6 +278,57 @@ def build_morning(
         fatal.append("source_expired")
     if not accepted_prices and not selected:
         fatal.append("no_usable_content")
+    translations = tuple(
+        TranslatedTitle.model_validate(t) for t in (title_translations or ())
+    )
+    translation_map = {
+        (t.source_id, t.content_version, t.title): t for t in translations
+    }
+    candidate_titles = {
+        (i.source_id, i.content_version, i.title) for i in news.selected
+    }
+    if (
+        len(translation_map) != len(translations)
+        or not set(translation_map) <= candidate_titles
+    ):
+        raise NewsletterError("title_translation_source_mismatch")
+    expected_titles = {(i.source_id, i.content_version, i.title) for i in selected}
+    translations = tuple(
+        t
+        for t in translations
+        if (t.source_id, t.content_version, t.title) in expected_titles
+    )
+    if title_translations is not None and expected_titles - set(translation_map):
+        reasons.append("title_translation_unavailable")
+    rendered = render_morning(
+        day=inputs.target_date,
+        send_at=send_at,
+        frozen_at=cutoff,
+        prices=price_rows,
+        stories=[
+            StoryRow(
+                i.title,
+                i.publisher,
+                i.published_at,
+                i.kind,
+                i.url,
+                i.summary_ko,
+                title_ko=translation_map[
+                    (i.source_id, i.content_version, i.title)
+                ].title_ko
+                if (i.source_id, i.content_version, i.title) in translation_map
+                else None,
+                translation_requested=title_translations is not None,
+            )
+            for i in selected
+        ],
+        news_status=news.status,
+        normal_zero=news.normal_zero,
+        synthetic=inputs.synthetic or any(i.synthetic for i in selected),
+        preview=inputs.mode == "dry_run",
+        acceptance=schedule is not None,
+    )
+    body, entities = rendered.text, rendered.entities
     if fatal:
         lines = [
             f"XFolio 아침 뉴스레터 · {inputs.target_date.isoformat()}",
@@ -327,6 +336,7 @@ def build_morning(
             if skipped
             else "편성 실패: 발송을 보류합니다.",
         ]
+        body, entities = "\n".join(lines), ()
     from xfolio.news.collection_store import item_id
 
     return MorningEdition(
@@ -357,7 +367,10 @@ def build_morning(
         news_item_ids=tuple(item_id(i) for i in selected),
         news_keys=tuple(sorted(seen)),
         expires_at=aware(min(expiries)),
-        body="\n".join(lines),
+        body=body,
+        entities=entities,
+        title_translations=translations,
+        title_translation_requested=title_translations is not None,
     )
 
 

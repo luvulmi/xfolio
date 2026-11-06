@@ -21,7 +21,12 @@ from xfolio.db.schema import usage_ledger
 from xfolio.db.telegram import attempts, metadata, outbox, parts
 from xfolio.jobs import outbox as outbox_module
 from xfolio.jobs.outbox import TelegramOutboxStore, dispatch
-from xfolio.jobs.telegram import MockTelegramTransport, SendResult, split_text
+from xfolio.jobs.telegram import (
+    MockTelegramTransport,
+    SendResult,
+    split_text,
+    validate_entities,
+)
 from xfolio.newsletter.settings import NotificationSettingsStore
 from xfolio.newsletter.store import NewsletterStore
 
@@ -63,7 +68,7 @@ class FakeLive:
         self.calls = []
         self.results = list(results or [])
 
-    def send(self, text):
+    def send(self, text, *, entities=()):
         self.calls.append(text)
         return (
             self.results.pop(0)
@@ -128,6 +133,23 @@ def test_mock_success_does_not_mark_news_delivered(db):
     assert len(transport.sent) == 1
     with store.engine.connect() as conn:
         assert conn.scalar(sa.select(sa.func.count()).select_from(news_deliveries)) == 0
+
+
+def test_split_dispatch_preserves_entities_in_each_sent_chunk(db, monkeypatch):
+    store, edition, _ = db
+    monkeypatch.setattr(
+        outbox_module, "split_text", lambda text: split_text(text, limit=300)
+    )
+    key = store.enqueue(edition.key, now=PREPARED)
+    transport = MockTelegramTransport()
+    result = dispatch(store, key, transport, clock=lambda: SEND)
+    assert result["status"] == "confirmed" and len(transport.sent) > 1
+    assert "".join(transport.sent) == edition.body
+    urls = []
+    for text, entities in zip(transport.sent, transport.entities, strict=True):
+        validate_entities(text, entities)
+        urls.extend(e["url"] for e in entities if e["type"] == "text_link")
+    assert set(urls) == {e["url"] for e in edition.entities if e["type"] == "text_link"}
 
 
 def test_fake_live_success_has_receipt_and_news_success(db):
@@ -265,7 +287,7 @@ def test_partial_is_terminal_and_pause_checked_between_parts(db, monkeypatch):
     key = store.enqueue(edition.key, now=PREPARED, mode="live")
 
     class PauseTransport(FakeLive):
-        def send(self, text):
+        def send(self, text, *, entities=()):
             result = super().send(text)
             NotificationSettingsStore(store.engine).update(
                 expected_revision=1, changes={"paused": True}, actor="test", now=SEND

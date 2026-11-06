@@ -11,6 +11,7 @@ import httpx
 import sqlalchemy as sa
 
 from xfolio.ai.generation import OpenAIGenerationClient
+from xfolio.ai.title_translation import OpenAITitleTranslationClient, translate_titles
 from xfolio.ai.workflow import GenerationLimits, SQLWorkflowStore, WorkflowError
 from xfolio.db.domestic import instruments, watchlist
 from xfolio.db.newsletter import editions
@@ -256,7 +257,9 @@ class CappedWorkflowStore(SQLWorkflowStore):
         super().__init__(engine)
         self.monthly_limit = monthly_limit
 
-    def reserve(self, request_id, limits, now):
+    def reserve(self, request_id, limits, now, *, purpose="news_generation"):
+        if purpose not in {"news_generation", "news_title_translation"}:
+            raise WorkflowError("GENERATION_PURPOSE_INVALID")
         with self.engine.begin() as conn:
             conn.execute(sa.text("SELECT pg_advisory_xact_lock(718435902)"))
             month = aware(now).astimezone(KST).strftime("%Y-%m")
@@ -278,7 +281,7 @@ class CappedWorkflowStore(SQLWorkflowStore):
                     state="reserved",
                     amount_krw=limits.maximum_cost,
                     payload={
-                        "purpose": "news_generation",
+                        "purpose": purpose,
                         "model": limits.model,
                         "price_basis": limits.price_basis,
                         "max_output_tokens": limits.max_output_tokens,
@@ -301,12 +304,14 @@ class LiveMorningPreparation:
         clock=lambda: datetime.now(UTC),
         observe=None,
         schedule=None,
+        title_translator=None,
     ):
         self.engine, self.kis, self.news_client = engine, kis, news_client
         self.summary, self.settings, self.outbox_store = summary, settings, outbox_store
         self.news_collector, self.clock = news_collector, clock
         self.observe = observe
         self.schedule = schedule
+        self.title_translator = title_translator
         self.preparations = PreparationStore(
             engine,
             recipient_scope=settings.recipient_scope,
@@ -436,6 +441,16 @@ class LiveMorningPreparation:
             stage = "news_save"
             self._event(stage, "started")
             self.news.save_result(news, now=self.clock())
+            title_translations = None
+            if self.title_translator is not None:
+                stage = "news_translate"
+                self._event(stage, "started")
+                try:
+                    title_translations = self.title_translator(news.selected)
+                    self._event(stage, "finished", title_count=len(title_translations))
+                except (WorkflowError, ValueError):
+                    title_translations = ()
+                    self._event(stage, "failed", reason="title_translation_unavailable")
             stage = "edition_save"
             self._event(stage, "started")
             inputs = MorningInputs(
@@ -452,7 +467,9 @@ class LiveMorningPreparation:
                 mode="live",
                 synthetic=False,
             )
-            edition = self.newsletters.save(inputs, now=self.clock())
+            edition = self.newsletters.save(
+                inputs, now=self.clock(), title_translations=title_translations
+            )
             stage = "outbox_enqueue"
             self._event(stage, "started")
             outbox_id = (
@@ -513,6 +530,7 @@ class LiveCollectionResources:
             max_retries=0,
         )
         ai = OpenAIGenerationClient(self.ai)
+        title_client = OpenAITitleTranslationClient(self.ai)
         usage = CappedWorkflowStore(engine, settings.monthly_limit)
 
         def summary(item):
@@ -526,6 +544,21 @@ class LiveCollectionResources:
                 item, client=ai, store=usage, limits=settings.limits, now=now
             )
 
+        def title_translator(selected):
+            now = aware(clock())
+            _, _, deadline = schedule_times(
+                now.astimezone(KST).date(), settings.recipient_scope, schedule
+            )
+            if now >= deadline:
+                raise WorkflowError("TITLE_TRANSLATION_DEADLINE_PASSED")
+            return translate_titles(
+                selected,
+                client=title_client,
+                store=usage,
+                limits=settings.limits,
+                now=now,
+            )
+
         self.preparation = LiveMorningPreparation(
             engine,
             kis=self.kis,
@@ -536,6 +569,7 @@ class LiveCollectionResources:
             clock=clock,
             observe=emit_event,
             schedule=schedule,
+            title_translator=title_translator,
         )
 
     def close(self):

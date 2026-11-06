@@ -15,6 +15,7 @@ from tests.support.paths import ROOT
 from xfolio.api.app import create_app
 from xfolio.api.auth import Settings
 from xfolio.api.newsletter_admin import NewsletterAdminStore
+from xfolio.db.domestic import instruments
 from xfolio.db.newsletter_news import deliveries
 from xfolio.db.schema import operations_events
 from xfolio.domestic.models import Instrument
@@ -131,7 +132,12 @@ def test_maximum_ten_instruments_flow_through_api_collection_and_delivery(db):
         clock[0] = at(day, 8)
         assert worker.send()["status"] == "confirmed"
         text = "".join(transport.calls)
-        assert all(code in text for code in ten)
+        with db[0].connect() as conn:
+            names = conn.scalars(
+                sa.select(instruments.c.name).where(instruments.c.code.in_(ten))
+            ).all()
+        assert len(names) == 10 and all(name in text for name in names)
+        assert text.count("원 |") == 10
         summary = client.get("/api/newsletter-operations/summary").json()
         assert summary["price_freshness"]["status"] == "current"
         assert len(summary["price_freshness"]["items"]) == 10

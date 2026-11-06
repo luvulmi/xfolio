@@ -10,8 +10,10 @@ import pytest
 from xfolio.jobs.telegram import (
     MockTelegramTransport,
     TelegramTransport,
+    slice_entities,
     split_text,
     text_units,
+    validate_entities,
 )
 from xfolio.jobs.worker import MorningWorker, create_scheduler, main
 from xfolio.newsletter.edition import at
@@ -59,6 +61,92 @@ def test_telegram_success_receipt_and_plaintext_request():
 
     result = transport(handler).send("<b>plain</b>")
     assert result.status == "confirmed" and result.message_id == "42"
+
+
+def test_native_entities_and_utf16_split_keep_links_and_unicode():
+    text = "☀️ XFolio\n😀 원문 보기"
+    start = text_units("☀️ XFolio\n😀 ")
+    entities = (
+        {
+            "type": "text_link",
+            "offset": start,
+            "length": 5,
+            "url": "https://example.org/story",
+        },
+    )
+
+    def handler(request):
+        body = json.loads(request.content)
+        assert "parse_mode" not in body and body["entities"] == list(entities)
+        return httpx.Response(
+            200,
+            json={
+                "ok": True,
+                "result": {"message_id": 42, "chat": {"id": 12345, "type": "private"}},
+            },
+        )
+
+    assert transport(handler).send(text, entities=entities).status == "confirmed"
+    chunks, offset, linked = split_text(text, limit=4), 0, ""
+    for chunk in chunks:
+        clipped = slice_entities(entities, offset, text_units(chunk))
+        validate_entities(chunk, clipped)
+        raw = chunk.encode("utf-16-le")
+        for entity in clipped:
+            linked += raw[
+                entity["offset"] * 2 : (entity["offset"] + entity["length"]) * 2
+            ].decode("utf-16-le")
+        offset += text_units(chunk)
+    assert linked == "원문 보기"
+
+
+@pytest.mark.parametrize(
+    "entity",
+    [
+        {"type": "bold", "offset": 1, "length": 1},
+        {"type": "bold", "offset": 0, "length": 99},
+        {"type": "text_link", "offset": 0, "length": 2, "url": "http://example.org"},
+        {
+            "type": "text_link",
+            "offset": 0,
+            "length": 2,
+            "url": "https://secret@example.org",
+        },
+    ],
+)
+def test_bad_entities_fail_before_http(entity):
+    def forbidden(_):
+        raise AssertionError("http_must_not_be_called")
+
+    assert (
+        transport(forbidden).send("😀 link", entities=(entity,)).error_code
+        == "telegram_entities_invalid"
+    )
+
+
+def test_source_attachment_uses_same_verified_private_receipt():
+    def handler(request):
+        assert request.url.path.endswith("/sendDocument")
+        assert b'filename="telegram.py"' in request.content
+        assert b"def send():" in request.content
+        return httpx.Response(
+            200,
+            json={
+                "ok": True,
+                "result": {"message_id": 43, "chat": {"id": 12345, "type": "private"}},
+            },
+        )
+
+    assert (
+        transport(handler)
+        .send_document(filename="telegram.py", content=b"def send(): pass")
+        .status
+        == "confirmed"
+    )
+    assert (
+        transport(handler).send_document(filename=".env", content=b"secret").error_code
+        == "telegram_document_invalid"
+    )
 
 
 @pytest.mark.parametrize(

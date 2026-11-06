@@ -40,7 +40,7 @@ class NewsletterStore:
     def from_url(cls, url):
         return cls(NewsletterNewsStore.from_url(url).engine)
 
-    def save(self, inputs: MorningInputs, *, now: datetime):
+    def save(self, inputs: MorningInputs, *, now: datetime, title_translations=None):
         inputs = MorningInputs.model_validate_json(inputs.model_dump_json())
         now = aware(now)
         key = fingerprint(
@@ -189,6 +189,7 @@ class NewsletterStore:
                 corrected_codes=corrected,
                 source_expires_at=min(expiries),
                 schedule=self.schedule,
+                title_translations=title_translations,
             )
             if edition.expires_at <= now:
                 raise NewsletterError("source_expired")
