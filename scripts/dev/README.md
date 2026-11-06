@@ -74,3 +74,9 @@ Windows PowerShell 5.1에서 `$ErrorActionPreference='Stop'`와 native `*>`를 �
 실패 진단은 단계·예외 종류·최대8개 파일명/함수/줄 번호만 남긴다. 예외 메시지·연결 문자열·토큰·locals·소스 줄은 기록하지 않는다. 준비 실패 시 같은 진단을 기존 DB 작업 기록에 저장하고 재수집은 하지 않는다. 업무 결과가 `failed`·`unknown`·`retryable_failure`면 CLI도 종료 코드1을 반환한다. 수정 전의 `running` claim과 발송 이력은 자동 변경하지 않는다.
 
 무통신 회귀는 `uv run pytest tests/dev/test_native_process.py tests/dev/test_local_runtime.py tests/jobs/test_diagnostics.py tests/jobs/test_worker_collection.py`다. Windows 시험은 실제 PowerShell 5.1과 달력 경고를 사용하고 Python 자식의 외부 socket 연결을 차단한다. 준비/DB 회귀는 `tests/jobs/test_worker_collection_postgres.py`에서 명시한 격리 시험 DB로 실행한다. 이는 실제 정시 수신의 재시험을 대신하지 않는다.
+
+## 사용자 승인 11/6 09시 단발 재시험
+
+`acceptance_0900.py`·`run_acceptance_0900.ps1`은11/6 후속 요청에 따라 현재 준비→09:00 송신에만 사용했다. **이미 실행·수신 확인 완료**했으며 다시 실행하지 않는다. [실제 결과](../../tasks/logs/2026-11-06_09시_뉴스레터_재시험.md)
+
+서버의 명시 `AcceptanceSchedule`이 날짜·별도 수신 scope·현재 동결시각·09:00~09:01 전송 창을 일치시킬 때만 적용된다. 기본 worker의07:50/08:00 일정과 일반 뉴스레터 검사에는 영향이 없다. 준비 설정·송신 attempt marker·outbox는 각각 중복 실행을 막는다. 실제 private 대상·휴장·설정/종목 변경·원본·예산 검사를 생략하지 않는다.09시 send는 저장된 편성만 사용하므로 재수집이나AI 요청이 없다. 이 단발 시험은 임의 미래 일정·운영 설정 기능이 아니다.

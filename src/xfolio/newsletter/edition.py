@@ -34,6 +34,35 @@ def at(day, hour, minute=0):
     return datetime.combine(day, time(hour, minute), KST)
 
 
+class AcceptanceSchedule(Contract):
+    """서버에서 명시 주입하는 사용자 승인 단발 시험. 기본 운영 시각과 독립."""
+
+    target_date: date
+    recipient_scope: str = Field(pattern=r"^self_acceptance_[a-zA-Z0-9_]+$")
+    frozen_at: AwareDatetime
+    send_at: AwareDatetime
+    deadline: AwareDatetime
+
+    @model_validator(mode="after")
+    def valid_times(self):
+        if not self.frozen_at < self.send_at < self.deadline:
+            raise ValueError("acceptance_times_invalid")
+        if any(
+            t.astimezone(KST).date() != self.target_date
+            for t in (self.frozen_at, self.send_at, self.deadline)
+        ):
+            raise ValueError("acceptance_date_invalid")
+        return self
+
+
+def schedule_times(day, scope, schedule=None):
+    if schedule is None:
+        return at(day, 7, 50), at(day, 8), at(day, 8, 10)
+    if schedule.target_date != day or schedule.recipient_scope != scope:
+        raise NewsletterError("acceptance_scope_or_date_mismatch")
+    return schedule.frozen_at, schedule.send_at, schedule.deadline
+
+
 def stamp(value):
     return value.astimezone(KST).strftime("%Y-%m-%d %H:%M:%S KST")
 
@@ -118,17 +147,24 @@ class MorningEdition(Contract):
 
 
 def build_morning(
-    inputs: MorningInputs, *, now, corrected_codes=(), source_expires_at=None
+    inputs: MorningInputs,
+    *,
+    now,
+    corrected_codes=(),
+    source_expires_at=None,
+    schedule=None,
 ):
     """검사 제외 사유를 남기고 정상 자료를 보존한다. ready는 실제 전송 허가가 아니다."""
     inputs = MorningInputs.model_validate_json(inputs.model_dump_json())
     now = aware(now)
-    cutoff = at(inputs.target_date, 7, 50)
+    cutoff, _send_at, deadline = schedule_times(
+        inputs.target_date, inputs.recipient_scope, schedule
+    )
     reasons, fatal = [], []
     market, news = inputs.market, inputs.news
     if inputs.target_date.weekday() >= 5:
         fatal.append("weekend")
-    if inputs.frozen_at != cutoff or not cutoff <= now < at(inputs.target_date, 8, 10):
+    if inputs.frozen_at != cutoff or not cutoff <= now < deadline:
         fatal.append("preparation_time_invalid")
     if (
         market.requested_codes != inputs.codes
@@ -363,11 +399,14 @@ class SendDecision(Contract):
     reasons: tuple[str, ...]
 
 
-def check_send(edition: MorningEdition, context: SendContext):
+def check_send(edition: MorningEdition, context: SendContext, *, schedule=None):
     """호출자는 전송 직전 DB/서버 설정을 읽어야 한다. 점유·송신은 T06에서 수행."""
     edition = MorningEdition.model_validate_json(edition.model_dump_json())
     context = SendContext.model_validate_json(context.model_dump_json())
     now, reasons = aware(context.now), []
+    cutoff, send_at, deadline = schedule_times(
+        edition.target_date, edition.recipient_scope, schedule
+    )
     if edition.status not in {"ready", "partial"} or not (
         edition.price_count or edition.news_count
     ):
@@ -382,11 +421,11 @@ def check_send(edition: MorningEdition, context: SendContext):
         reasons.append("dry_run_or_synthetic")
     if edition.target_date.weekday() >= 5:
         reasons.append("weekend")
-    if not at(edition.target_date, 8) <= now < at(edition.target_date, 8, 10):
+    if not send_at <= now < deadline:
         reasons.append("outside_send_window")
     if edition.created_at > now or edition.expires_at <= now:
         reasons.append("edition_expired_or_future")
-    if edition.frozen_at != at(edition.target_date, 7, 50):
+    if edition.frozen_at != cutoff:
         reasons.append("freeze_invalid")
     if not context.settings.morning_enabled or context.settings.paused:
         reasons.append("disabled_or_paused")

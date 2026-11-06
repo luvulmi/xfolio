@@ -19,7 +19,12 @@ from xfolio.domestic.calendar import KST
 from xfolio.jobs.telegram import SendResult, split_text
 from xfolio.news.collection import aware
 from xfolio.news.contracts import digest
-from xfolio.newsletter.edition import BudgetState, NewsletterError, SendContext
+from xfolio.newsletter.edition import (
+    BudgetState,
+    NewsletterError,
+    SendContext,
+    schedule_times,
+)
 from xfolio.newsletter.store import NewsletterStore
 
 
@@ -49,6 +54,7 @@ class TelegramOutboxStore:
         settings_store=None,
         recipient_scope="self",
         monthly_limit=Decimal(50000),
+        schedule=None,
     ):
         if engine.dialect.name != "postgresql":
             raise OutboxError("postgresql_required")
@@ -56,6 +62,7 @@ class TelegramOutboxStore:
         if not monthly_limit.is_finite() or not 0 < monthly_limit <= 50000:
             raise OutboxError("monthly_limit_invalid")
         self.engine, self.recipient_scope = engine, recipient_scope
+        self.schedule = schedule
         self.monthly_limit = monthly_limit
         if settings_store is None:
             from xfolio.newsletter.settings import NotificationSettingsStore
@@ -196,9 +203,9 @@ class TelegramOutboxStore:
                 expected_krw=0,
             ),
         )
-        decision = NewsletterStore(_TransactionEngine(conn)).check(
-            row["edition_id"], context
-        )
+        decision = NewsletterStore(
+            _TransactionEngine(conn), schedule=self.schedule
+        ).check(row["edition_id"], context)
         reasons = tuple(
             r
             for r in decision.reasons
@@ -402,9 +409,12 @@ class TelegramOutboxStore:
                 if all(s == "confirmed" for s in states):
                     self._finish(conn, row, now=now)
             elif result.status == "retryable_failure":
-                from xfolio.newsletter.edition import at
-
-                if retry_at >= at(row["target_date"], 8, 10):
+                if (
+                    retry_at
+                    >= schedule_times(
+                        row["target_date"], self.recipient_scope, self.schedule
+                    )[2]
+                ):
                     self._finish(conn, row, now=now, failure="retry_exceeds_deadline")
                 else:
                     conn.execute(

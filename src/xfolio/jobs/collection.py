@@ -25,7 +25,12 @@ from xfolio.domestic.store import DomesticStore
 from xfolio.jobs.diagnostics import emit_event, failure_details
 from xfolio.news.collection import NewsError, aware, collect, summarize
 from xfolio.news.collection_store import NewsletterNewsStore
-from xfolio.newsletter.edition import MorningInputs, MorningSettings, at, fingerprint
+from xfolio.newsletter.edition import (
+    MorningInputs,
+    MorningSettings,
+    fingerprint,
+    schedule_times,
+)
 from xfolio.newsletter.settings import NotificationSettingsStore
 from xfolio.newsletter.store import NewsletterStore
 
@@ -95,8 +100,10 @@ class PreparationStore:
         *,
         recipient_scope="self",
         clock=lambda: datetime.now(UTC),
+        schedule=None,
     ):
         self.engine, self.recipient_scope, self.clock = engine, recipient_scope, clock
+        self.schedule = schedule
 
     def key(self, day):
         return fingerprint(
@@ -104,7 +111,8 @@ class PreparationStore:
         )
 
     def claim(self, day):
-        key, cutoff = self.key(day), at(day, 7, 50)
+        key = self.key(day)
+        cutoff, _, _ = schedule_times(day, self.recipient_scope, self.schedule)
         with self.engine.begin() as conn:
             conn.execute(sa.text("SELECT pg_advisory_xact_lock(718435909)"))
             old = (
@@ -292,18 +300,21 @@ class LiveMorningPreparation:
         news_collector=collect,
         clock=lambda: datetime.now(UTC),
         observe=None,
+        schedule=None,
     ):
         self.engine, self.kis, self.news_client = engine, kis, news_client
         self.summary, self.settings, self.outbox_store = summary, settings, outbox_store
         self.news_collector, self.clock = news_collector, clock
         self.observe = observe
+        self.schedule = schedule
         self.preparations = PreparationStore(
             engine,
             recipient_scope=settings.recipient_scope,
             clock=clock,
+            schedule=schedule,
         )
         self.domestic, self.news = DomesticStore(engine), NewsletterNewsStore(engine)
-        self.newsletters = NewsletterStore(engine)
+        self.newsletters = NewsletterStore(engine, schedule=schedule)
 
     def _event(self, stage, status, **details):
         if self.observe is not None:
@@ -393,7 +404,9 @@ class LiveMorningPreparation:
                         else "calendar_unverified",
                     },
                 )
-            cutoff = at(day, 7, 50)
+            cutoff, _, deadline = schedule_times(
+                day, self.settings.recipient_scope, self.schedule
+            )
             stage = "market_collect"
             self._event(stage, "started")
             market = self.kis.collect(
@@ -404,7 +417,7 @@ class LiveMorningPreparation:
             stage = "market_save"
             self._event(stage, "started")
             market_row = self.domestic.save_collection(market, now=self.clock())
-            if aware(self.clock()) >= at(day, 8, 10):
+            if aware(self.clock()) >= deadline:
                 raise CollectionError("preparation_deadline_passed")
             stage = "news_history"
             self._event(stage, "started")
@@ -485,6 +498,7 @@ class LiveCollectionResources:
         settings,
         outbox_store,
         clock=lambda: datetime.now(UTC),
+        schedule=None,
     ):
         from openai import OpenAI
 
@@ -503,7 +517,10 @@ class LiveCollectionResources:
 
         def summary(item):
             now = aware(clock())
-            if now >= at(now.astimezone(KST).date(), 8, 10):
+            _, _, deadline = schedule_times(
+                now.astimezone(KST).date(), settings.recipient_scope, schedule
+            )
+            if now >= deadline:
                 raise NewsError("summary_send_deadline_passed")
             return summarize(
                 item, client=ai, store=usage, limits=settings.limits, now=now
@@ -518,6 +535,7 @@ class LiveCollectionResources:
             outbox_store=outbox_store,
             clock=clock,
             observe=emit_event,
+            schedule=schedule,
         )
 
     def close(self):

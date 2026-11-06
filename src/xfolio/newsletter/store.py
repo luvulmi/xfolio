@@ -30,10 +30,11 @@ from xfolio.newsletter.edition import (
 
 
 class NewsletterStore:
-    def __init__(self, engine):
+    def __init__(self, engine, *, schedule=None):
         if engine.dialect.name != "postgresql":
             raise NewsletterError("postgresql_required")
         self.engine = engine
+        self.schedule = schedule
 
     @classmethod
     def from_url(cls, url):
@@ -187,6 +188,7 @@ class NewsletterStore:
                 now=now,
                 corrected_codes=corrected,
                 source_expires_at=min(expiries),
+                schedule=self.schedule,
             )
             if edition.expires_at <= now:
                 raise NewsletterError("source_expired")
@@ -244,7 +246,7 @@ class NewsletterStore:
         edition = self.get(key, now=context.now)
         if edition is None:
             return SendDecision(can_send=False, reasons=("edition_missing_or_expired",))
-        reasons = list(check_send(edition, context).reasons)
+        reasons = list(check_send(edition, context, schedule=self.schedule).reasons)
         with self.engine.connect() as conn:
             opened = conn.scalar(
                 sa.select(calendar_days.c.is_open).where(
