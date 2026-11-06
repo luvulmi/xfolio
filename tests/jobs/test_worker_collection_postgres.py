@@ -146,12 +146,29 @@ def setup(db, *, closed=False, scenario="news", crash=False, failed_news=False):
 
 def test_live_collection_stores_real_contracts_and_is_idempotent(db):
     service, clock, calls, ai = setup(db)
+    events = []
+    service.observe = events.append
     result = service.prepare()
     assert (
         result["status"] == "ready"
         and result["market_status"] == result["news_status"] == "complete"
     )
     assert result["outbox_id"]
+    assert [event["stage"] for event in events if event["status"] == "started"] == [
+        "claim",
+        "settings",
+        "calendar",
+        "calendar_save",
+        "market_collect",
+        "market_save",
+        "news_history",
+        "news_collect",
+        "news_save",
+        "edition_save",
+        "outbox_enqueue",
+        "finish",
+    ]
+    assert events[-1]["status"] == "finished"
     edition = NewsletterStore(db[0]).get(result["edition_id"], now=clock[0])
     assert edition.mode == "live" and not edition.synthetic and edition.news_count == 3
     assert len(ai.calls) == 1 and calls == ["calendar", "market", "news"]
@@ -225,9 +242,43 @@ def test_missed_grace_and_early_call_do_not_replay_clock(db):
 
 def test_failure_is_sanitized_and_never_paid_recollected(db):
     service, _clock, calls, _ai = setup(db, crash=True)
+    events = []
+    service.observe = events.append
     result = service.prepare()
     assert result["status"] == "failed" and "secret" not in str(result)
+    assert result["failed_stage"] == "market_collect"
+    assert result["exception_type"] == "RuntimeError"
+    assert result["frames"][-1]["function"] == "collect"
+    assert events[-1]["status"] == "failed"
+    assert events[-1]["stage"] == "market_collect"
+    assert "secret" not in str(events)
+    with db[0].connect() as conn:
+        payload = conn.scalar(
+            sa.select(operations_events.c.payload).where(
+                operations_events.c.kind == "newsletter_prepare"
+            )
+        )
+    assert payload["status"] == "failed"
+    assert payload["failed_stage"] == "market_collect"
+    assert payload["finished_at"]
     assert service.prepare()["reused"] and calls == ["calendar", "market"]
+
+
+def test_claim_failure_is_logged_before_any_provider_call(db, monkeypatch):
+    service, _clock, calls, ai = setup(db)
+    events = []
+    service.observe = events.append
+
+    def fail(_day):
+        raise RuntimeError("private-storage-details")
+
+    monkeypatch.setattr(service.preparations, "claim", fail)
+    result = service.prepare()
+    assert result["status"] == "failed"
+    assert result["failed_stage"] == "claim"
+    assert events[-1]["exception_type"] == "RuntimeError"
+    assert not calls and not ai.calls
+    assert "private" not in str(events)
 
 
 def test_restart_after_claim_does_not_repeat_unknown_side_effects(db):

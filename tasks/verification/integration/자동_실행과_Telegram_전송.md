@@ -43,4 +43,10 @@ live 전체 성공은 T03 뉴스confirmed, live 부분/불명은 보수적으로
 - [수집 설정·CLI 시험](../../../tests/jobs/test_worker_collection.py): 서버 환경만읽기·명시단가/키거절·live준비/예약자원구성·기본mock보존.
 - [수집 연결 격리 DB 시험](../../../tests/jobs/test_worker_collection_postgres.py):07:50고정/늦은변경/잠금유예·중복/중단·실제T02/T03/T04저장·AI비용원장·휴장·정상0/partial/failed·unknown제외·이전호동결시각·90일준비claim보존.
 
+## 11/6 준비 실패 진단과 종료 코드
+
+Windows PowerShell 5.1의 native stderr 리디렉션이 달력 경고를 오류로 처리하는 중단을 외부 호출 없이 재현하고, 로컬 실행을 stdout/stderr 분리·자식 종료 코드 직접 전달로 수정했다. 준비 단계는 claim부터 완료까지 즉시 flush하며 예외 종류·파일/함수/줄 번호만 기록한다. 원문 예외·locals·연결정보는 출력하지 않는다. 준비 실패 진단은 기존 작업 payload에 저장하고 자동 재수집은 하지 않는다. worker의 `failed`·`unknown`·`retryable_failure` 결과는 CLI 종료 코드1이다.
+
+관련 무통신·격리 DB83건을 통과했다. 실제 11/6에는 준비 미완료로08:00 발송이 중단됐으며 수신 성공으로 판정하지 않는다. [실제 관측과 재현·수정 결과](../../logs/2026-11-06_아침_준비_실패_재현과_수정.md)
+
 실제본인수신·정시수집·운영재시작·AWS·T09오후 슬롯은 이번 검증 근거가 아니다.

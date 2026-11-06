@@ -88,6 +88,27 @@ def test_preparation_service_is_used_before_generic_collection():
 
 
 @pytest.mark.parametrize(
+    "status,expected",
+    [
+        ("failed", 1),
+        ("unknown", 1),
+        ("retryable_failure", 1),
+        ("ready", 0),
+        ("skipped", 0),
+        ("partial", 0),
+    ],
+)
+def test_business_failure_is_reflected_in_worker_exit_code(
+    monkeypatch, capsys, status, expected
+):
+    from xfolio.jobs.worker import MockWorker
+
+    monkeypatch.setattr(MockWorker, "prepare", lambda _: {"status": status})
+    assert main(["--phase", "prepare"]) == expected
+    assert json.loads(capsys.readouterr().out)["status"] == status
+
+
+@pytest.mark.parametrize(
     "arguments", [["--live", "--phase", "prepare"], ["--live", "--schedule"]]
 )
 def test_live_collection_is_assembled_with_server_resources(

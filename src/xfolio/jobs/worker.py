@@ -10,6 +10,7 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from xfolio.domestic.calendar import KST, local_calendar
 from xfolio.jobs.collection import CollectionError
+from xfolio.jobs.diagnostics import failure_details
 from xfolio.jobs.outbox import OutboxError, TelegramOutboxStore, dispatch
 from xfolio.jobs.telegram import MockTelegramTransport, TelegramTransport, split_text
 from xfolio.news.collection import aware
@@ -245,8 +246,8 @@ def main(argv=None):
             create_scheduler(worker).start()
             return 0
         result = worker.prepare() if args.phase == "prepare" else worker.send()
-        print(json.dumps(result, ensure_ascii=False))
-        return 0
+        print(json.dumps(result, ensure_ascii=False), flush=True)
+        return int(result.get("status") in {"failed", "unknown", "retryable_failure"})
     except (
         OutboxError,
         NewsletterError,
@@ -262,6 +263,7 @@ def main(argv=None):
                     if isinstance(exc, (OutboxError, NewsletterError, CollectionError))
                     else "worker_configuration_or_storage_error",
                     "can_send": False,
+                    **failure_details(exc, "worker"),
                 }
             )
         )

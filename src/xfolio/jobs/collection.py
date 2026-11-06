@@ -22,6 +22,7 @@ from xfolio.domestic.calendar import KST
 from xfolio.domestic.kis import KisClient, KisSettings
 from xfolio.domestic.models import Instrument
 from xfolio.domestic.store import DomesticStore
+from xfolio.jobs.diagnostics import emit_event, failure_details
 from xfolio.news.collection import NewsError, aware, collect, summarize
 from xfolio.news.collection_store import NewsletterNewsStore
 from xfolio.newsletter.edition import MorningInputs, MorningSettings, at, fingerprint
@@ -89,7 +90,11 @@ class PreparationStore:
     """07:50 설정 고정과 외부 호출 전 단일 claim. 자동 재수집은 하지 않는다."""
 
     def __init__(
-        self, engine, *, recipient_scope="self", clock=lambda: datetime.now(UTC)
+        self,
+        engine,
+        *,
+        recipient_scope="self",
+        clock=lambda: datetime.now(UTC),
     ):
         self.engine, self.recipient_scope, self.clock = engine, recipient_scope, clock
 
@@ -286,15 +291,31 @@ class LiveMorningPreparation:
         outbox_store,
         news_collector=collect,
         clock=lambda: datetime.now(UTC),
+        observe=None,
     ):
         self.engine, self.kis, self.news_client = engine, kis, news_client
         self.summary, self.settings, self.outbox_store = summary, settings, outbox_store
         self.news_collector, self.clock = news_collector, clock
+        self.observe = observe
         self.preparations = PreparationStore(
-            engine, recipient_scope=settings.recipient_scope, clock=clock
+            engine,
+            recipient_scope=settings.recipient_scope,
+            clock=clock,
         )
         self.domestic, self.news = DomesticStore(engine), NewsletterNewsStore(engine)
         self.newsletters = NewsletterStore(engine)
+
+    def _event(self, stage, status, **details):
+        if self.observe is not None:
+            self.observe(
+                {
+                    "event": "preparation",
+                    "at": aware(self.clock()).isoformat(),
+                    "stage": stage,
+                    "status": status,
+                    **details,
+                }
+            )
 
     def calendar(self, day, now):
         # Reuse the verified same-day KIS cache; no news or price call occurs here.
@@ -338,18 +359,31 @@ class LiveMorningPreparation:
     def prepare(self):
         now = aware(self.clock())
         day = now.astimezone(KST).date()
-        snapshot, fresh = self.preparations.claim(day)
-        if not fresh:
-            return {
-                k: v
-                for k, v in snapshot.items()
-                if k in {"status", "reason", "edition_id", "outbox_id"}
-            } | {"reused": True}
+        stage, claimed = "claim", False
         try:
+            self._event(stage, "started")
+            snapshot, fresh = self.preparations.claim(day)
+            if not fresh:
+                self._event(stage, "reused", result_status=snapshot.get("status"))
+                return {
+                    k: v
+                    for k, v in snapshot.items()
+                    if k in {"status", "reason", "edition_id", "outbox_id"}
+                } | {"reused": True}
+            claimed = True
+            stage = "settings"
+            self._event(stage, "started")
             self.settings.validate(self.clock())
+            stage = "calendar"
+            self._event(stage, "started")
             opened = self.kis.holidays(now)
+            stage = "calendar_save"
+            self._event(stage, "started")
             self.domestic.save_calendar(opened, self.clock())
             if opened.get(day) is not True:
+                self._event(
+                    stage, "finished", result_status="market_closed_or_unverified"
+                )
                 return self.preparations.finish(
                     day,
                     {
@@ -360,15 +394,23 @@ class LiveMorningPreparation:
                     },
                 )
             cutoff = at(day, 7, 50)
+            stage = "market_collect"
+            self._event(stage, "started")
             market = self.kis.collect(
                 tuple(snapshot["codes"]),
                 as_of=cutoff,
                 watchlist_revision=snapshot["watchlist_revision"],
             )
+            stage = "market_save"
+            self._event(stage, "started")
             market_row = self.domestic.save_collection(market, now=self.clock())
             if aware(self.clock()) >= at(day, 8, 10):
                 raise CollectionError("preparation_deadline_passed")
+            stage = "news_history"
+            self._event(stage, "started")
             seen, last_success = self._seen(cutoff)
+            stage = "news_collect"
+            self._event(stage, "started")
             news = self.news_collector(
                 self.news_client,
                 api_key=self.settings.finnhub_key,
@@ -378,7 +420,11 @@ class LiveMorningPreparation:
                 last_success=last_success,
                 summary=self.summary,
             )
+            stage = "news_save"
+            self._event(stage, "started")
             self.news.save_result(news, now=self.clock())
+            stage = "edition_save"
+            self._event(stage, "started")
             inputs = MorningInputs(
                 target_date=day,
                 recipient_scope=self.settings.recipient_scope,
@@ -394,12 +440,16 @@ class LiveMorningPreparation:
                 synthetic=False,
             )
             edition = self.newsletters.save(inputs, now=self.clock())
+            stage = "outbox_enqueue"
+            self._event(stage, "started")
             outbox_id = (
                 self.outbox_store.enqueue(edition.key, now=self.clock(), mode="live")
                 if edition.status in {"ready", "partial"}
                 else None
             )
-            return self.preparations.finish(
+            stage = "finish"
+            self._event(stage, "started")
+            result = self.preparations.finish(
                 day,
                 {
                     "status": edition.status,
@@ -410,22 +460,31 @@ class LiveMorningPreparation:
                     "news_status": news.status,
                 },
             )
-        except Exception:  # noqa: BLE001 -- paid/request outcome may be unknown; never recollect automatically.
-            self.preparations.finish(
-                day,
-                {"status": "failed", "reason": "preparation_failed_no_automatic_retry"},
-            )
-            return {
+            self._event(stage, "finished", result_status=result["status"])
+            return result
+        except Exception as exc:  # noqa: BLE001 -- never recollect automatically.
+            details = failure_details(exc, stage)
+            self._event(stage, "failed", **details)
+            result = {
                 "status": "failed",
                 "reason": "preparation_failed_no_automatic_retry",
+                **details,
             }
+            if claimed:
+                self.preparations.finish(day, result)
+            return result
 
 
 class LiveCollectionResources:
     """클라이언트는 서버 환경에서만 생성하며 생성 시점에는 외부 요청하지 않는다."""
 
     def __init__(
-        self, engine, *, settings, outbox_store, clock=lambda: datetime.now(UTC)
+        self,
+        engine,
+        *,
+        settings,
+        outbox_store,
+        clock=lambda: datetime.now(UTC),
     ):
         from openai import OpenAI
 
@@ -458,6 +517,7 @@ class LiveCollectionResources:
             settings=settings,
             outbox_store=outbox_store,
             clock=clock,
+            observe=emit_event,
         )
 
     def close(self):

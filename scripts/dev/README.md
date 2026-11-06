@@ -60,3 +60,17 @@ uv run python scripts/dev/local_runtime.py https
 접속은 **https://localhost:8443**, API는 **127.0.0.1:18443**이다. 3000/8000은 이 실행에서 사용하지 않는다. 개발 인증서 경고를 확인하고 Google 허용 계정으로 로그인한다. 설정·관심종목 변경은 이 DB에 저장되고 worker가 같은 DB를 읽는다. 종료는 두 터미널 `Ctrl+C`, DB 종료는 `pg_ctl -D C:/pro/xfolio/.cache/local_runtime/postgres/data stop -m fast`다. DB 파일을 지우지 않는다. 백그라운드 실행 시 `.cache/local_runtime/services.json`과 포트의 실제 프로세스를 확인해 이 앱의 프로세스만 종료한다.
 
 11/6 시험은 `schedule_local_acceptance.ps1`로 Windows에07:35 DB확인·07:50 준비·08:00 전송을 각1회 등록했다. `run_local_phase.ps1`와 Python의 날짜/시각 가드가11/6 이외·늦은 실행을 차단한다. 예약 action에는 비밀을 넣지 않는다. PC를 켜고 Windows 로그인·인터넷을 유지한다. Codex08:05 결과 확인에는 앱도 필요하다. 유료 요약은 Git 제외 `generation_limits.json`의 유효 단가와100원 로컬 월 한도 내에서 공식 적격 발표에만 적용한다. `paid` 진단은1회 attempt marker가 있으며 이미11/5 성공했으므로 다시 실행하지 않는다. 내일 로그는 `.cache/local_runtime/2026-11-06_{prepare,send}.log`다. [구현·실측·제약](../../tasks/logs/2026-11-05_뉴스_중요도와_로컬_실행.md).
+
+## 11/6 준비 실패와 로그 보강
+
+11/6 시험은 준비 작업 실패로 미발송이다. 결과 확인 자동화는 삭제했으며 이 수정으로 예약을 재등록하지 않는다. [재현·수정·검증 결과](../../tasks/logs/2026-11-06_아침_준비_실패_재현과_수정.md)
+
+Windows PowerShell 5.1에서 `$ErrorActionPreference='Stop'`와 native `*>`를 함께 쓰면 Python 경고도 `NativeCommandError`가 되어 프로세스를 중단할 수 있다. `native_process.ps1`은 숨김 `Start-Process`로 Python을 실행하고 stdout/stderr를 분리 저장하며 실제 종료 코드를 기다린다. Python은 UTF-8·무버퍼로 실행한다. 경고는 무시하지 않고 종류·파일·줄 번호로 기록한다.
+
+- `.cache/local_runtime/YYYY-MM-DD_{prepare,send}.log`: phase 시작/종료, 준비의 claim·설정·달력·시세·뉴스·저장·편성·outbox 단계, 결과. 각 줄을 즉시 flush한다.
+- `YYYY-MM-DD_{setup,prepare,send}_task.log`: wrapper 결과와 종료 코드.
+- `YYYY-MM-DD_{setup,prepare,send}_task.err.log`: 경고와 예상 밖 예외의 안전한 진단.
+
+실패 진단은 단계·예외 종류·최대8개 파일명/함수/줄 번호만 남긴다. 예외 메시지·연결 문자열·토큰·locals·소스 줄은 기록하지 않는다. 준비 실패 시 같은 진단을 기존 DB 작업 기록에 저장하고 재수집은 하지 않는다. 업무 결과가 `failed`·`unknown`·`retryable_failure`면 CLI도 종료 코드1을 반환한다. 수정 전의 `running` claim과 발송 이력은 자동 변경하지 않는다.
+
+무통신 회귀는 `uv run pytest tests/dev/test_native_process.py tests/dev/test_local_runtime.py tests/jobs/test_diagnostics.py tests/jobs/test_worker_collection.py`다. Windows 시험은 실제 PowerShell 5.1과 달력 경고를 사용하고 Python 자식의 외부 socket 연결을 차단한다. 준비/DB 회귀는 `tests/jobs/test_worker_collection_postgres.py`에서 명시한 격리 시험 DB로 실행한다. 이는 실제 정시 수신의 재시험을 대신하지 않는다.

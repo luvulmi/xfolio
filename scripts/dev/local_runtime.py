@@ -23,6 +23,11 @@ from xfolio.domestic.calendar import KST
 from xfolio.domestic.kis import KisClient, KisSettings
 from xfolio.domestic.store import DomesticStore
 from xfolio.jobs.collection import CappedWorkflowStore
+from xfolio.jobs.diagnostics import (
+    emit_event,
+    failure_details,
+    safe_process_diagnostics,
+)
 from xfolio.news.collection import collect, summarize
 from xfolio.news.collection_store import NewsletterNewsStore
 
@@ -308,7 +313,35 @@ def phase(day, part, *, now=None):
         from contextlib import redirect_stdout
 
         with redirect_stdout(handle):
-            code = main(["--live", "--phase", part])
+            emit_event(
+                {
+                    "event": "phase",
+                    "phase": part,
+                    "status": "started",
+                    "at": datetime.now(UTC).isoformat(),
+                }
+            )
+            try:
+                code = main(["--live", "--phase", part])
+            except Exception as exc:
+                emit_event(
+                    {
+                        "event": "phase",
+                        "phase": part,
+                        "status": "failed",
+                        **failure_details(exc, "worker"),
+                    }
+                )
+                raise
+            emit_event(
+                {
+                    "event": "phase",
+                    "phase": part,
+                    "status": "finished",
+                    "exit_code": code,
+                    "at": datetime.now(UTC).isoformat(),
+                }
+            )
     return {
         "exit_code": code,
         "phase": part,
@@ -388,14 +421,20 @@ def main():
         }[args.action]()
         print(json.dumps(result, ensure_ascii=False))
         return int(result.get("exit_code", 0))
-    except Exception:  # noqa: BLE001 -- credentials and provider payloads must remain private.
+    except Exception as exc:  # noqa: BLE001 -- credentials must remain private.
         print(
             json.dumps(
-                {"status": "failed", "action": args.action, "automatic_retry": False}
+                {
+                    "status": "failed",
+                    "action": args.action,
+                    "automatic_retry": False,
+                    **failure_details(exc, args.action),
+                }
             )
         )
         return 1
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    with safe_process_diagnostics():
+        raise SystemExit(main())
